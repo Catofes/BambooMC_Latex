@@ -7,7 +7,6 @@
 #include <G4UImanager.hh>
 
 G4int BambooControl::DETECTOR_TYPE = 0;
-G4bool BambooControl::BOTTOM_TEFLON_CONE_REFLECTOR = false;
 G4bool BambooControl::INTERACTIVE = false;
 G4int BambooControl::NUM_EVENTS = 0;
 G4String BambooControl::MacroFileName = "";
@@ -37,10 +36,11 @@ void BambooControl::setup(int argc, char * argv[])
   extern char * optarg;
   std::stringstream ss;
   while (true) {
-    const int option = getopt(argc, argv, "f:n:o:i");
+    const int option = getopt(argc, argv, "f:m:n:o:i");
     if(option == -1) break;
     switch (option) {
     case 'f':
+    case 'm':
       BambooControl::MacroFileName = optarg;
       break;
     case 'n':

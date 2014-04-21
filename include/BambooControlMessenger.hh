@@ -27,9 +27,5 @@ public:
 
 private:
   BambooControl * _control;
-  G4UIdirectory * _pandaXDirectory;
-  G4UIcmdWithAString * _detectorTypeCmd;
-  G4UIcmdWithABool * _bottomTeflonConeReflectorCmd;
-
 };
 #endif

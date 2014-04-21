@@ -16,7 +16,6 @@ public:
   void setup(int argc, char * argv[]);
 
   static G4int DETECTOR_TYPE;
-  static G4bool BOTTOM_TEFLON_CONE_REFLECTOR;
   static G4bool INTERACTIVE;
   static G4int NUM_EVENTS;
   static G4String MacroFileName;
