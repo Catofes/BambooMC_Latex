@@ -30,9 +30,25 @@ ADD_DEFINITIONS("-g")
 #
 FILE(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 FILE(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+FILE(GLOB Detector ${PROJECT_SOURCE_DIR}/src/detector/*.cc)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
+ADD_LIBRARY(BambooDetector SHARED ${Detector})
+TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES})
+SET_TARGET_PROPERTIES(BambooDetector PROPERTIES VERSION 0.1 SOVERSION 1)
+
 ADD_EXECUTABLE(BambooMC BambooMC.cc ${sources} ${headers})
-TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} BambooDetector)
+
+#--- test related ---#
+SET(BUILD_TEST OFF CACHE BOOL "whether the test programs will be built")
+IF(BUILD_TEST)
+ENABLE_TESTING()
+FILE(GLOB TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cxx)
+
+ADD_EXECUTABLE(bambooTest ${TEST_SRC})
+TARGET_LINK_LIBRARIES(bambooTest CppUTest CppUTestExt)
+ADD_TEST(allTest bambooTest)
+ENDIF()
