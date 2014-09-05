@@ -6,7 +6,12 @@ BambooDetectorPart::BambooDetectorPart (const G4String &partName)
 {
 }
 
-void BambooDetectorPart::setParentLogicalVolume (G4LogicalVolume * parent)
+void BambooDetectorPart::setParentLogicalVolume (BambooDetectorPart * parent)
 {
-  _parent = parent;
+  _parentPart = parent;
+}
+
+G4LogicalVolume * BambooDetectorPart::getLogicalVolume ()
+{
+  return _partVolume;
 }

@@ -13,3 +13,22 @@ BambooDetectorFactory * BambooDetectorFactory::Instance()
 BambooDetectorFactory::BambooDetectorFactory()
 {
 }
+
+bool BambooDetectorFactory::registerDetectorPart(const std::string &name, CreateDetectorPartCallback createCallback)
+{
+  return _partMap.insert(CallbackMap::value_type(name, createCallback)).second;
+}
+
+bool BambooDetectorFactory::unregisterDetectorPart(const std::string &name)
+{
+  return _partMap.erase(name) == 1;
+}
+
+BambooDetectorPart * BambooDetectorFactory::createDetectorPart (const std::string &name)
+{
+  CallbackMap::const_iterator i = _partMap.find(name);
+  if (i == _partMap.end()) {
+    throw std::runtime_error("Unknown Name for detector part!");
+  }
+  return (i->second)();
+}

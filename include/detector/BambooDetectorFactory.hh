@@ -30,7 +30,8 @@ private:
 
   BambooDetectorFactory();
 
-  std::map<std::string, CreateDetectorPartCallback> _partMap;
+  typedef std::map<std::string, CreateDetectorPartCallback> CallbackMap;
+  CallbackMap _partMap;
 
   static BambooDetectorFactory * _instance;
 };

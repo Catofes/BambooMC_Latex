@@ -15,10 +15,17 @@ public:
 
   G4String getName() const { return _partName; }
 
-  void setParentLogicalVolume (G4LogicalVolume * parent);
+  void setParentLogicalVolume (BambooDetectorPart * parent);
+
+  G4LogicalVolume * getLogicalVolume ();
+
 private:
   G4String _partName;
 
-  G4LogicalVolume * _parent;
+  G4LogicalVolume * _partVolume;
+
+  BambooDetectorPart * _parentPart;
+
+  
 };
 #endif
