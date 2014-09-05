@@ -6,5 +6,5 @@ TEST_GROUP(DetectorGroup)
 
 TEST(DetectorGroup, FirstTest)
 {
-  FAIL("Fail me!");
+  STRCMP_EQUAL("Fail me!", "Fail me!");
 }

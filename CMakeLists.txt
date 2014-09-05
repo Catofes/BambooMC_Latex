@@ -49,6 +49,6 @@ ENABLE_TESTING()
 FILE(GLOB TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cxx)
 
 ADD_EXECUTABLE(bambooTest ${TEST_SRC})
-TARGET_LINK_LIBRARIES(bambooTest CppUTest CppUTestExt)
+TARGET_LINK_LIBRARIES(bambooTest CppUTest CppUTestExt BambooDetector)
 ADD_TEST(allTest bambooTest)
 ENDIF()
