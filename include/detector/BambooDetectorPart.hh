@@ -11,7 +11,7 @@ public:
 
   virtual ~BambooDetectorPart() {}
 
-  virtual G4bool construct(const G4String &, G4LogicalVolume*) = 0;
+  virtual G4bool construct() = 0;
 
   G4String getName() const { return _partName; }
 
@@ -19,7 +19,7 @@ public:
 
   G4LogicalVolume * getLogicalVolume ();
 
-private:
+protected:
   G4String _partName;
 
   G4LogicalVolume * _partVolume;
