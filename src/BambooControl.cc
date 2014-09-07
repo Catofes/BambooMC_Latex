@@ -11,6 +11,7 @@ G4bool BambooControl::INTERACTIVE = false;
 G4int BambooControl::NUM_EVENTS = 0;
 G4String BambooControl::MacroFileName = "";
 G4String BambooControl::DataFileName = "";
+G4String BambooControl::XmlFileName = "";
 
 BambooControl * BambooControl::theControl = 0;
 
@@ -36,7 +37,7 @@ void BambooControl::setup(int argc, char * argv[])
   extern char * optarg;
   std::stringstream ss;
   while (true) {
-    const int option = getopt(argc, argv, "f:m:n:o:i");
+    const int option = getopt(argc, argv, "f:m:n:o:x:i");
     if(option == -1) break;
     switch (option) {
     case 'f':
@@ -50,6 +51,9 @@ void BambooControl::setup(int argc, char * argv[])
       break;
     case 'o':
       BambooControl::DataFileName = optarg;
+      break;
+    case 'x':
+      BambooControl::XmlFileName = optarg;
       break;
     case 'i':
       INTERACTIVE = true;

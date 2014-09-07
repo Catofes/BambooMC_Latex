@@ -20,6 +20,7 @@ public:
   static G4int NUM_EVENTS;
   static G4String MacroFileName;
   static G4String DataFileName;
+  static G4String XmlFileName;
 
 private:
 

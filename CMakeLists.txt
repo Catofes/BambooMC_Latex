@@ -18,11 +18,17 @@ INCLUDE(${Geant4_USE_FILE})
 FIND_PACKAGE(ROOT)
 #FIND_PACKAGE(CLHEP)
 
+# find Qt
+FIND_PACKAGE(Qt COMPONENTS Xml REQUIRED)
+
 # set include directories
-INCLUDE_DIRECTORIES(${ROOT_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${ROOT_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${QT_INCLUDE_DIR})
 
 # build with debug symbols
 ADD_DEFINITIONS("-g")
+
+# with c++0x support
+#ADD_DEFINITIONS("-std=c++0x")
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -36,7 +42,7 @@ FILE(GLOB Detector ${PROJECT_SOURCE_DIR}/src/detector/*.cc)
 # Add the executable, and link it to the Geant4 libraries
 #
 ADD_LIBRARY(BambooDetector SHARED ${Detector})
-TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES})
+TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES} ${QT_QTXML_LIBRARY})
 SET_TARGET_PROPERTIES(BambooDetector PROPERTIES VERSION 0.1 SOVERSION 1)
 
 ADD_EXECUTABLE(BambooMC BambooMC.cc ${sources} ${headers})
