@@ -1,5 +1,6 @@
 #include "BambooControl.hh"
 #include "BambooControlMessenger.hh"
+#include "BambooGlobalVariables.hh"
 
 #include <unistd.h>
 #include <string>
@@ -54,6 +55,7 @@ void BambooControl::setup(int argc, char * argv[])
       break;
     case 'x':
       BambooControl::XmlFileName = optarg;
+      BambooGlobalVariables::Instance()->loadXMLFile(BambooControl::XmlFileName);
       break;
     case 'i':
       INTERACTIVE = true;

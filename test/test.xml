@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+  <geometry>
+    <detector name="SampleWorldBox">
+      <parameter name="half_x" value="100"/>
+      <parameter name="half_y" value="100"/>
+      <parameter name="half_z" value="100"/>
+    </detector>
+  </geometry>
+</BambooMC>
