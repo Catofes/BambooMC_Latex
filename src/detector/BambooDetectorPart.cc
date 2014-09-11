@@ -1,4 +1,5 @@
 #include <G4LogicalVolume.hh>
+#include <G4VPhysicalVolume.hh>
 #include "detector/BambooDetectorPart.hh"
 
 BambooDetectorPart::BambooDetectorPart (const G4String &partName)
@@ -13,5 +14,10 @@ void BambooDetectorPart::setParentLogicalVolume (BambooDetectorPart * parent)
 
 G4LogicalVolume * BambooDetectorPart::getLogicalVolume ()
 {
-  return _partVolume;
+  return _partLogicalVolume;
+}
+
+G4VPhysicalVolume * BambooDetectorPart::getPhysicalVolume ()
+{
+  return _partPhysicalVolume;
 }

@@ -5,12 +5,14 @@
 #include <iostream>
 
 using std::cout;
+using std::cerr;
 using std::endl;
 
 BambooGlobalVariables * BambooGlobalVariables::_instance = 0;
 
 DetectorParameters::DetectorParameters()
 {
+  isWorld = false;
 }
 
 DetectorParameters::~DetectorParameters()
@@ -18,12 +20,12 @@ DetectorParameters::~DetectorParameters()
   parameters.clear();
 }
 
-string DetectorParameters::getDetectorPartName()
+string & DetectorParameters::getDetectorPartName()
 {
   return name;
 }
 
-string DetectorParameters::getParentName()
+string & DetectorParameters::getParentName()
 {
   return parentName;
 }
@@ -55,13 +57,24 @@ string DetectorParameters::getParameterAsString(const string & parameter)
   return string("");
 }
 
-map<string, string> & DetectorParameters::getParametersMap() {
+map<string, string> & DetectorParameters::getParametersMap()
+{
   return parameters;
+}
+
+bool DetectorParameters::isWorldPart()
+{
+  return isWorld;
+}
+
+void DetectorParameters::setWorld(bool t)
+{
+  isWorld = t;
 }
 
 BambooGlobalVariables::~BambooGlobalVariables ()
 {
-  _detectorPartList.clear();
+  _detectorParametersList.clear();
 }
 
 BambooGlobalVariables * BambooGlobalVariables::Instance()
@@ -81,24 +94,24 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
 {
   QFile file(QString(filename.c_str()));
   if (!file.exists()) {
-    cout << "file " << filename << " does not exist!" << endl;
+    cerr << "file " << filename << " does not exist!" << endl;
     return false;
   }
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    cout << "can't open " << filename << endl;
+    cerr << "can't open " << filename << endl;
     return false;
   }
   QXmlStreamReader xs(&file);
   if (xs.readNextStartElement()) {
     if (xs.name()!="BambooMC") {
-      cout << "No entry for BambooMC!" << endl;
+      cerr << "No entry for BambooMC!" << endl;
       return false;
     }
   } else {
     if (xs.hasError()) {
-      cout << "Error Code = " << xs.error() << endl;
+      cerr << "Error Code = " << xs.error() << endl;
     }
-    cout << "Can not read from file " << filename << endl;
+    cerr << "Can not read from file " << filename << endl;
     return false;
   }
   while (!xs.atEnd()) {
@@ -120,21 +133,35 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       }
     }
   }
+  if (!validateDetector()) {
+    return false;
+  }
   return true;
 }
 
-const vector<DetectorParameters> & BambooGlobalVariables::getDetectorPartList()
+const vector<DetectorParameters> & BambooGlobalVariables::getDetectorParametersList()
 {
-  return _detectorPartList;
+  return _detectorParametersList;
 }
 
 DetectorParameters & BambooGlobalVariables::findDetectorPartParameters (const string & name) throw (string)
 {
-  for (size_t i=0; i<_detectorPartList.size(); ++i) {
-    if (_detectorPartList[i].getDetectorPartName()==name)
-      return _detectorPartList[i];
+  for (size_t i=0; i<_detectorParametersList.size(); ++i) {
+    if (_detectorParametersList[i].getDetectorPartName()==name) {
+      return _detectorParametersList[i];
+    }
   }
   throw string("Unknown detector part name: ") + name;
+}
+
+BambooDetectorPart * BambooGlobalVariables::findDetectorPart(const string &name)
+{
+  for (size_t i=0; i<_detectorPartList.size(); ++i) {
+    if (_detectorPartList[i]->getName()==name.c_str()) {
+      return _detectorPartList[i];
+    }
+  }
+  return 0;
 }
 
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
@@ -146,19 +173,36 @@ bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
     dp.parentName = xs.attributes().value("parent").string()->toStdString();
   }
   cout << "detector " << dp.name << endl;
-  _detectorPartList.push_back(dp);
+  _detectorParametersList.push_back(dp);
   return true;
 }
 
 bool BambooGlobalVariables::loadDetectorParameter(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "parameter");
-  if (_detectorPartList.size()<1)
+  if (_detectorParametersList.size()<1)
     return false;
-  DetectorParameters &dp = _detectorPartList[_detectorPartList.size()-1];
+  DetectorParameters &dp = _detectorParametersList[_detectorParametersList.size()-1];
   string name = xs.attributes().value("name").toString().toStdString();
   string value = xs.attributes().value("value").toString().toStdString();
   dp.parameters[name] = value;
   cout << " -- parameter: " << name << " => " << value << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::validateDetector()
+{
+  // loop over all detector parameters to see if the configuration is validate
+  int nWorlds=0;
+  for (size_t i=0; i<_detectorParametersList.size(); ++i) {
+    if (_detectorParametersList[i].getParentName().empty()) {
+      _detectorParametersList[i].setWorld(true);
+      nWorlds++;
+    }
+  }
+  if (nWorlds!=1) {
+    cerr << "There are " << nWorlds << " worlds in the configuration."<< endl;
+    return false;
+  }
   return true;
 }

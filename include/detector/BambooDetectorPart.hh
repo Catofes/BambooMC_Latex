@@ -4,6 +4,7 @@
 #include <globals.hh>
 
 class G4LogicalVolume;
+class G4VPhysicalVolume;
 
 class BambooDetectorPart {
 public:
@@ -19,10 +20,14 @@ public:
 
   G4LogicalVolume * getLogicalVolume ();
 
+  G4VPhysicalVolume * getPhysicalVolume();
+
 protected:
   G4String _partName;
 
-  G4LogicalVolume * _partVolume;
+  G4LogicalVolume * _partLogicalVolume;
+
+  G4VPhysicalVolume * _partPhysicalVolume;
 
   BambooDetectorPart * _parentPart;
 

@@ -9,6 +9,8 @@
 #include <globals.hh>
 #include <G4String.hh>
 
+#include "detector/BambooDetectorPart.hh"
+
 using std::vector;
 using std::map;
 using std::string;
@@ -21,18 +23,20 @@ class DetectorParameters {
 public:
   DetectorParameters();
   ~DetectorParameters();
-  string getDetectorPartName();
-  string getParentName();
+  string & getDetectorPartName();
+  string & getParentName();
   int getParameterAsInt(const string & parameter);
   double getParameterAsDouble(const string & parameter);
   string getParameterAsString(const string & parameter);
   map<string, string> & getParametersMap();
-  
+  bool isWorldPart();
+  void setWorld(bool t);
+
 private:
   string name;
   string parentName;
-  map<string, string> parameters;
-  
+  bool isWorld;
+  map<string, string> parameters; 
 };
 
 
@@ -48,9 +52,11 @@ public:
 
   bool loadXMLFile(const G4String & filename);
 
-  const vector<DetectorParameters> & getDetectorPartList();
+  const vector<DetectorParameters> & getDetectorParametersList();
 
   DetectorParameters & findDetectorPartParameters(const string & name) throw (string);
+
+  BambooDetectorPart * findDetectorPart(const string &name);
 
 private:
 
@@ -60,7 +66,11 @@ private:
 
   bool loadDetectorParameter(QXmlStreamReader & xs);
 
-  vector<DetectorParameters> _detectorPartList;
+  bool validateDetector();
+
+  vector<DetectorParameters> _detectorParametersList;
+
+  vector<BambooDetectorPart *> _detectorPartList;
 
   static BambooGlobalVariables * _instance;
 
