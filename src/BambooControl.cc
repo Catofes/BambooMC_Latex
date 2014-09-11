@@ -55,7 +55,8 @@ void BambooControl::setup(int argc, char * argv[])
       break;
     case 'x':
       BambooControl::XmlFileName = optarg;
-      BambooGlobalVariables::Instance()->loadXMLFile(BambooControl::XmlFileName);
+      if (!BambooGlobalVariables::Instance()->loadXMLFile(BambooControl::XmlFileName))
+	exit(1);
       break;
     case 'i':
       INTERACTIVE = true;

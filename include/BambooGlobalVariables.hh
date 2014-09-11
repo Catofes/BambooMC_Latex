@@ -23,13 +23,13 @@ class DetectorParameters {
 public:
   DetectorParameters();
   ~DetectorParameters();
-  string & getDetectorPartName();
-  string & getParentName();
-  int getParameterAsInt(const string & parameter);
-  double getParameterAsDouble(const string & parameter);
-  string getParameterAsString(const string & parameter);
+  const string & getDetectorPartName() const;
+  const string & getParentName() const;
+  int getParameterAsInt(const string & parameter) const;
+  double getParameterAsDouble(const string & parameter) const;
+  string getParameterAsString(const string & parameter) const;
   map<string, string> & getParametersMap();
-  bool isWorldPart();
+  bool isWorldPart() const;
   void setWorld(bool t);
 
 private:
@@ -57,6 +57,8 @@ public:
   DetectorParameters & findDetectorPartParameters(const string & name) throw (string);
 
   BambooDetectorPart * findDetectorPart(const string &name);
+
+  void addDetectorPart(BambooDetectorPart * part);
 
 private:
 

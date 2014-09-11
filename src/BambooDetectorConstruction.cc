@@ -1,4 +1,6 @@
 #include "BambooDetectorConstruction.hh"
+#include "BambooGlobalVariables.hh"
+#include "detector/BambooDetectorFactory.hh"
 
 #include <G4RunManager.hh>
 #include <G4MaterialTable.hh>
@@ -21,9 +23,27 @@ BambooDetectorConstruction::~BambooDetectorConstruction () {
 
 G4VPhysicalVolume * BambooDetectorConstruction::Construct()
 {
-  DefineMaterials();
+  //  DefineMaterials();
   //  return ConstructDetector();
-  return 0;
+  // read detectors
+  BambooDetectorFactory * factory = BambooDetectorFactory::Instance();
+  BambooGlobalVariables * bgv = BambooGlobalVariables::Instance();
+  const vector<DetectorParameters> & dps = bgv->getDetectorParametersList();
+  G4VPhysicalVolume * world = 0;
+  for (size_t i=0; i<dps.size(); ++i) {
+    const DetectorParameters & dp = dps[i];
+    BambooDetectorPart * bdp = factory->createDetectorPart(dp.getDetectorPartName());
+    if (!dp.getParentName().empty()) {
+      BambooDetectorPart * parent = bgv->findDetectorPart(dp.getParentName());
+      bdp->setParent(parent);
+    }
+    bgv->addDetectorPart(bdp);
+    bdp->construct();
+    if (dp.isWorldPart()) {
+      world = bdp->getPhysicalVolume();
+    }
+  }
+  return world;
 }
 
 

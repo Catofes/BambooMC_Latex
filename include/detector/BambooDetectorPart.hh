@@ -16,7 +16,7 @@ public:
 
   G4String getName() const { return _partName; }
 
-  void setParentLogicalVolume (BambooDetectorPart * parent);
+  void setParent (BambooDetectorPart * parent);
 
   G4LogicalVolume * getLogicalVolume ();
 

@@ -20,37 +20,37 @@ DetectorParameters::~DetectorParameters()
   parameters.clear();
 }
 
-string & DetectorParameters::getDetectorPartName()
+const string & DetectorParameters::getDetectorPartName() const
 {
   return name;
 }
 
-string & DetectorParameters::getParentName()
+const string & DetectorParameters::getParentName() const
 {
   return parentName;
 }
 
-int DetectorParameters::getParameterAsInt(const string & parameter)
+int DetectorParameters::getParameterAsInt(const string & parameter) const
 {
-  map<string, string>::iterator res = parameters.find(parameter);
+  map<string, string>::const_iterator res = parameters.find(parameter);
   if (res!=parameters.end()) {
     return QString(res->second.c_str()).toInt();
   }
   return 0;
 }
 
-double DetectorParameters::getParameterAsDouble(const string & parameter)
+double DetectorParameters::getParameterAsDouble(const string & parameter) const
 {
-  map<string, string>::iterator res = parameters.find(parameter);
+  map<string, string>::const_iterator res = parameters.find(parameter);
   if (res!=parameters.end()) {
     return QString(res->second.c_str()).toDouble();
   }
   return 0;
 }
 
-string DetectorParameters::getParameterAsString(const string & parameter)
+string DetectorParameters::getParameterAsString(const string & parameter) const
 {
-  map<string, string>::iterator res = parameters.find(parameter);
+  map<string, string>::const_iterator res = parameters.find(parameter);
   if (res!=parameters.end()) {
     return res->second;
   }
@@ -62,7 +62,7 @@ map<string, string> & DetectorParameters::getParametersMap()
   return parameters;
 }
 
-bool DetectorParameters::isWorldPart()
+bool DetectorParameters::isWorldPart() const
 {
   return isWorld;
 }
@@ -162,6 +162,11 @@ BambooDetectorPart * BambooGlobalVariables::findDetectorPart(const string &name)
     }
   }
   return 0;
+}
+
+void BambooGlobalVariables::addDetectorPart (BambooDetectorPart *part)
+{
+  _detectorPartList.push_back(part);
 }
 
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
