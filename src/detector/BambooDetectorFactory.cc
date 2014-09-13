@@ -1,5 +1,7 @@
 #include "detector/BambooDetectorFactory.hh"
 
+#include <stdexcept>
+
 BambooDetectorFactory * BambooDetectorFactory::_instance = 0;
 
 BambooDetectorFactory * BambooDetectorFactory::Instance()

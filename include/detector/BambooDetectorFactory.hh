@@ -3,8 +3,6 @@
 
 #include <globals.hh>
 #include <string>
-#include <memory>
-#include <stdexcept>
 #include <map>
 
 #include "BambooDetectorPart.hh"

@@ -37,6 +37,7 @@ ADD_DEFINITIONS("-g")
 FILE(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 FILE(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 FILE(GLOB Detector ${PROJECT_SOURCE_DIR}/src/detector/*.cc)
+FILE(GLOB Physics ${PROJECT_SOURCE_DIR}/src/physics/*.cc)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
@@ -45,12 +46,16 @@ ADD_LIBRARY(BambooDetector SHARED ${Detector})
 TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES})
 SET_TARGET_PROPERTIES(BambooDetector PROPERTIES VERSION 0.1 SOVERSION 1)
 
+ADD_LIBRARY(BambooPhysics SHARED ${Physics})
+TARGET_LINK_LIBRARIES(BambooPhysics ${Geant4_LIBRARIES})
+SET_TARGET_PROPERTIES(BambooPhysics PROPERTIES VERSION 0.1 SOVERSION 1)
+
 ADD_LIBRARY(BambooCore SHARED ${sources})
 TARGET_LINK_LIBRARIES(BambooCore ${Geant4_LIBRARIES} ${QT_QTXML_LIBRARY})
 SET_TARGET_PROPERTIES(BambooCore PROPERTIES VERSION 0.1 SOVERSION 1)
 
 ADD_EXECUTABLE(BambooMC BambooMC.cc)
-TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} BambooDetector BambooCore)
+TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} BambooDetector BambooPhysics BambooCore)
 
 #--- test related ---#
 SET(BUILD_TEST OFF CACHE BOOL "whether the test programs will be built")
