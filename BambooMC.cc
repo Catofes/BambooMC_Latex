@@ -1,5 +1,4 @@
 #include <G4RunManager.hh>
-#include <G4UImanager.hh>
 #include <G4String.hh>
 
 #include <QBBC.hh>
@@ -40,14 +39,6 @@ int main(int argc, char * argv[])
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 #endif
-
-  // get the pointer to the UI manager and set verbosities
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
-
-  if (!BambooControl::MacroFileName.isNull()) {
-    G4String command = "/control/execute ";
-    UImanager->ApplyCommand(command + BambooControl::MacroFileName);
-  }
 
 #ifdef G4UI_USE
   if (BambooControl::INTERACTIVE) {

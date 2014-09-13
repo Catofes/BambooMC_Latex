@@ -1,8 +1,6 @@
 #ifndef BAMBOODETECTORCONSTRUCTION_H
 #define BAMBOODETECTORCONSTRUCTION_H
 
-#include "BambooDetectorMessenger.hh"
-
 #include <G4Material.hh>
 #include <G4VisAttributes.hh>
 #include <G4RotationMatrix.hh>

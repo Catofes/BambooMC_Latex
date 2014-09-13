@@ -1,5 +1,4 @@
 #include "BambooControl.hh"
-#include "BambooControlMessenger.hh"
 #include "BambooGlobalVariables.hh"
 
 #include <unistd.h>
@@ -26,7 +25,6 @@ BambooControl* BambooControl::getControl()
 
 BambooControl::BambooControl()
 {
-  new BambooControlMessenger(this);
 }
 
 BambooControl::~BambooControl()
@@ -64,10 +62,12 @@ void BambooControl::setup(int argc, char * argv[])
     }
   }
 
-  if (optind < argc - 1) {
-    G4cout << "No steering file will be used." << G4endl;
-  } else if (optind == argc-1) {
-    G4String steeringFileName = argv[optind];
-    G4UImanager::GetUIpointer()->ApplyCommand(G4String("/control/execute ") + steeringFileName);
+  if (XmlFileName.empty()) {
+    G4cerr << "An XML file must be provided! Try '-x xml_file'." << G4endl;
+    exit(1);
+  }
+  if (optind >= argc-1) {
+    G4cerr << "Unrecognized arguments!" << G4endl;
+    exit(1);
   }
 }

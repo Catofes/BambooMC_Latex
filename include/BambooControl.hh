@@ -3,11 +3,8 @@
 
 #include <globals.hh>
 
-class BambooControlMessenger;
-
 class BambooControl
 {
-  friend class BambooControlMessenger;
 public:
   static BambooControl * getControl();
 
