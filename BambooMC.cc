@@ -16,7 +16,7 @@
 #include "BambooDetectorConstruction.hh"
 #include "BambooGlobalVariables.hh"
 #include "physics/BambooPhysicsFactory.hh"
-#include "BambooPrimaryGeneratorAction.hh"
+#include "generator/BambooGeneratorFactory.hh"
 
 void usage(const char *);
 
@@ -34,7 +34,10 @@ int main(int argc, char * argv[])
 
   runManager->SetUserInitialization(physicsList);
 
-  runManager->SetUserAction(new BambooPrimaryGeneratorAction);
+  G4VUserPrimaryGeneratorAction * generator = BambooGeneratorFactory::Instance()
+    ->createGenerator(BambooGlobalVariables::Instance()->getGeneratorName());
+
+  runManager->SetUserAction(generator);
 
   runManager->Initialize();
 

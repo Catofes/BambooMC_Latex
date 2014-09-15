@@ -60,7 +60,7 @@ TARGET_LINK_LIBRARIES(BambooCore ${Geant4_LIBRARIES} ${QT_QTXML_LIBRARY})
 SET_TARGET_PROPERTIES(BambooCore PROPERTIES VERSION 0.1 SOVERSION 1)
 
 ADD_EXECUTABLE(BambooMC BambooMC.cc)
-TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} BambooDetector BambooPhysics BambooCore)
+TARGET_LINK_LIBRARIES(BambooMC ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} BambooDetector BambooPhysics BambooGenerator BambooCore)
 
 #--- test related ---#
 SET(BUILD_TEST OFF CACHE BOOL "whether the test programs will be built")

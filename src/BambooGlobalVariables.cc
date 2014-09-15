@@ -86,7 +86,8 @@ BambooGlobalVariables * BambooGlobalVariables::Instance()
 }
 
 BambooGlobalVariables::BambooGlobalVariables ()
-  : _physicsName("SimpleUnderGroundPhysics"), _readGeometry(false)
+  : _physicsName("SimpleUnderGroundPhysics"),
+    _generatorName("SimpleGPSGenerator"), _readGeometry(false)
 {
 }
 
@@ -115,6 +116,7 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
     return false;
   }
   int nPhysics = 0;
+  int nGenerator = 0;
   while (!xs.atEnd()) {
     xs.readNext();
     if (xs.isStartElement()) {
@@ -137,6 +139,11 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
 	if (!loadPhysics(xs))
 	  return false;
 	nPhysics++;
+      }
+      if (xs.name() == "generator") {
+	if (!loadGenerator(xs))
+	  return false;
+	nGenerator++;
       }
     } else if (xs.isEndElement()) {
       if (xs.name() == "geometry" ) {
@@ -190,6 +197,11 @@ const string & BambooGlobalVariables::getPhysicsName ()
   return _physicsName;
 }
 
+const string & BambooGlobalVariables::getGeneratorName ()
+{
+  return _generatorName;
+}
+
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "detector");
@@ -220,7 +232,15 @@ bool BambooGlobalVariables::loadPhysics(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "physics");
   _physicsName = xs.attributes().value("name").toString().toStdString();
-  cout << "physics -- " << _physicsName << endl;
+  cout << "physics -- " << _physicsName << endl << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::loadGenerator(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "physics");
+  _generatorName = xs.attributes().value("name").toString().toStdString();
+  cout << "generator -- " << _generatorName << endl << endl;
   return true;
 }
 

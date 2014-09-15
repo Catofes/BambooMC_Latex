@@ -62,6 +62,8 @@ public:
 
   const string & getPhysicsName();
 
+  const string & getGeneratorName();
+
 private:
 
   BambooGlobalVariables();
@@ -72,6 +74,8 @@ private:
 
   bool loadPhysics(QXmlStreamReader & xs);
 
+  bool loadGenerator(QXmlStreamReader & xs);
+
   bool validateDetector();
 
   vector<DetectorParameters> _detectorParametersList;
@@ -81,6 +85,8 @@ private:
   static BambooGlobalVariables * _instance;
 
   string _physicsName;
+
+  string _generatorName;
 
   bool _readGeometry;
 };

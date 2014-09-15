@@ -8,4 +8,5 @@
     </detector>
   </geometry>
   <physics name="SimpleUnderGroundPhysics"/>
+  <generator name="SimpleGPSGenerator"/>
 </BambooMC>
