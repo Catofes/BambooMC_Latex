@@ -238,7 +238,7 @@ bool BambooGlobalVariables::loadPhysics(QXmlStreamReader & xs)
 
 bool BambooGlobalVariables::loadGenerator(QXmlStreamReader & xs)
 {
-  Q_ASSERT(xs.isStartElement() && xs.name() == "physics");
+  Q_ASSERT(xs.isStartElement() && xs.name() == "generator");
   _generatorName = xs.attributes().value("name").toString().toStdString();
   cout << "generator -- " << _generatorName << endl << endl;
   return true;
