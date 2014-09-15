@@ -66,7 +66,9 @@ void BambooControl::setup(int argc, char * argv[])
     G4cerr << "An XML file must be provided! Try '-x xml_file'." << G4endl;
     exit(1);
   }
-  if (optind >= argc-1) {
+
+  if (optind <= argc-1) {
+    G4cerr << optind << " vs " << argc - 1 << G4endl;
     G4cerr << "Unrecognized arguments!" << G4endl;
     exit(1);
   }

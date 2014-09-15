@@ -23,6 +23,7 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
 
   G4cout << "Physics List: " << _name << G4endl;
   defaultCutValue = 0.7*mm;
+
   G4int verbose = 1;
 
   // EM Physics
@@ -46,6 +47,7 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
 
   // ion physics
   RegisterPhysics(new G4IonQMDPhysics(verbose));
+
 }
 
 SimpleUnderGroundPhysics::~SimpleUnderGroundPhysics() {

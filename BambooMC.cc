@@ -13,7 +13,8 @@
 
 #include "BambooControl.hh"
 #include "BambooDetectorConstruction.hh"
-#include "BambooPhysicsList.hh"
+#include "BambooGlobalVariables.hh"
+#include "physics/BambooPhysicsFactory.hh"
 #include "BambooPrimaryGeneratorAction.hh"
 
 void usage(const char *);
@@ -22,13 +23,14 @@ int main(int argc, char * argv[])
 {
   BambooControl::getControl()->setup(argc, argv);
 
+  G4cout << "Control loaded." << G4endl;
   G4RunManager* runManager = new G4RunManager;
 
   runManager->SetUserInitialization(new BambooDetectorConstruction);
 
-  //  runManager->SetUserInitialization(new BambooPhysicsList);
-  G4VModularPhysicsList* physicsList = new QBBC;
-  physicsList->SetVerboseLevel(1);
+  G4VModularPhysicsList* physicsList = BambooPhysicsFactory::Instance()
+    ->createPhysics(BambooGlobalVariables::Instance()->getPhysicsName());
+
   runManager->SetUserInitialization(physicsList);
 
   runManager->SetUserAction(new BambooPrimaryGeneratorAction);

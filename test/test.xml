@@ -7,4 +7,5 @@
       <parameter name="half_z" value="100"/>
     </detector>
   </geometry>
+  <physics name="SimpleUnderGroundPhysics"/>
 </BambooMC>

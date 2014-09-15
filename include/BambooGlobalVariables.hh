@@ -60,6 +60,8 @@ public:
 
   void addDetectorPart(BambooDetectorPart * part);
 
+  const string & getPhysicsName();
+
 private:
 
   BambooGlobalVariables();
@@ -68,6 +70,8 @@ private:
 
   bool loadDetectorParameter(QXmlStreamReader & xs);
 
+  bool loadPhysics(QXmlStreamReader & xs);
+
   bool validateDetector();
 
   vector<DetectorParameters> _detectorParametersList;
@@ -75,6 +79,8 @@ private:
   vector<BambooDetectorPart *> _detectorPartList;
 
   static BambooGlobalVariables * _instance;
+
+  string _physicsName;
 
   bool _readGeometry;
 };
