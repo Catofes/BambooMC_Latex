@@ -9,6 +9,7 @@
 
 #ifdef G4UI_USE
 #include <G4UIExecutive.hh>
+#include <G4UImanager.hh>
 #endif
 
 #include "BambooControl.hh"
@@ -43,6 +44,12 @@ int main(int argc, char * argv[])
 #endif
 
 #ifdef G4UI_USE
+  if (!BambooControl::MacroFileName.isNull()) {
+    G4String command = "/control/execute " + BambooControl::MacroFileName;
+    G4UImanager * uiManager = G4UImanager::GetUIpointer();
+    uiManager->ApplyCommand(command);
+  }
+
   if (BambooControl::INTERACTIVE) {
     G4UIExecutive* ui = new G4UIExecutive(argc, argv);
     ui->SessionStart();
