@@ -2,8 +2,9 @@
 #define BAMBOOPHYSICS_H
 
 #include <globals.hh>
+#include <G4VModularPhysicsList.hh>
 
-class BambooPhysics {
+class BambooPhysics : public G4VModularPhysicsList {
 public:
   BambooPhysics(const G4String &name);
 
