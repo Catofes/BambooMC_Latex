@@ -41,6 +41,7 @@ G4bool SampleWorldBox::construct ()
   G4Box * worldBox = new G4Box("WorldBox", _halfX, _halfY, _halfZ);
   _partLogicalVolume = new G4LogicalVolume(worldBox, air, "WorldLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "World", 0, false, 0);
+  _partContainerLogicalVolume = _partLogicalVolume;
   return true;
 }
 

@@ -20,12 +20,16 @@ public:
 
   G4LogicalVolume * getLogicalVolume ();
 
+  G4LogicalVolume * getContainerLogicalVolume ();
+
   G4VPhysicalVolume * getPhysicalVolume();
 
 protected:
   G4String _partName;
 
   G4LogicalVolume * _partLogicalVolume;
+
+  G4LogicalVolume * _partContainerLogicalVolume;
 
   G4VPhysicalVolume * _partPhysicalVolume;
 

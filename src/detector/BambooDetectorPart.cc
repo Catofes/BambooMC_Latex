@@ -3,7 +3,8 @@
 #include "detector/BambooDetectorPart.hh"
 
 BambooDetectorPart::BambooDetectorPart (const G4String &partName)
-  : _partName(partName)
+  : _partName(partName), _partLogicalVolume(0), _partContainerLogicalVolume(0),
+    _partPhysicalVolume(0), _parentPart(0)
 {
 }
 
@@ -20,4 +21,9 @@ G4LogicalVolume * BambooDetectorPart::getLogicalVolume ()
 G4VPhysicalVolume * BambooDetectorPart::getPhysicalVolume ()
 {
   return _partPhysicalVolume;
+}
+
+G4LogicalVolume * BambooDetectorPart::getContainerLogicalVolume ()
+{
+  return _partContainerLogicalVolume;
 }
