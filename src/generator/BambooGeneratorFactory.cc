@@ -30,7 +30,7 @@ BambooGenerator * BambooGeneratorFactory::createGenerator (const std::string &na
 {
   CallbackMap::const_iterator i = _generatorMap.find(name);
   if (i == _generatorMap.end()) {
-    throw std::runtime_error("Unknown Name for detector part!");
+    throw std::runtime_error("Unknown Name for Generator");
   }
   return (i->second)();
 }

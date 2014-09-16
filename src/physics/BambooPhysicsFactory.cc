@@ -30,7 +30,7 @@ BambooPhysics * BambooPhysicsFactory::createPhysics (const std::string &name)
 {
   CallbackMap::const_iterator i = _physicsMap.find(name);
   if (i == _physicsMap.end()) {
-    throw std::runtime_error("Unknown Name for detector part!");
+    throw std::runtime_error("Unknown Name for Physics List!");
   }
   return (i->second)();
 }

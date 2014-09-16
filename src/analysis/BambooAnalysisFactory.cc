@@ -30,7 +30,7 @@ BambooAnalysis * BambooAnalysisFactory::createAnalysis (const std::string &name)
 {
   CallbackMap::const_iterator i = _analysisMap.find(name);
   if (i == _analysisMap.end()) {
-    throw std::runtime_error("Unknown Name for detector part!");
+    throw std::runtime_error("Unknown Name for Analysis");
   }
   return (i->second)();
 }
