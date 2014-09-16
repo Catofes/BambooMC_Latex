@@ -117,6 +117,8 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
   }
   int nPhysics = 0;
   int nGenerator = 0;
+  int nAnalysis = 0;
+  _readDetector = false;
   while (!xs.atEnd()) {
     xs.readNext();
     if (xs.isStartElement()) {
@@ -126,14 +128,21 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       if (xs.name() == "detector") {
   	if (!_readGeometry)
   	  return false;
+	_readDetector = true;
   	if(!loadDetectorPart(xs))
   	  return false;
       }
       if (xs.name() == "parameter") {
   	if (!_readGeometry)
   	  return false;
-  	if(!loadDetectorParameter(xs))
-  	  return false;
+	if (_readDetector) {
+	  if(!loadDetectorParameter(xs))
+	    return false;
+	} else {
+	  if (!loadGeometryParameter(xs)) {
+	    return false;
+	  }
+	}
       }
       if (xs.name() == "physics") {
 	if (!loadPhysics(xs))
@@ -145,10 +154,18 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
 	  return false;
 	nGenerator++;
       }
+      if (xs.name() == "analysis") {
+	if (!loadAnalysis(xs))
+	  return false;
+	nAnalysis++;
+      }
     } else if (xs.isEndElement()) {
       if (xs.name() == "geometry" ) {
 	_readGeometry = false;
 	cout << "finished loading geometry from xml file." << endl << endl;
+      }
+      if (xs.name() == "detector" ) {
+	_readDetector = false;
       }
     }
   }
@@ -157,6 +174,14 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
   }
   if (!nPhysics>1) {
     cerr << "More than 1 physics lists are specified! (Only 1 are required!" << endl;
+    return false;
+  }
+  if (!nGenerator>1) {
+    cerr << "More than 1 generators are specified! (Only 1 are required!" << endl;
+    return false;
+  }
+  if (!nAnalysis>1) {
+    cerr << "More than 1 analysis classes are specified! (Only 1 are required!" << endl;
     return false;
   }
   return true;
@@ -202,6 +227,39 @@ const string & BambooGlobalVariables::getGeneratorName ()
   return _generatorName;
 }
 
+const string & BambooGlobalVariables::getAnalysisName ()
+{
+  return _analysisName;
+}
+
+int BambooGlobalVariables::getGeometryParameterAsInt(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _geometryParameters.find(parameter);
+  if (res!=_geometryParameters.end()) {
+    return QString(res->second.c_str()).toInt();
+  }
+  return 0;
+}
+
+double BambooGlobalVariables::getGeometryParameterAsDouble(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _geometryParameters.find(parameter);
+  if (res!=_geometryParameters.end()) {
+    return QString(res->second.c_str()).toDouble();
+  }
+  return 0;
+}
+
+string BambooGlobalVariables::getGeometryParameterAsString(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _geometryParameters.find(parameter);
+  if (res!=_geometryParameters.end()) {
+    return res->second;
+  }
+  return string("");
+}
+
+
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "detector");
@@ -228,6 +286,16 @@ bool BambooGlobalVariables::loadDetectorParameter(QXmlStreamReader & xs)
   return true;
 }
 
+bool BambooGlobalVariables::loadGeometryParameter(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "parameter");
+  string name = xs.attributes().value("name").toString().toStdString();
+  string value = xs.attributes().value("value").toString().toStdString();
+  _geometryParameters[name] = value;
+  cout << "geometry parameter: " << name << " => " << value << endl;
+  return true;
+}
+
 bool BambooGlobalVariables::loadPhysics(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "physics");
@@ -241,6 +309,14 @@ bool BambooGlobalVariables::loadGenerator(QXmlStreamReader & xs)
   Q_ASSERT(xs.isStartElement() && xs.name() == "generator");
   _generatorName = xs.attributes().value("name").toString().toStdString();
   cout << "generator -- " << _generatorName << endl << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::loadAnalysis(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "analysis");
+  _analysisName = xs.attributes().value("name").toString().toStdString();
+  cout << "analysis -- " << _analysisName << endl << endl;
   return true;
 }
 

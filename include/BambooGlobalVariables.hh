@@ -64,6 +64,14 @@ public:
 
   const string & getGeneratorName();
 
+  const string & getAnalysisName();
+
+  int getGeometryParameterAsInt(const string & parameter) const;
+
+  double getGeometryParameterAsDouble(const string & parameter) const;
+
+  string getGeometryParameterAsString(const string & parameter) const;
+
 private:
 
   BambooGlobalVariables();
@@ -72,9 +80,13 @@ private:
 
   bool loadDetectorParameter(QXmlStreamReader & xs);
 
+  bool loadGeometryParameter(QXmlStreamReader & xs);
+
   bool loadPhysics(QXmlStreamReader & xs);
 
   bool loadGenerator(QXmlStreamReader & xs);
+
+  bool loadAnalysis(QXmlStreamReader & xs);
 
   bool validateDetector();
 
@@ -82,13 +94,19 @@ private:
 
   vector<BambooDetectorPart *> _detectorPartList;
 
+  map<string, string> _geometryParameters;
+
   static BambooGlobalVariables * _instance;
 
   string _physicsName;
 
   string _generatorName;
 
+  string _analysisName;
+
   bool _readGeometry;
+
+  bool _readDetector;
 };
 
 #endif

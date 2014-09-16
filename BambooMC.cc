@@ -16,6 +16,7 @@
 #include "BambooDetectorConstruction.hh"
 #include "BambooGlobalVariables.hh"
 #include "physics/BambooPhysicsFactory.hh"
+#include "analysis/BambooAnalysisFactory.hh"
 #include "generator/BambooGeneratorFactory.hh"
 
 void usage(const char *);
@@ -38,6 +39,32 @@ int main(int argc, char * argv[])
     ->createGenerator(BambooGlobalVariables::Instance()->getGeneratorName());
 
   runManager->SetUserAction(generator);
+
+  // analysis
+  BambooAnalysis * analysis = BambooAnalysisFactory::Instance()
+    ->createAnalysis(BambooGlobalVariables::Instance()->getAnalysisName());
+
+  G4UserRunAction * runAction = analysis->getRunAction();
+  G4UserEventAction * eventAction = analysis->getEventAction();
+  G4UserSteppingAction * steppingAction = analysis->getSteppingAction();
+  G4UserStackingAction * stackingAction = analysis->getStackingAction();
+  G4UserTrackingAction * trackingAction = analysis->getTrackingAction();
+
+  if (runAction!=0) {
+    runManager->SetUserAction(runAction);
+  }
+  if (eventAction!=0) {
+    runManager->SetUserAction(eventAction);
+  }
+  if (steppingAction!=0) {
+    runManager->SetUserAction(steppingAction);
+  }
+  if (stackingAction!=0) {
+    runManager->SetUserAction(stackingAction);
+  }
+  if (trackingAction!=0) {
+    runManager->SetUserAction(trackingAction);
+  }
 
   runManager->Initialize();
 

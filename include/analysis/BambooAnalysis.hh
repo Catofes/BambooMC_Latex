@@ -6,6 +6,8 @@
 class G4UserRunAction;
 class G4UserEventAction;
 class G4UserSteppingAction;
+class G4UserTrackingAction;
+class G4UserStackingAction;
 
 class BambooAnalysis {
 public:
@@ -21,6 +23,10 @@ public:
 
   G4UserSteppingAction * getSteppingAction();
 
+  G4UserStackingAction * getStackingAction();
+
+  G4UserTrackingAction * getTrackingAction();
+
 protected:
   G4String _name;
 
@@ -29,5 +35,9 @@ protected:
   G4UserEventAction * _eventAction;
 
   G4UserSteppingAction * _steppingAction;
+
+  G4UserStackingAction * _stackingAction;
+
+  G4UserTrackingAction * _trackingAction;
 };
 #endif

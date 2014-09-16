@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BambooMC>
   <geometry>
+    <parameter name="inner_vessel_radius" value="630"/>
+    <parameter name="liquid_xenon_density" value="3.03"/>
     <detector name="SampleWorldBox">
       <parameter name="half_x" value="100"/>
       <parameter name="half_y" value="500"/>
@@ -9,4 +11,5 @@
   </geometry>
   <physics name="SimpleUnderGroundPhysics"/>
   <generator name="SimpleGPSGenerator"/>
+  <analysis name="PandaXAnalysis"/>
 </BambooMC>
