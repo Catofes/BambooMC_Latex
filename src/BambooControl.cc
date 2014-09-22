@@ -50,6 +50,7 @@ void BambooControl::setup(int argc, char * argv[])
       break;
     case 'o':
       BambooControl::DataFileName = optarg;
+      BambooGlobalVariables::Instance()->setOutDataName(optarg);
       break;
     case 'x':
       BambooControl::XmlFileName = optarg;

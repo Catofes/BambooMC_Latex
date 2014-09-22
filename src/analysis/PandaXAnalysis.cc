@@ -1,5 +1,7 @@
 #include "analysis/PandaXAnalysis.hh"
 #include "analysis/BambooAnalysisFactory.hh"
+#include "analysis/PandaXRunAction.hh"
+#include "analysis/PandaXDataManager.hh"
 
 // anonymous namespace to register the PandaXAnalysis
 namespace {
@@ -17,6 +19,8 @@ namespace {
 PandaXAnalysis::PandaXAnalysis (const G4String &name)
   : BambooAnalysis(name)
 {
+  PandaXDataManager * dm = new PandaXDataManager();
+  _runAction = new PandaXRunAction(dm);
 }
 
 PandaXAnalysis::~PandaXAnalysis()

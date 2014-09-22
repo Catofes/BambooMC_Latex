@@ -87,7 +87,9 @@ BambooGlobalVariables * BambooGlobalVariables::Instance()
 
 BambooGlobalVariables::BambooGlobalVariables ()
   : _physicsName("SimpleUnderGroundPhysics"),
-    _generatorName("SimpleGPSGenerator"), _readGeometry(false)
+    _generatorName("SimpleGPSGenerator"),
+    _outDataName("pandaxout.root"),
+    _readGeometry(false)
 {
 }
 
@@ -259,6 +261,20 @@ string BambooGlobalVariables::getGeometryParameterAsString(const string & parame
   return string("");
 }
 
+const string & BambooGlobalVariables::getOutDataName () const
+{
+  return _outDataName;
+}
+
+void BambooGlobalVariables::setOutDataName (const string & name)
+{
+  _outDataName = name;
+}
+
+void BambooGlobalVariables::setOutDataName (const char * name)
+{
+  _outDataName = name;
+}
 
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
 {

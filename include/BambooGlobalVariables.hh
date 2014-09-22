@@ -72,6 +72,12 @@ public:
 
   string getGeometryParameterAsString(const string & parameter) const;
 
+  const string & getOutDataName () const;
+
+  void setOutDataName(const string &name);
+
+  void setOutDataName(const char * name);
+
 private:
 
   BambooGlobalVariables();
@@ -103,6 +109,8 @@ private:
   string _generatorName;
 
   string _analysisName;
+
+  string _outDataName;
 
   bool _readGeometry;
 
