@@ -86,7 +86,7 @@ BambooGlobalVariables * BambooGlobalVariables::Instance()
 }
 
 BambooGlobalVariables::BambooGlobalVariables ()
-  : _physicsName("SimpleUnderGroundPhysics"),
+  : _runNumber(0), _physicsName("SimpleUnderGroundPhysics"),
     _generatorName("SimpleGPSGenerator"),
     _outDataName("pandaxout.root"),
     _readGeometry(false)
@@ -124,6 +124,9 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
   while (!xs.atEnd()) {
     xs.readNext();
     if (xs.isStartElement()) {
+      if (xs.name() == "run") {
+	_runNumber = xs.attributes().value("number").toString().toInt();
+      }
       if (xs.name() == "geometry") {
   	_readGeometry = true;
       }
@@ -219,6 +222,11 @@ void BambooGlobalVariables::addDetectorPart (BambooDetectorPart *part)
   _detectorPartList.push_back(part);
 }
 
+int BambooGlobalVariables::getRunNumber() const
+{
+  return _runNumber;
+}
+
 const string & BambooGlobalVariables::getPhysicsName ()
 {
   return _physicsName;
@@ -282,9 +290,12 @@ bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
   DetectorParameters dp;
   dp.name = xs.attributes().value("name").toString().toStdString();
   if (!xs.attributes().value("parent").isEmpty()) {
-    dp.parentName = xs.attributes().value("parent").string()->toStdString();
+    dp.parentName = xs.attributes().value("parent").toString().toStdString();
   }
-  cout << "detector -- " << dp.name << endl;
+  cout << "detector -- " << dp.name;
+  if (!dp.parentName.empty())
+    cout << " in " << dp.parentName;
+  cout << endl;
   _detectorParametersList.push_back(dp);
   return true;
 }

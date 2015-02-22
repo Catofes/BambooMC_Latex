@@ -2,6 +2,10 @@
 #define PANDAXLXESENSITIVEDETECTOR_H
 
 #include <G4VSensitiveDetector.hh>
+
+#include <map>
+#include <string>
+
 #include "analysis/PandaXLXeHit.hh"
 
 class G4Step;
@@ -23,6 +27,7 @@ protected:
 
 private:
   PandaXLXeHitsCollection * _hitsCollection;
+  std::map<int, std::string> _particleTypes;
 };
 
 #endif // PANDAXLXESENSITIVEDETECTOR_H

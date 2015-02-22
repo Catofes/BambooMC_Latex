@@ -15,7 +15,7 @@ TEST(XmlGroup, FirstTest)
     try {
       DetectorParameters dp = instance->findDetectorPartParameters("SampleWorldBox");
       CHECK_EQUAL(dp.getDetectorPartName(), "SampleWorldBox");
-      CHECK_EQUAL(100, dp.getParameterAsInt("half_x"));
+      CHECK_EQUAL(300, dp.getParameterAsInt("half_x"));
     } catch (string e) {
       cout << e << endl;
     }

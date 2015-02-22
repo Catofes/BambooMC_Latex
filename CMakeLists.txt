@@ -44,9 +44,6 @@ FILE(GLOB Analysis ${PROJECT_SOURCE_DIR}/src/analysis/*.cc)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-ADD_LIBRARY(BambooDetector SHARED ${Detector})
-TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES})
-SET_TARGET_PROPERTIES(BambooDetector PROPERTIES VERSION 0.1 SOVERSION 1)
 
 ADD_LIBRARY(BambooPhysics SHARED ${Physics})
 TARGET_LINK_LIBRARIES(BambooPhysics ${Geant4_LIBRARIES})
@@ -59,6 +56,10 @@ SET_TARGET_PROPERTIES(BambooGenerator PROPERTIES VERSION 0.1 SOVERSION 1)
 ADD_LIBRARY(BambooAnalysis SHARED ${Analysis})
 TARGET_LINK_LIBRARIES(BambooAnalysis ${Geant4_LIBRARIES})
 SET_TARGET_PROPERTIES(BambooAnalysis PROPERTIES VERSION 0.1 SOVERSION 1)
+
+ADD_LIBRARY(BambooDetector SHARED ${Detector})
+TARGET_LINK_LIBRARIES(BambooDetector ${Geant4_LIBRARIES} BambooAnalysis)
+SET_TARGET_PROPERTIES(BambooDetector PROPERTIES VERSION 0.1 SOVERSION 1)
 
 ADD_LIBRARY(BambooCore SHARED ${sources})
 TARGET_LINK_LIBRARIES(BambooCore ${Geant4_LIBRARIES} ${QT_QTXML_LIBRARY})
@@ -74,6 +75,6 @@ ENABLE_TESTING()
 FILE(GLOB TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cxx)
 FILE(COPY ${PROJECT_SOURCE_DIR}/test/test.xml DESTINATION ${PROJECT_BINARY_DIR})
 ADD_EXECUTABLE(bambooTest ${TEST_SRC})
-TARGET_LINK_LIBRARIES(bambooTest CppUTest CppUTestExt BambooDetector BambooCore)
+TARGET_LINK_LIBRARIES(bambooTest CppUTest CppUTestExt BambooDetector BambooCore BambooAnalysis ${ROOT_LIBRARIES})
 ADD_TEST(allTest bambooTest)
 ENDIF()

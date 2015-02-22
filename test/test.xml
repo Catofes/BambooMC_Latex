@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BambooMC>
+  <run number="9001"/>
   <geometry>
     <parameter name="inner_vessel_radius" value="630"/>
     <parameter name="liquid_xenon_density" value="3.03"/>
     <detector name="SampleWorldBox">
-      <parameter name="half_x" value="100"/>
-      <parameter name="half_y" value="500"/>
+      <parameter name="half_x" value="300"/>
+      <parameter name="half_y" value="300"/>
+      <parameter name="half_z" value="300"/>
+    </detector>
+    <detector name="SampleBoxDetector" parent="SampleWorldBox">
+      <parameter name="half_x" value="200"/>
+      <parameter name="half_y" value="200"/>
       <parameter name="half_z" value="100"/>
     </detector>
   </geometry>

@@ -3,6 +3,7 @@
 
 #include <G4VHit.hh>
 #include <G4THitsCollection.hh>
+#include <G4Allocator.hh>
 
 #include <string>
 
@@ -12,6 +13,14 @@ class PandaXLXeHit : public G4VHit {
 public:
   PandaXLXeHit ();
   ~PandaXLXeHit ();
+
+  const PandaXLXeHit & operator=(const PandaXLXeHit &right);
+
+  int operator==(const PandaXLXeHit & right) const;
+
+  inline void * operator new(size_t);
+
+  inline void operator delete(void *aHit);
 
   void Draw() {;}
   void Print() {;}
@@ -24,7 +33,8 @@ public:
   double getZ() const;
   double getT() const;
   const string & getType() const;
-  const string & getProcess() const;
+  const string & getCreatorProcess() const;
+  const string & getDepositionProcess() const;
   const string & getParent() const;
   
   void setTrackId(int id);
@@ -35,7 +45,8 @@ public:
   void setZ(double z);
   void setT(double t);
   void setType(const string &type);
-  void setProcess(const string &process);
+  void setCreatorProcess(const string &process);
+  void setDepositionProcess(const string& process);
   void setParent(const string &parent);
 
 private:
@@ -47,10 +58,24 @@ private:
   double _z;
   double _t;
   string _type;
-  string _process;
+  string _creatorProcess;
+  string _depositionProcess;
   string _parent;
 };
 
 typedef G4THitsCollection<PandaXLXeHit> PandaXLXeHitsCollection;
 
+extern G4Allocator<PandaXLXeHit> * pandaXLXeHitAllocator;
+
+inline void * PandaXLXeHit::operator new(size_t)
+{
+  if (!pandaXLXeHitAllocator)
+    pandaXLXeHitAllocator = new G4Allocator<PandaXLXeHit>;
+  return (void *) pandaXLXeHitAllocator->MallocSingle();
+}
+
+inline void PandaXLXeHit::operator delete(void * aHit)
+{
+  pandaXLXeHitAllocator->FreeSingle((PandaXLXeHit*)aHit);
+}
 #endif// PANDAXLXEHIT_H

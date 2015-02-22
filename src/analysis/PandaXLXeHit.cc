@@ -1,13 +1,36 @@
 #include "analysis/PandaXLXeHit.hh"
 
+G4Allocator<PandaXLXeHit> * pandaXLXeHitAllocator = new G4Allocator<PandaXLXeHit>;
+
 PandaXLXeHit::PandaXLXeHit()
   : _trackId(-1), _parentId(-1), _energy(0), _x(0), _y(0), _z(0),
-    _type("unknown"), _process("unknown"), _parent("")
+    _type("unknown"), _creatorProcess("unknown"), _depositionProcess("unknown"), _parent("none")
 {
 }
 
 PandaXLXeHit::~PandaXLXeHit()
 {
+}
+
+const PandaXLXeHit & PandaXLXeHit::operator=(const PandaXLXeHit & right)
+{
+  _trackId = right._trackId;
+  _parentId = right._parentId;
+  _energy = right._energy;
+  _x = right._x;
+  _y = right._y;
+  _z = right._z;
+  _t = right._t;
+  _type = right._type;
+  _creatorProcess = right._creatorProcess;
+  _depositionProcess = right._depositionProcess;
+  _parent = right._parent;
+  return * this;
+}
+
+int PandaXLXeHit::operator==(const PandaXLXeHit &right) const
+{
+  return ((this == &right)?1:0);
 }
 
 int PandaXLXeHit::getTrackId () const
@@ -50,9 +73,14 @@ const string & PandaXLXeHit::getType() const
   return _type;
 }
 
-const string & PandaXLXeHit::getProcess() const
+const string & PandaXLXeHit::getCreatorProcess() const
 {
-  return _process;
+  return _creatorProcess;
+}
+
+const string & PandaXLXeHit::getDepositionProcess() const
+{
+  return _depositionProcess;
 }
 
 const string & PandaXLXeHit::getParent() const
@@ -100,9 +128,14 @@ void PandaXLXeHit::setType(const string &type)
   _type = type;
 }
 
-void PandaXLXeHit::setProcess(const string &process)
+void PandaXLXeHit::setCreatorProcess(const string &process)
 {
-  _process = process;
+  _creatorProcess = process;
+}
+
+void PandaXLXeHit::setDepositionProcess(const string &process)
+{
+  _depositionProcess = process;
 }
 
 void PandaXLXeHit::setParent(const string &parent)

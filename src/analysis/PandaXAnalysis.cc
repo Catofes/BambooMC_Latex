@@ -1,6 +1,7 @@
 #include "analysis/PandaXAnalysis.hh"
 #include "analysis/BambooAnalysisFactory.hh"
 #include "analysis/PandaXRunAction.hh"
+#include "analysis/PandaXEventAction.hh"
 #include "analysis/PandaXDataManager.hh"
 
 // anonymous namespace to register the PandaXAnalysis
@@ -21,6 +22,7 @@ PandaXAnalysis::PandaXAnalysis (const G4String &name)
 {
   PandaXDataManager * dm = new PandaXDataManager();
   _runAction = new PandaXRunAction(dm);
+  _eventAction = new PandaXEventAction(dm);
 }
 
 PandaXAnalysis::~PandaXAnalysis()

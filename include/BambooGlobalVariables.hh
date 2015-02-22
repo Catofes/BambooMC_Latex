@@ -60,6 +60,8 @@ public:
 
   void addDetectorPart(BambooDetectorPart * part);
 
+  int getRunNumber() const;
+
   const string & getPhysicsName();
 
   const string & getGeneratorName();
@@ -95,6 +97,8 @@ private:
   bool loadAnalysis(QXmlStreamReader & xs);
 
   bool validateDetector();
+
+  int _runNumber;
 
   vector<DetectorParameters> _detectorParametersList;
 

@@ -17,10 +17,10 @@ PandaXEventAction::~PandaXEventAction ()
 
 void PandaXEventAction::BeginOfEventAction (const G4Event *aEvent)
 {
-  _dataManager->_eventId++;
+  _dataManager->_eventId = aEvent->GetEventID();
 }
 
 void PandaXEventAction::EndOfEventAction (const G4Event *aEvent)
 {
-  _dataManager->fill();
+  _dataManager->fillEvent(aEvent);
 }

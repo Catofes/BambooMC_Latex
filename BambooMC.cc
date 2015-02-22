@@ -28,6 +28,7 @@ int main(int argc, char * argv[])
   G4cout << "Control loaded." << G4endl;
   G4RunManager* runManager = new G4RunManager;
 
+  runManager->SetRunIDCounter(BambooGlobalVariables::Instance()->getRunNumber());
   runManager->SetUserInitialization(new BambooDetectorConstruction);
 
   G4VModularPhysicsList* physicsList = BambooPhysicsFactory::Instance()

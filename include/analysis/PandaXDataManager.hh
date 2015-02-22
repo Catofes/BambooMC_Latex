@@ -9,6 +9,8 @@
 class TFile;
 class TTree;
 
+class G4Event;
+
 class PandaXDataManager {
 
   friend class PandaXRunAction;
@@ -23,21 +25,22 @@ public:
 
   void save();
 
-  void fill();
+  void fillEvent(const G4Event * aEvent);
 
 private:
+  void resetData();
+
   TFile * _rootFile;
   TTree * _mcTree;
 
+  int _runId;
   int _eventId;
   int _nHits;
   std::vector<int> _trackId;
   std::vector<int> _parentId;
-  std::vector<int> _ancestorId;
   std::vector<std::string > _type;
   std::vector<std::string > _parentType;
-  std::vector<std::string > _ancestorType;
-  std::vector<std::string > _createProcess;
+  std::vector<std::string > _creatorProcess;
   std::vector<std::string > _depositionProcess;
   std::vector<std::string > _volume;
   std::vector<double> _xd;
