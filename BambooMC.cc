@@ -12,6 +12,9 @@
 #include <G4UImanager.hh>
 #endif
 
+#include <sstream>
+#include <string>
+
 #include "BambooControl.hh"
 #include "BambooDetectorConstruction.hh"
 #include "BambooGlobalVariables.hh"
@@ -78,6 +81,16 @@ int main(int argc, char * argv[])
   if (!BambooControl::MacroFileName.isNull()) {
     G4String command = "/control/execute " + BambooControl::MacroFileName;
     G4UImanager * uiManager = G4UImanager::GetUIpointer();
+    G4cout << command << G4endl;
+    uiManager->ApplyCommand(command);
+  }
+
+  if (BambooControl::NUM_EVENTS) {
+    std::ostringstream ss;
+    ss << BambooControl::NUM_EVENTS;
+    G4String command = "/run/beamOn " + ss.str();
+    G4UImanager * uiManager = G4UImanager::GetUIpointer();
+    G4cout << command << G4endl;
     uiManager->ApplyCommand(command);
   }
 
