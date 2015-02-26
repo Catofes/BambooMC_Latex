@@ -22,7 +22,7 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
   G4DataQuestionaire it(photon, neutron, radioactive);
 
   G4cout << "Physics List: " << _name << G4endl;
-  defaultCutValue = 0.7*mm;
+  defaultCutValue = 0.001*mm;
 
   G4int verbose = 1;
 
