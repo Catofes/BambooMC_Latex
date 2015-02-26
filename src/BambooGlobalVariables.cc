@@ -321,6 +321,20 @@ void BambooGlobalVariables::setOutDataName (const char * name)
   _outDataName = name;
 }
 
+double BambooGlobalVariables::getUnitByName (const string & name)
+{
+  if (name.compare("m")==0) {
+    return m;
+  }
+  if (name.compare("mm")==0) {
+    return mm;
+  }
+  if (name.compare("cm")==0) {
+    return cm;
+  }
+  return 0;
+}
+
 bool BambooGlobalVariables::loadDetectorPart(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "detector");

@@ -86,6 +86,8 @@ public:
 
   void setOutDataName(const char * name);
 
+  double getUnitByName(const string &name);
+
 private:
 
   BambooGlobalVariables();
