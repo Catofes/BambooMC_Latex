@@ -1,7 +1,9 @@
 #include "physics/SimpleUnderGroundPhysics.hh"
 #include "physics/BambooPhysicsFactory.hh"
+#include "BambooGlobalVariables.hh"
 
 #include <Shielding.hh>
+#include <QString>
 //#include <HadronPhysicsShielding.hh>
 
 // anonymous namespace to register the SimpleUnderGroundPhysics
@@ -22,8 +24,24 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
   G4DataQuestionaire it(photon, neutron, radioactive);
 
   G4cout << "Physics List: " << _name << G4endl;
-  defaultCutValue = 0.001*mm;
 
+  std::string dcV = BambooGlobalVariables::Instance()->getPhysicsParameterAsString("cutlength");
+
+  if (dcV.empty()) {
+    defaultCutValue = 0.001*mm;
+  } else {
+    std::string::size_type n = dcV.find("*");
+    double unit;
+    if (n!=std::string::npos) {
+      unit = BambooGlobalVariables::Instance()->getUnitByName(dcV.substr(n+1));
+      defaultCutValue = QString(dcV.substr(0,n).c_str()).toDouble() * unit;
+    } else {
+      defaultCutValue = QString(dcV.c_str()).toDouble() * mm;
+    }
+  }
+
+  G4cout << "default cut length: " << defaultCutValue/mm << " mm" << G4endl;
+      
   G4int verbose = 1;
 
   // EM Physics
