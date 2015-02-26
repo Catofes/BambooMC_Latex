@@ -92,6 +92,8 @@ private:
 
   bool loadPhysics(QXmlStreamReader & xs);
 
+  bool loadPhysicsParameter(QXmlStreamReader & xs);
+
   bool loadGenerator(QXmlStreamReader & xs);
 
   bool loadAnalysis(QXmlStreamReader & xs);
@@ -106,6 +108,8 @@ private:
 
   map<string, string> _geometryParameters;
 
+  map<string, string> _physicsParameters;
+
   static BambooGlobalVariables * _instance;
 
   string _physicsName;
@@ -119,6 +123,8 @@ private:
   bool _readGeometry;
 
   bool _readDetector;
+
+  bool _readPhysics;
 };
 
 #endif
