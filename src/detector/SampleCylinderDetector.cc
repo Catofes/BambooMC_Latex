@@ -11,6 +11,8 @@
 #include <G4NistManager.hh>
 #include <G4SDManager.hh>
 
+#include <G4VisAttributes.hh>
+
 #include <math.h>
 
 // anonymous namespace to register the SampleCylinderDetector
@@ -49,10 +51,13 @@ G4bool SampleCylinderDetector::construct ()
   _partLogicalVolume = new G4LogicalVolume(sampleDetectorTub, xenon, "SampleDetectorLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _partLogicalVolume, "SampleDetector", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
+  G4VisAttributes * sampleDetectorVisAtt = new G4VisAttributes(G4Colour(0.,0.6, 0.1));
+  _partLogicalVolume->SetVisAttributes(sampleDetectorVisAtt);
   PandaXLXeSensitiveDetector * lXeSD = new PandaXLXeSensitiveDetector("LXeSD");
   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
   sdManager->AddNewDetector(lXeSD);
   _partLogicalVolume->SetSensitiveDetector(lXeSD);
+  G4cout << "Sensitive Mass: " << _partLogicalVolume->GetMass()/kg << " kg." << G4endl;
   return true;
 }
 

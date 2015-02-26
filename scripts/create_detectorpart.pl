@@ -51,7 +51,7 @@ my $sample_source = <<"EOF";
 
 namespace {
 
-  $part_name * create${part_name} ()
+  BambooDetectorPart * create${part_name} ()
   {
     return new $part_name("$part_name");
   }
