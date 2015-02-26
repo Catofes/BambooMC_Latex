@@ -74,6 +74,12 @@ public:
 
   string getGeometryParameterAsString(const string & parameter) const;
 
+  int getPhysicsParameterAsInt(const string & parameter) const;
+
+  double getPhysicsParameterAsDouble(const string & parameter) const;
+
+  string getPhysicsParameterAsString(const string & parameter) const;
+
   const string & getOutDataName () const;
 
   void setOutDataName(const string &name);

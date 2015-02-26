@@ -279,6 +279,33 @@ string BambooGlobalVariables::getGeometryParameterAsString(const string & parame
   return string("");
 }
 
+int BambooGlobalVariables::getPhysicsParameterAsInt(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _physicsParameters.find(parameter);
+  if (res!=_physicsParameters.end()) {
+    return QString(res->second.c_str()).toInt();
+  }
+  return 0;
+}
+
+double BambooGlobalVariables::getPhysicsParameterAsDouble(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _physicsParameters.find(parameter);
+  if (res!=_physicsParameters.end()) {
+    return QString(res->second.c_str()).toDouble();
+  }
+  return 0;
+}
+
+string BambooGlobalVariables::getPhysicsParameterAsString(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _physicsParameters.find(parameter);
+  if (res!=_physicsParameters.end()) {
+    return res->second;
+  }
+  return string("");
+}
+
 const string & BambooGlobalVariables::getOutDataName () const
 {
   return _outDataName;
