@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+  <run number="9001"/>
+  <geometry>
+    <parameter name="inner_vessel_radius" value="630"/>
+    <parameter name="liquid_xenon_density" value="3.03"/>
+    <detector name="SampleWorldBox">
+      <parameter name="half_x" value="8000"/>
+      <parameter name="half_y" value="8000"/>
+      <parameter name="half_z" value="8000"/>
+    </detector>
+    <detector name="WaterShield" parent="SampleWorldBox">
+      <parameter name="shape" value="2"/>
+      <parameter name="radius" value="5"/>
+      <parameter name="height" value="10"/>
+    </detector>
+    <detector name="CopperVessel" parent="WaterShield">
+      <parameter name="outerRadius" value="1020"/>
+      <parameter name="wallThickness" value="20"/>
+      <parameter name="topThickness" value="20"/>
+      <parameter name="height" value="2040"/>
+    </detector>
+    <detector name="SampleCylinderDetector" parent="CopperVessel">
+      <parameter name="radius" value="1000"/>
+      <parameter name="height" value="2000"/>
+    </detector>
+  </geometry>
+  <physics name="SimpleUnderGroundPhysics">
+    <parameter name="cutlength" value="0.005*mm"/>
+  </physics>
+  <generator name="SimpleGPSGenerator"/>
+  <analysis name="PandaXAnalysis"/>
+</BambooMC>

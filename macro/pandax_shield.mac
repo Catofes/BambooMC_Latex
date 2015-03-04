@@ -1,0 +1,9 @@
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0
+/gps/pos/radius 5 m
+/gps/ang/type focused
+/gps/ang/focuspoint 0 0 0
+/gps/particle gamma
+/gps/ene/type Mono
+/gps/ene/mono 10 MeV

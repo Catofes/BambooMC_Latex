@@ -1,0 +1,9 @@
+/gps/pos/type Volume
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0
+/gps/pos/radius 1.5 m
+/gps/pos/confine SampleDetector
+/gps/ang/type iso
+/gps/particle ion
+/gps/ion 86 222
+/gps/energy 0 MeV
