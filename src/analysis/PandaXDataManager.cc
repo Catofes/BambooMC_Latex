@@ -79,7 +79,8 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
       _nHits++;
     }
   }
-  _mcTree->Fill();
+  if (_nHits>0)
+    _mcTree->Fill();
 }
 
 void PandaXDataManager::resetData()
