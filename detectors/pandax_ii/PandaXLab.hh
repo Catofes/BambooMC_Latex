@@ -41,6 +41,8 @@ private:
   G4VPhysicalVolume * _rockWallPhysicalVolume; //!< the physical volume, rock wall
   G4VPhysicalVolume * _concreteWallPhysicalVolume; //!< the physical volume, concrete wall
   G4VPhysicalVolume * _innerSpacePhysicalVolume;   //!< the physical volume, inner space
+
+  bool _isVisible;
 };
 
 

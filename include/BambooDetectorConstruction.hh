@@ -20,10 +20,5 @@ private:
 
   void DefineMaterials();
 
-  // Physical Volume
-
-  // Materials & Elements
-
-  // Geometry
 };
 #endif

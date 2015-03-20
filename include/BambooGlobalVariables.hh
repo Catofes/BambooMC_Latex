@@ -62,6 +62,8 @@ public:
 
   int getRunNumber() const;
 
+  const string & getMaterialName();
+
   const string & getPhysicsName();
 
   const string & getGeneratorName();
@@ -98,6 +100,8 @@ private:
 
   bool loadGeometryParameter(QXmlStreamReader & xs);
 
+  bool loadMaterial(QXmlStreamReader & xs);
+
   bool loadPhysics(QXmlStreamReader & xs);
 
   bool loadPhysicsParameter(QXmlStreamReader & xs);
@@ -119,6 +123,8 @@ private:
   map<string, string> _physicsParameters;
 
   static BambooGlobalVariables * _instance;
+
+  string _materialName;
 
   string _physicsName;
 

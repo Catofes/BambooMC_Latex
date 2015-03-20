@@ -155,6 +155,13 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
           return false;
         }
       }
+      if (xs.name() == "material") {
+	if (!_readGeometry)
+	  return false;
+	if (!loadMaterial(xs)) {
+	  return false;
+	}
+      }
       if (xs.name() == "physics") {
 	if (!loadPhysics(xs))
 	  return false;
@@ -235,6 +242,11 @@ void BambooGlobalVariables::addDetectorPart (BambooDetectorPart *part)
 int BambooGlobalVariables::getRunNumber() const
 {
   return _runNumber;
+}
+
+const string & BambooGlobalVariables::getMaterialName ()
+{
+  return _materialName;
 }
 
 const string & BambooGlobalVariables::getPhysicsName ()
@@ -371,6 +383,14 @@ bool BambooGlobalVariables::loadGeometryParameter(QXmlStreamReader & xs)
   string value = xs.attributes().value("value").toString().toStdString();
   _geometryParameters[name] = value;
   cout << "geometry parameter: " << name << " => " << value << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::loadMaterial(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "material");
+  _materialName = xs.attributes().value("name").toString().toStdString();
+  cout << endl << "material -- " << _materialName << endl;
   return true;
 }
 
