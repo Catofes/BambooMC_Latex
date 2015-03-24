@@ -8,6 +8,7 @@
 #include <G4LogicalVolume.hh>
 #include <G4PVPlacement.hh>
 #include <G4NistManager.hh>
+#include <G4VisAttributes.hh>
 
 // anonymous namespace to register the SampleWorldBox
 
@@ -42,6 +43,9 @@ G4bool SampleWorldBox::construct ()
   _partLogicalVolume = new G4LogicalVolume(worldBox, air, "WorldLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "World", 0, false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
+  G4VisAttributes * worldVis = new G4VisAttributes();
+  worldVis->SetVisibility(false);
+  _partLogicalVolume->SetVisAttributes(worldVis);
   return true;
 }
 
