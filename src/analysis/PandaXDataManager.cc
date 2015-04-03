@@ -43,6 +43,7 @@ void PandaXDataManager::book(const std::string & name)
   _mcTree->Branch("creatorProcess", &_creatorProcess);
   _mcTree->Branch("depositionProcess", &_depositionProcess);
   _mcTree->Branch("volume", &_volume);
+  _mcTree->Branch("totalEnergy", &_totalEnergy);
   _mcTree->Branch("xd", &_xd);
   _mcTree->Branch("yd", &_yd);
   _mcTree->Branch("zd", &_zd);
@@ -76,6 +77,7 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
       _zd.push_back(hit->getZ());
       _td.push_back(hit->getT());
       _energy.push_back(hit->getEnergy());
+      _totalEnergy += hit->getEnergy();
       _nHits++;
     }
   }
@@ -93,6 +95,7 @@ void PandaXDataManager::resetData()
   _creatorProcess.clear();
   _depositionProcess.clear();
   _volume.clear();
+  _totalEnergy = 0;
   _xd.clear();
   _yd.clear();
   _zd.clear();

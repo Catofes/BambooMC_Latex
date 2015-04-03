@@ -36,6 +36,7 @@ private:
   int _runId;
   int _eventId;
   int _nHits;
+  double _totalEnergy;
   std::vector<int> _trackId;
   std::vector<int> _parentId;
   std::vector<std::string > _type;
