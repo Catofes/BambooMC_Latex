@@ -27,6 +27,8 @@ public:
 
   void fillEvent(const G4Event * aEvent);
 
+  void enableFluxScorer(bool b);
+
 private:
   void resetData();
 
@@ -49,5 +51,7 @@ private:
   std::vector<double> _zd;
   std::vector<double> _td;
   std::vector<double> _energy;
+
+  bool _useFluxScorer;
 };
 #endif

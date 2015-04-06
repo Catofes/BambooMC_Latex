@@ -10,7 +10,7 @@
 #include <iostream>
 
 PandaXDataManager::PandaXDataManager ()
-  : _rootFile(0), _mcTree(0)
+  : _rootFile(0), _mcTree(0), _useFluxScorer(false)
 {
 }
 
@@ -83,6 +83,11 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
   }
   if (_nHits>0)
     _mcTree->Fill();
+}
+
+void PandaXDataManager::enableFluxScorer(bool b)
+{
+  _useFluxScorer = b;
 }
 
 void PandaXDataManager::resetData()
