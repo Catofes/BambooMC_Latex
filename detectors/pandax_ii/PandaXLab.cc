@@ -1,6 +1,7 @@
 #include "detector/PandaXLab.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
+#include "BambooUtils.hh"
 
 #include <G4Material.hh>
 #include <G4ThreeVector.hh>
@@ -31,16 +32,15 @@ PandaXLab::PandaXLab (const G4String & name)
   DetectorParameters dp = BambooGlobalVariables::Instance()
     ->findDetectorPartParameters("PandaXLab");
 
-  _length = dp.getParameterAsDouble("length") * mm;
-  _width = dp.getParameterAsDouble("width") * mm;
-  _height = dp.getParameterAsDouble("height") * mm;
+  _length = BambooUtils::evaluate(dp.getParameterAsString("length"));
+  _width = BambooUtils::evaluate(dp.getParameterAsString("width"));
+  _height = BambooUtils::evaluate(dp.getParameterAsString("height"));
 
-  _rockWallThickness = dp.getParameterAsDouble("rock_wall_thickness") * mm;
-  _rockRoofThickness = dp.getParameterAsDouble("rock_roof_thickness") * mm;
-
-  _concreteWallThickness = dp.getParameterAsDouble("concrete_wall_thickness") * mm;
-  _concreteRoofThickness = dp.getParameterAsDouble("concrete_roof_thickness") * mm;
-  _concreteFloorThickness = dp.getParameterAsDouble("concrete_floor_thickness") * mm;
+  _rockWallThickness = BambooUtils::evaluate(dp.getParameterAsString("rock_wall_thickness"));
+  _rockRoofThickness = BambooUtils::evaluate(dp.getParameterAsString("rock_roof_thickness"));
+  _concreteWallThickness = BambooUtils::evaluate(dp.getParameterAsString("concrete_wall_thickness"));
+  _concreteRoofThickness = BambooUtils::evaluate(dp.getParameterAsString("concrete_roof_thickness"));
+  _concreteFloorThickness = BambooUtils::evaluate(dp.getParameterAsString("concrete_floor_thickness"));
 
   if (_length == 0) {
     _length = 10000. * mm;
