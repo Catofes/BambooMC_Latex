@@ -91,7 +91,8 @@ BambooGlobalVariables::BambooGlobalVariables ()
     _outDataName("pandaxout.root"),
     _readGeometry(false),
     _readDetector(false),
-    _readPhysics(false)
+    _readPhysics(false),
+    _readAnalysis(false)
 {
 }
 
@@ -151,6 +152,10 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
           if (!loadPhysicsParameter(xs)) {
             return false;
           }
+        } else if (_readAnalysis) {
+          if (!loadAnalysisParameter(xs)) {
+            return false;
+          }
         } else {
           return false;
         }
@@ -176,6 +181,7 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       if (xs.name() == "analysis") {
 	if (!loadAnalysis(xs))
 	  return false;
+        _readAnalysis = true;
 	nAnalysis++;
       }
     } else if (xs.isEndElement()) {
@@ -188,6 +194,9 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       }
       if (xs.name() == "physics" ) {
         _readPhysics = false;
+      }
+      if (xs.name() == "analysis" ) {
+        _readAnalysis = false;
       }
     }
   }
@@ -318,6 +327,33 @@ string BambooGlobalVariables::getPhysicsParameterAsString(const string & paramet
   return string("");
 }
 
+int BambooGlobalVariables::getAnalysisParameterAsInt(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _analysisParameters.find(parameter);
+  if (res!=_analysisParameters.end()) {
+    return QString(res->second.c_str()).toInt();
+  }
+  return 0;
+}
+
+double BambooGlobalVariables::getAnalysisParameterAsDouble(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _analysisParameters.find(parameter);
+  if (res!=_analysisParameters.end()) {
+    return QString(res->second.c_str()).toDouble();
+  }
+  return 0;
+}
+
+string BambooGlobalVariables::getAnalysisParameterAsString(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _analysisParameters.find(parameter);
+  if (res!=_analysisParameters.end()) {
+    return res->second;
+  }
+  return string("");
+}
+
 const string & BambooGlobalVariables::getOutDataName () const
 {
   return _outDataName;
@@ -411,6 +447,17 @@ bool BambooGlobalVariables::loadPhysicsParameter(QXmlStreamReader & xs)
   cout << "physics parameter: " << name << " => " << value << endl;
   return true;
 }
+
+bool BambooGlobalVariables::loadAnalysisParameter(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "parameter");
+  string name = xs.attributes().value("name").toString().toStdString();
+  string value = xs.attributes().value("value").toString().toStdString();
+  _analysisParameters[name] = value;
+  cout << "analysis parameter: " << name << " => " << value << endl;
+  return true;
+}
+
 bool BambooGlobalVariables::loadGenerator(QXmlStreamReader & xs)
 {
   Q_ASSERT(xs.isStartElement() && xs.name() == "generator");
