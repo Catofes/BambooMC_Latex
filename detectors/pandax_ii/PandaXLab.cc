@@ -98,7 +98,7 @@ G4bool PandaXLab::construct ()
     return false;
   }
 
-  G4Box * marbleBox = new G4Box("MarbleBox", rockLength, rockWidth, rockHeight);
+  G4Box * marbleBox = new G4Box("MarbleBox", rockLength/2., rockWidth/2., rockHeight/2.);
   _rockWallLogicalVolume = new G4LogicalVolume(marbleBox, marble, "MarbleBoxLog", 0, 0, 0);
   _partLogicalVolume = _rockWallLogicalVolume;
 
@@ -113,7 +113,7 @@ G4bool PandaXLab::construct ()
 
   // the concrete wall
   G4Material * concrete = G4Material::GetMaterial("G4_CONCRETE");
-  G4Box * concreteBox = new G4Box("ConcreteBox", concreteLength, concreteWidth, concreteHeight);
+  G4Box * concreteBox = new G4Box("ConcreteBox", concreteLength/2., concreteWidth/2., concreteHeight/2.);
   _concreteWallLogicalVolume = new G4LogicalVolume(concreteBox, concrete, "ConcreteBoxLog", 0, 0, 0);
   _concreteWallPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*concreteHeight-_concreteFloorThickness), _concreteWallLogicalVolume, "ConcreteWall", _rockWallLogicalVolume, false, 0);
 
