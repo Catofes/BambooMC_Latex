@@ -9,6 +9,10 @@
 #include <G4PVPlacement.hh>
 #include <G4NistManager.hh>
 #include <G4Box.hh>
+#include <G4SDManager.hh>
+#include <G4VPrimitiveScorer.hh>
+#include <G4MultiFunctionalDetector.hh>
+#include <G4PSFlatSurfaceFlux.hh>
 
 #include <G4VisAttributes.hh>
 
@@ -76,6 +80,12 @@ PandaXLab::PandaXLab (const G4String & name)
   if (iV == 1) {
     _isVisible = true;
   }
+  _countAirFlux = false;
+  int caF = dp.getParameterAsInt("count_air_flux");
+  if (caF == 1) {
+    _countAirFlux = true;
+  }
+  _sensitiveAir = _countAirFlux;
   G4cout << "PandaXLab found..." << G4endl;
 }
 
@@ -128,6 +138,18 @@ G4bool PandaXLab::construct ()
   _innerSpaceLogicalVolume = new G4LogicalVolume(innerSpaceBox, air, "InnerSpaceLog", 0, 0, 0);
   _innerSpacePhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*(_concreteFloorThickness-_concreteRoofThickness)), _innerSpaceLogicalVolume, "InnerSpaceWall", _concreteWallLogicalVolume, false, 0);
 
+  if (_sensitiveAir) {
+    G4MultiFunctionalDetector * airScorer = new G4MultiFunctionalDetector("airScorer");
+    G4SDManager::GetSDMpointer()->AddNewDetector(airScorer);
+    _innerSpaceLogicalVolume->SetSensitiveDetector(airScorer);
+    G4cout << "Enable Multifunctional Detector for Air with Primitive Scorer:" << G4endl;
+    if (_countAirFlux) {
+      G4VPrimitiveScorer * airFlux = new G4PSFlatSurfaceFlux("airSurfaceFlux", fFlux_In);
+      airScorer->RegisterPrimitive(airFlux);
+      G4cout << "G4PSFlatSurfaceFlux ";
+    }
+    G4cout << G4endl;
+  }
   G4VisAttributes * spaceVis = new G4VisAttributes();
   spaceVis->SetColour(0.98, 0.98, 0.98, 0.1);
   spaceVis->SetVisibility(_isVisible);

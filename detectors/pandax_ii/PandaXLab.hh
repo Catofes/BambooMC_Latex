@@ -43,6 +43,10 @@ private:
   G4VPhysicalVolume * _innerSpacePhysicalVolume;   //!< the physical volume, inner space
 
   bool _isVisible;
+
+  bool _sensitiveAir;
+
+  bool _countAirFlux;
 };
 
 
