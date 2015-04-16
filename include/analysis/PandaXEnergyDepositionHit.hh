@@ -1,5 +1,5 @@
-#ifndef PANDAXLXEHIT_H
-#define PANDAXLXEHIT_H
+#ifndef PANDAXENERGYDEPOSITIONHIT_H
+#define PANDAXENERGYDEPOSITIONHIT_H
 
 #include <G4VHit.hh>
 #include <G4THitsCollection.hh>
@@ -9,14 +9,14 @@
 
 using std::string;
 
-class PandaXLXeHit : public G4VHit {
+class PandaXEnergyDepositionHit : public G4VHit {
 public:
-  PandaXLXeHit ();
-  ~PandaXLXeHit ();
+  PandaXEnergyDepositionHit ();
+  ~PandaXEnergyDepositionHit ();
 
-  const PandaXLXeHit & operator=(const PandaXLXeHit &right);
+  const PandaXEnergyDepositionHit & operator=(const PandaXEnergyDepositionHit &right);
 
-  int operator==(const PandaXLXeHit & right) const;
+  int operator==(const PandaXEnergyDepositionHit & right) const;
 
   inline void * operator new(size_t);
 
@@ -63,19 +63,19 @@ private:
   string _parent;
 };
 
-typedef G4THitsCollection<PandaXLXeHit> PandaXLXeHitsCollection;
+typedef G4THitsCollection<PandaXEnergyDepositionHit> PandaXEnergyDepositionHitsCollection;
 
-extern G4Allocator<PandaXLXeHit> * pandaXLXeHitAllocator;
+extern G4Allocator<PandaXEnergyDepositionHit> * pandaXEnergyDepositionHitAllocator;
 
-inline void * PandaXLXeHit::operator new(size_t)
+inline void * PandaXEnergyDepositionHit::operator new(size_t)
 {
-  if (!pandaXLXeHitAllocator)
-    pandaXLXeHitAllocator = new G4Allocator<PandaXLXeHit>;
-  return (void *) pandaXLXeHitAllocator->MallocSingle();
+  if (!pandaXEnergyDepositionHitAllocator)
+    pandaXEnergyDepositionHitAllocator = new G4Allocator<PandaXEnergyDepositionHit>;
+  return (void *) pandaXEnergyDepositionHitAllocator->MallocSingle();
 }
 
-inline void PandaXLXeHit::operator delete(void * aHit)
+inline void PandaXEnergyDepositionHit::operator delete(void * aHit)
 {
-  pandaXLXeHitAllocator->FreeSingle((PandaXLXeHit*)aHit);
+  pandaXEnergyDepositionHitAllocator->FreeSingle((PandaXEnergyDepositionHit*)aHit);
 }
-#endif// PANDAXLXEHIT_H
+#endif// PANDAXENERGYDEPOSITIONHIT_H

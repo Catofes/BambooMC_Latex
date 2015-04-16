@@ -17,7 +17,7 @@ class PandaXDataManager {
   friend class PandaXEventAction;
 
 public:
-  PandaXDataManager();
+  PandaXDataManager(bool enableEnergyDeposition = true, bool enableFlatSurfaceFlux = false);
 
   ~PandaXDataManager();
 
@@ -27,8 +27,6 @@ public:
 
   void fillEvent(const G4Event * aEvent);
 
-  void enableFluxScorer(bool b);
-
 private:
   void resetData();
 
@@ -37,6 +35,8 @@ private:
 
   int _runId;
   int _eventId;
+
+  // variables for the energy deposition.
   int _nHits;
   double _totalEnergy;
   std::vector<int> _trackId;
@@ -52,6 +52,15 @@ private:
   std::vector<double> _td;
   std::vector<double> _energy;
 
-  bool _useFluxScorer;
+  // variables for flux counts
+  int _nTracks;
+  std::vector<double> _trackEnergy;
+  std::vector<double> _px;
+  std::vector<double> _py;
+  std::vector<double> _pz;
+  std::vector<int> _surface;
+
+  bool _recordEnergyDeposition;
+  bool _recordFlatSurfaceFlux;
 };
 #endif

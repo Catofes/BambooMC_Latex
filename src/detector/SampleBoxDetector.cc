@@ -1,6 +1,6 @@
 #include "detector/SampleBoxDetector.hh"
 #include "detector/BambooDetectorFactory.hh"
-#include "analysis/PandaXLXeSensitiveDetector.hh"
+#include "analysis/PandaXSensitiveDetector.hh"
 #include "BambooGlobalVariables.hh"
 
 #include <G4Material.hh>
@@ -44,10 +44,10 @@ G4bool SampleBoxDetector::construct ()
   _partLogicalVolume = new G4LogicalVolume(sampleDetectorBox, xenon, "SampleDetectorLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "SampleDetector", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
-  PandaXLXeSensitiveDetector * lXeSD = new PandaXLXeSensitiveDetector("LXeSD");
+  PandaXSensitiveDetector * sampleBoxSD = new PandaXSensitiveDetector("SampleBoxSD");
   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
-  sdManager->AddNewDetector(lXeSD);
-  _partLogicalVolume->SetSensitiveDetector(lXeSD);
+  sdManager->AddNewDetector(sampleBoxSD);
+  _partLogicalVolume->SetSensitiveDetector(sampleBoxSD);
   return true;
 }
 

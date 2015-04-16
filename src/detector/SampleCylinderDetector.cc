@@ -1,6 +1,6 @@
 #include "detector/SampleCylinderDetector.hh"
 #include "detector/BambooDetectorFactory.hh"
-#include "analysis/PandaXLXeSensitiveDetector.hh"
+#include "analysis/PandaXSensitiveDetector.hh"
 #include "BambooGlobalVariables.hh"
 
 #include <G4Material.hh>
@@ -53,10 +53,10 @@ G4bool SampleCylinderDetector::construct ()
   _partContainerLogicalVolume = _partLogicalVolume;
   G4VisAttributes * sampleDetectorVisAtt = new G4VisAttributes(G4Colour(0.,0.6, 0.1));
   _partLogicalVolume->SetVisAttributes(sampleDetectorVisAtt);
-  PandaXLXeSensitiveDetector * lXeSD = new PandaXLXeSensitiveDetector("LXeSD");
+  PandaXSensitiveDetector * cylinderSD = new PandaXSensitiveDetector("SampleCylinderSD");
   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
-  sdManager->AddNewDetector(lXeSD);
-  _partLogicalVolume->SetSensitiveDetector(lXeSD);
+  sdManager->AddNewDetector(cylinderSD);
+  _partLogicalVolume->SetSensitiveDetector(cylinderSD);
   G4cout << "Sensitive Mass: " << _partLogicalVolume->GetMass()/kg << " kg." << G4endl;
   return true;
 }

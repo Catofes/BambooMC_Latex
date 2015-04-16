@@ -2,6 +2,7 @@
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
 #include "BambooUtils.hh"
+#include "analysis/PandaXSensitiveDetector.hh"
 
 #include <G4Material.hh>
 #include <G4ThreeVector.hh>
@@ -10,10 +11,8 @@
 #include <G4NistManager.hh>
 #include <G4Box.hh>
 #include <G4SDManager.hh>
-#include <G4VPrimitiveScorer.hh>
-#include <G4MultiFunctionalDetector.hh>
-#include <G4PSFlatSurfaceFlux.hh>
-
+#include <G4VSDFilter.hh>
+#include <G4SDParticleFilter.hh>
 #include <G4VisAttributes.hh>
 
 // anonymous namespace to register the PandaXLab
@@ -139,15 +138,14 @@ G4bool PandaXLab::construct ()
   _innerSpacePhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*(_concreteFloorThickness-_concreteRoofThickness)), _innerSpaceLogicalVolume, "InnerSpaceWall", _concreteWallLogicalVolume, false, 0);
 
   if (_sensitiveAir) {
-    G4MultiFunctionalDetector * airScorer = new G4MultiFunctionalDetector("airScorer");
-    G4SDManager::GetSDMpointer()->AddNewDetector(airScorer);
-    _innerSpaceLogicalVolume->SetSensitiveDetector(airScorer);
-    G4cout << "Enable Multifunctional Detector for Air with Primitive Scorer:" << G4endl;
-    if (_countAirFlux) {
-      G4VPrimitiveScorer * airFlux = new G4PSFlatSurfaceFlux("airSurfaceFlux", fFlux_In);
-      airScorer->RegisterPrimitive(airFlux);
-      G4cout << "G4PSFlatSurfaceFlux ";
-    }
+    PandaXSensitiveDetector * spaceSD = new PandaXSensitiveDetector("LabSpaceSD", false, true);
+    G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(spaceSD);
+    _innerSpaceLogicalVolume->SetSensitiveDetector(spaceSD);
+    G4cout << "Enable PandaXSensitiveDetector for Air." << G4endl;
+    G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
+    ((G4SDParticleFilter *)gammaFilter)->add("gamma");
+    spaceSD->SetFilter(gammaFilter);
     G4cout << G4endl;
   }
   G4VisAttributes * spaceVis = new G4VisAttributes();
