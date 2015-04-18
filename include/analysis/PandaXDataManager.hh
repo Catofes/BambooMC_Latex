@@ -55,6 +55,7 @@ private:
   // variables for flux counts
   int _nTracks;
   std::vector<double> _trackEnergy;
+  std::vector<std::string> _trackName;
   std::vector<double> _px;
   std::vector<double> _py;
   std::vector<double> _pz;

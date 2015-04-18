@@ -72,6 +72,7 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       G4Box * box = (G4Box *) solid;
       PandaXFlatSurfaceFluxHit * hit = new PandaXFlatSurfaceFluxHit();
       hit->setEnergy(preStep->GetTotalEnergy());
+      hit->setTrackName(aStep->GetTrack()->GetParticleDefinition()->GetParticleName());
       G4ThreeVector p = preStep->GetMomentum();
       G4ThreeVector &rp = p;
       hit->setMomentum(rp);

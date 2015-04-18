@@ -29,6 +29,11 @@ double PandaXFlatSurfaceFluxHit::getEnergy() const
   return _energy;
 }
 
+std::string PandaXFlatSurfaceFluxHit::getTrackName() const
+{
+  return _trackName;
+}
+
 G4ThreeVector PandaXFlatSurfaceFluxHit::getMomentum() const
 {
   return _momentum;
@@ -42,6 +47,11 @@ int PandaXFlatSurfaceFluxHit::getSurface() const
 void PandaXFlatSurfaceFluxHit::setEnergy(double energy)
 {
   _energy = energy;
+}
+
+void PandaXFlatSurfaceFluxHit::setTrackName(const std::string &name)
+{
+  _trackName = name;
 }
 
 void PandaXFlatSurfaceFluxHit::setMomentum(G4ThreeVector & momentum)

@@ -27,15 +27,18 @@ public:
   void Print() {;}
 
   double getEnergy() const;
+  std::string getTrackName() const;
   G4ThreeVector getMomentum() const;
   int getSurface () const;
 
   void setEnergy(double energy);
+  void setTrackName (const std::string & name);
   void setMomentum(G4ThreeVector & momentum);
   void setSurface(int s);
 
 private:
   double _energy;
+  std::string _trackName;
   G4ThreeVector _momentum;
   int _surface;
 };

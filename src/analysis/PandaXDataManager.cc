@@ -57,6 +57,7 @@ void PandaXDataManager::book(const std::string & name)
   if (_recordFlatSurfaceFlux) {
     _mcTree->Branch("nTracks", &_nTracks);
     _mcTree->Branch("trackEnergy", &_trackEnergy);
+    _mcTree->Branch("trackName", &_trackName);
     _mcTree->Branch("px", &_px);
     _mcTree->Branch("py", &_py);
     _mcTree->Branch("pz", &_pz);
@@ -108,6 +109,7 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
           PandaXFlatSurfaceFluxHit * hit = (PandaXFlatSurfaceFluxHit *)hC->GetHit(j);
           G4ThreeVector momentum = hit->getMomentum();
           _trackEnergy.push_back(hit->getEnergy()/keV);
+	  _trackName.push_back(hit->getTrackName());
           _px.push_back(momentum.x()/keV);
           _py.push_back(momentum.y()/keV);
           _pz.push_back(momentum.z()/keV);
@@ -143,6 +145,7 @@ void PandaXDataManager::resetData()
   if (_recordFlatSurfaceFlux) {
     _nTracks = 0;
     _trackEnergy.clear();
+    _trackName.clear();
     _px.clear();
     _py.clear();
     _pz.clear();
