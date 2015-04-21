@@ -80,8 +80,10 @@ void PandaXMaterial::defineMaterials()
     G4cout << elementVec[i]->GetName() << " ";
   }
   G4cout << G4endl;
+
   G4Material * concrete = pNistManager->FindOrBuildMaterial("G4_CONCRETE");
   materialVec.push_back(concrete);
+
   G4Material * marble = new G4Material("MARBLE", 2.71*g/cm3, 7, kStateSolid);
   marble->AddElement( C, 11.88 * 0.01);
   marble->AddElement( O, 47.91 * 0.01);
@@ -91,8 +93,18 @@ void PandaXMaterial::defineMaterials()
   marble->AddElement( K, 1.535 * 0.01);
   marble->AddElement(Ca, 30.29 * 0.01);
   materialVec.push_back(marble);
+
   G4Material * air = pNistManager->FindOrBuildMaterial("G4_AIR");
   materialVec.push_back(air);
+
+  G4Material * water = pNistManager->FindOrBuildMaterial("G4_WATER");
+  materialVec.push_back(water);
+
+  G4Material * polyEthylene = pNistManager->FindOrBuildMaterial("G4_POLYETHYLENE");
+  materialVec.push_back(polyEthylene);
+
+  G4Material * teflon = pNistManager->FindOrBuildMaterial("G4_TEFLON");
+  materialVec.push_back(teflon);
 
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
