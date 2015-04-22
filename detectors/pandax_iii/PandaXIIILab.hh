@@ -37,6 +37,10 @@ private:
   double _platformHeight;       //!< height of the platform
   double _platformLength;       //!< length of the platform
 
+  double _poolLength;           //!< length of the water pool
+  double _poolWidth;            //!< width of the water pool
+  double _poolDepth;            //!< depth of the water pool
+
   G4LogicalVolume * _rockWallLogicalVolume; //!< the logical volume, rock wall
   G4LogicalVolume * _concreteWallLogicalVolume; //!< the logical volume, concrete wall
   G4LogicalVolume * _innerSpaceLogicalVolume; //!< the logical volume, inner space

@@ -48,33 +48,37 @@ PandaXIIILab::PandaXIIILab (const G4String & name)
 
   _platformHeight = BambooUtils::evaluate(dp.getParameterAsString("platform_height"));
   _platformLength = BambooUtils::evaluate(dp.getParameterAsString("platform_length"));
-  
+
+  _poolLength = BambooUtils::evaluate(dp.getParameterAsString("water_pool_length"));
+  _poolWidth = BambooUtils::evaluate(dp.getParameterAsString("water_pool_width"));
+  _poolDepth = BambooUtils::evaluate(dp.getParameterAsString("water_pool_depth"));
+
   if (_length == 0) {
-    _length = 130000. * mm;
+    _length = 130. * m;
   }
   if (_width == 0) {
-    _width = 14000. * mm;
+    _width = 14. * m;
   }
   if (_height == 0) {
-    _height = 14000. * mm;
+    _height = 14. * m;
   }
   if (_rockWallThickness == 0) {
-    _rockWallThickness = 2000. * mm;
+    _rockWallThickness = 2. * m;
   }
   if (_rockRoofThickness == 0) {
-    _rockRoofThickness = 2000. * mm;
+    _rockRoofThickness = 2. * m;
   }
   if (_rockFloorThickness == 0) {
-    _rockFloorThickness = 2000. * mm;
+    _rockFloorThickness = 2. * m;
   }
   if (_concreteWallThickness == 0) {
-    _concreteWallThickness = 1000. * mm;
+    _concreteWallThickness = 1. * m;
   }
   if (_concreteRoofThickness == 0) {
-    _concreteRoofThickness = 1000. * mm;
+    _concreteRoofThickness = 1. * m;
   }
   if (_concreteFloorThickness == 0) {
-    _concreteFloorThickness = 500. * mm;
+    _concreteFloorThickness = 0.5 * m;
   }
   if (_platformHeight == 0) {
     _platformHeight = 6. * m;
@@ -82,7 +86,15 @@ PandaXIIILab::PandaXIIILab (const G4String & name)
   if (_platformLength == 0) {
     _platformLength = 40. * m;
   }
-
+  if (_poolLength == 0) {
+    _poolLength = 20.*m;
+  }
+  if (_poolWidth == 0) {
+    _poolWidth = 10. * m;
+  }
+  if (_poolDepth == 0) {
+    _poolDepth = 10. * m;
+  }
   // TODO: need to check the platform height and length;
   
   _rockFloorThickness = 0;
@@ -132,11 +144,18 @@ G4bool PandaXIIILab::construct ()
   _rockWallPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "RockWall", 0, false, 0);
   _partPhysicalVolume = _rockWallPhysicalVolume;
 
+
   // the concrete wall
   G4Material * concrete = G4Material::GetMaterial("G4_CONCRETE");
-  G4Box * concreteBox = new G4Box("ConcreteBox", concreteLength/2., concreteWidth/2., concreteHeight/2.);
-  _concreteWallLogicalVolume = new G4LogicalVolume(concreteBox, concrete, "ConcreteBoxLog", 0, 0, 0);
-  _concreteWallPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*concreteHeight-_concreteFloorThickness), _concreteWallLogicalVolume, "ConcreteWall", _rockWallLogicalVolume, false, 0);
+
+  G4Box * concreteBox_part1 = new G4Box("ConcreteBox_Part1", (concreteLength-_platformLength)/2., concreteWidth/2., concreteHeight/2.);
+  G4Box * concreteBox_part2 = new G4Box("ConcreteBox_Part2", (_platformLength+_concreteWallThickness)/2., concreteWidth/2., (concreteHeight-_platformHeight)/2.);
+  G4Box * concreteBox_part3 = new G4Box("ConcreteBox_Part3", 0.5*_poolLength+_concreteWallThickness, 0.5*_poolWidth+_concreteWallThickness, 0.5*(_poolDepth+_concreteFloorThickness));
+  //  G4UnionSolid * concreteUnion1 = new G4UnionSolid("ConcreteUnion1", concreteBox_part1, concreteBox_part2, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, 0.5*_platformHeight));
+  G4UnionSolid * concreteUnion2 = new G4UnionSolid("ConcreteUnion2", concreteBox_part1, concreteBox_part3, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+_height+_concreteFloorThickness)));
+  // G4Box * concreteBox = new G4Box("ConcreteBox", concreteLength/2., concreteWidth/2., concreteHeight/2.);
+  _concreteWallLogicalVolume = new G4LogicalVolume(concreteUnion2, concrete, "ConcreteBoxLog", 0, 0, 0);
+  _concreteWallPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(-0.5*_platformLength, 0, 0.5*concreteHeight-_concreteFloorThickness), _concreteWallLogicalVolume, "ConcreteWall", _rockWallLogicalVolume, false, 0);
 
   G4VisAttributes * concreteVis = new G4VisAttributes();
   concreteVis->SetColour(0.9, 0.9, 0.9, 0.2);
@@ -145,30 +164,49 @@ G4bool PandaXIIILab::construct ()
 
   // the inner space
   G4Material * air = G4Material::GetMaterial("G4_AIR");
-  G4Box * innerSpaceBox1 = new G4Box("InnerSpaceBox1", (_length-_platformLength)/2., _width/2., _height/2.);
-  G4Box * innerSpaceBox2 = new G4Box("InnerSpaceBox2", _platformLength/2., _width/2., (_height-_platformHeight)/2.);
-  G4UnionSolid * = new G4UnionSolid("InnerSpace1+2", innerSpaceBox1, innerSpaceBox2);
-  G4Box * innerSpaceBox = new G4Box("InnerSpaceBox", _length/2., _width/2., _height/2.);
-  _innerSpaceLogicalVolume = new G4LogicalVolume(innerSpaceBox, air, "InnerSpaceLog", 0, 0, 0);
+
+  G4Box * innerSpaceBox1 = new G4Box("InnerSpaceBox1", (_length-_platformLength)/2., _width/2., _height/2.); // the large one
+
+  G4Box * innerSpaceBox2 = new G4Box("InnerSpaceBox2", _platformLength/2.+2*mm, _width/2., (_height-_platformHeight)/2.); // the one above the platform
+
+  // // move the 2nd box upwards
+  G4ThreeVector iZTrans(0.5*_length-2*mm, 0, 0.5*_platformHeight);
+
+  G4UnionSolid * innerSpaceSolid = new G4UnionSolid("InnerSpace1+2", innerSpaceBox1, innerSpaceBox2, 0, iZTrans);
+  // //  G4Box * innerSpaceBox = new G4Box("InnerSpaceBox", _length/2., _width/2., _height/2.);
+  _innerSpaceLogicalVolume = new G4LogicalVolume(innerSpaceSolid, air, "InnerSpaceLog", 0, 0, 0);
   _innerSpacePhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*(_concreteFloorThickness-_concreteRoofThickness)), _innerSpaceLogicalVolume, "InnerSpaceWall", _concreteWallLogicalVolume, false, 0);
 
-  if (_sensitiveAir) {
-    PandaXSensitiveDetector * spaceSD = new PandaXSensitiveDetector("LabSpaceSD", false, true);
-    G4SDManager * sdManager = G4SDManager::GetSDMpointer();
-    sdManager->AddNewDetector(spaceSD);
-    _innerSpaceLogicalVolume->SetSensitiveDetector(spaceSD);
-    G4cout << "Enable PandaXSensitiveDetector for Air." << G4endl;
-    G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
-    ((G4SDParticleFilter *)gammaFilter)->add("gamma");
-    spaceSD->SetFilter(gammaFilter);
-    G4cout << G4endl;
-  }
   G4VisAttributes * spaceVis = new G4VisAttributes();
   spaceVis->SetColour(0.98, 0.98, 0.98, 0.1);
   spaceVis->SetVisibility(_isVisible);
   _innerSpaceLogicalVolume->SetVisAttributes(spaceVis);
 
-  _partContainerLogicalVolume = _innerSpaceLogicalVolume;
+  // if (_sensitiveAir) {
+  //   PandaXSensitiveDetector * spaceSD = new PandaXSensitiveDetector("LabSpaceSD", false, true);
+  //   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+  //   sdManager->AddNewDetector(spaceSD);
+  //   _innerSpaceLogicalVolume->SetSensitiveDetector(spaceSD);
+  //   G4cout << "Enable PandaXSensitiveDetector for Air." << G4endl;
+  //   G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
+  //   ((G4SDParticleFilter *)gammaFilter)->add("gamma");
+  //   spaceSD->SetFilter(gammaFilter);
+  //   G4cout << G4endl;
+  // }
+
+  // The water pool
+  // G4Material * water = G4Material::GetMaterial("G4_WATER");
+  // G4Box * waterPoolBox = new G4Box("WaterPoolBox", 0.5*_poolLength, 0.5*_poolWidth, 0.5*_poolDepth);
+  // G4LogicalVolume * waterPoolLog = new G4LogicalVolume(waterPoolBox, water, "WaterPoolLog", 0, 0, 0);
+  // G4VPhysicalVolume * waterPoolPhys = new G4PVPlacement(0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+concreteHeight)+2.*_concreteFloorThickness-_concreteRoofThickness), waterPoolLog, "WaterPool", _concreteWallLogicalVolume, false, 0);
+
+  // G4VisAttributes * waterVis = new G4VisAttributes();
+  // waterVis->SetColour(0.1, 0.1, 0.8, 0.2);
+  // waterVis->SetVisibility(_isVisible);
+  // waterPoolLog->SetVisAttributes(waterVis);
+
+  //  _partContainerLogicalVolume = waterPoolLog;
+  _partContainerLogicalVolume = _concreteWallLogicalVolume;
   return true;
 }
 
