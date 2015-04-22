@@ -103,12 +103,12 @@ PandaXIIILab::PandaXIIILab (const G4String & name)
   if (iV == 1) {
     _isVisible = true;
   }
-  _countAirFlux = false;
-  int caF = dp.getParameterAsInt("count_air_flux");
+  _countWaterFlux = false;
+  int caF = dp.getParameterAsInt("count_water_flux");
   if (caF == 1) {
-    _countAirFlux = true;
+    _countWaterFlux = true;
   }
-  _sensitiveAir = _countAirFlux;
+  _sensitiveWater = _countWaterFlux;
   G4cout << "PandaXIIILab found..." << G4endl;
 }
 
@@ -151,9 +151,8 @@ G4bool PandaXIIILab::construct ()
   G4Box * concreteBox_part1 = new G4Box("ConcreteBox_Part1", (concreteLength-_platformLength)/2., concreteWidth/2., concreteHeight/2.);
   G4Box * concreteBox_part2 = new G4Box("ConcreteBox_Part2", (_platformLength+_concreteWallThickness)/2., concreteWidth/2., (concreteHeight-_platformHeight)/2.);
   G4Box * concreteBox_part3 = new G4Box("ConcreteBox_Part3", 0.5*_poolLength+_concreteWallThickness, 0.5*_poolWidth+_concreteWallThickness, 0.5*(_poolDepth+_concreteFloorThickness));
-  //  G4UnionSolid * concreteUnion1 = new G4UnionSolid("ConcreteUnion1", concreteBox_part1, concreteBox_part2, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, 0.5*_platformHeight));
-  G4UnionSolid * concreteUnion2 = new G4UnionSolid("ConcreteUnion2", concreteBox_part1, concreteBox_part3, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+_height+_concreteFloorThickness)));
-  // G4Box * concreteBox = new G4Box("ConcreteBox", concreteLength/2., concreteWidth/2., concreteHeight/2.);
+  G4UnionSolid * concreteUnion1 = new G4UnionSolid("ConcreteUnion1", concreteBox_part1, concreteBox_part2, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, 0.5*_platformHeight));
+  G4UnionSolid * concreteUnion2 = new G4UnionSolid("ConcreteUnion2", concreteUnion1, concreteBox_part3, 0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+concreteHeight-_concreteFloorThickness)));
   _concreteWallLogicalVolume = new G4LogicalVolume(concreteUnion2, concrete, "ConcreteBoxLog", 0, 0, 0);
   _concreteWallPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(-0.5*_platformLength, 0, 0.5*concreteHeight-_concreteFloorThickness), _concreteWallLogicalVolume, "ConcreteWall", _rockWallLogicalVolume, false, 0);
 
@@ -173,7 +172,6 @@ G4bool PandaXIIILab::construct ()
   G4ThreeVector iZTrans(0.5*_length-2*mm, 0, 0.5*_platformHeight);
 
   G4UnionSolid * innerSpaceSolid = new G4UnionSolid("InnerSpace1+2", innerSpaceBox1, innerSpaceBox2, 0, iZTrans);
-  // //  G4Box * innerSpaceBox = new G4Box("InnerSpaceBox", _length/2., _width/2., _height/2.);
   _innerSpaceLogicalVolume = new G4LogicalVolume(innerSpaceSolid, air, "InnerSpaceLog", 0, 0, 0);
   _innerSpacePhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*(_concreteFloorThickness-_concreteRoofThickness)), _innerSpaceLogicalVolume, "InnerSpaceWall", _concreteWallLogicalVolume, false, 0);
 
@@ -182,31 +180,30 @@ G4bool PandaXIIILab::construct ()
   spaceVis->SetVisibility(_isVisible);
   _innerSpaceLogicalVolume->SetVisAttributes(spaceVis);
 
-  // if (_sensitiveAir) {
-  //   PandaXSensitiveDetector * spaceSD = new PandaXSensitiveDetector("LabSpaceSD", false, true);
-  //   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
-  //   sdManager->AddNewDetector(spaceSD);
-  //   _innerSpaceLogicalVolume->SetSensitiveDetector(spaceSD);
-  //   G4cout << "Enable PandaXSensitiveDetector for Air." << G4endl;
-  //   G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
-  //   ((G4SDParticleFilter *)gammaFilter)->add("gamma");
-  //   spaceSD->SetFilter(gammaFilter);
-  //   G4cout << G4endl;
-  // }
-
   // The water pool
-  // G4Material * water = G4Material::GetMaterial("G4_WATER");
-  // G4Box * waterPoolBox = new G4Box("WaterPoolBox", 0.5*_poolLength, 0.5*_poolWidth, 0.5*_poolDepth);
-  // G4LogicalVolume * waterPoolLog = new G4LogicalVolume(waterPoolBox, water, "WaterPoolLog", 0, 0, 0);
-  // G4VPhysicalVolume * waterPoolPhys = new G4PVPlacement(0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+concreteHeight)+2.*_concreteFloorThickness-_concreteRoofThickness), waterPoolLog, "WaterPool", _concreteWallLogicalVolume, false, 0);
+  G4Material * water = G4Material::GetMaterial("G4_WATER");
+  G4Box * waterPoolBox = new G4Box("WaterPoolBox", 0.5*_poolLength, 0.5*_poolWidth, 0.5*_poolDepth);
+  _waterPoolLogicalVolume = new G4LogicalVolume(waterPoolBox, water, "WaterPoolLog", 0, 0, 0);
+  _waterPoolPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0.5*(concreteLength-_concreteWallThickness), 0, _platformHeight-0.5*(_poolDepth+concreteHeight)+_concreteFloorThickness), _waterPoolLogicalVolume, "WaterPool", _concreteWallLogicalVolume, false, 0);
 
-  // G4VisAttributes * waterVis = new G4VisAttributes();
-  // waterVis->SetColour(0.1, 0.1, 0.8, 0.2);
-  // waterVis->SetVisibility(_isVisible);
-  // waterPoolLog->SetVisAttributes(waterVis);
+  G4VisAttributes * waterVis = new G4VisAttributes();
+  waterVis->SetColour(0.1, 0.1, 0.8, 0.2);
+  waterVis->SetVisibility(_isVisible);
+  _waterPoolLogicalVolume->SetVisAttributes(waterVis);
 
-  //  _partContainerLogicalVolume = waterPoolLog;
-  _partContainerLogicalVolume = _concreteWallLogicalVolume;
+  if (_sensitiveWater) {
+    PandaXSensitiveDetector * waterSD = new PandaXSensitiveDetector("WaterSD", false, true);
+    G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(waterSD);
+    _waterPoolLogicalVolume->SetSensitiveDetector(waterSD);
+    G4cout << "Enable PandaXSensitiveDetector for Water." << G4endl;
+    G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
+    ((G4SDParticleFilter *)gammaFilter)->add("gamma");
+    waterSD->SetFilter(gammaFilter);
+    G4cout << G4endl;
+  }
+
+  _partContainerLogicalVolume = _waterPoolLogicalVolume;
   return true;
 }
 

@@ -44,16 +44,18 @@ private:
   G4LogicalVolume * _rockWallLogicalVolume; //!< the logical volume, rock wall
   G4LogicalVolume * _concreteWallLogicalVolume; //!< the logical volume, concrete wall
   G4LogicalVolume * _innerSpaceLogicalVolume; //!< the logical volume, inner space
+  G4LogicalVolume * _waterPoolLogicalVolume; //!< the logical volume, water pool
 
   G4VPhysicalVolume * _rockWallPhysicalVolume; //!< the physical volume, rock wall
   G4VPhysicalVolume * _concreteWallPhysicalVolume; //!< the physical volume, concrete wall
   G4VPhysicalVolume * _innerSpacePhysicalVolume;   //!< the physical volume, inner space
+  G4VPhysicalVolume * _waterPoolPhysicalVolume;	   //!< the physical volume, water pool
 
   bool _isVisible;
 
-  bool _sensitiveAir;
+  bool _sensitiveWater;
 
-  bool _countAirFlux;
+  bool _countWaterFlux;
 };
 
 
