@@ -30,7 +30,7 @@ BambooDetectorPart * BambooDetectorFactory::createDetectorPart (const std::strin
 {
   CallbackMap::const_iterator i = _partMap.find(name);
   if (i == _partMap.end()) {
-    throw std::runtime_error("Unknown Name for detector part!");
+    throw std::runtime_error(std::string("Unknown Name for detector part: ") + name);
   }
   return (i->second)();
 }

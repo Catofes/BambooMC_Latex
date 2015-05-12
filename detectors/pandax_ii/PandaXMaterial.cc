@@ -106,6 +106,9 @@ void PandaXMaterial::defineMaterials()
   G4Material * teflon = pNistManager->FindOrBuildMaterial("G4_TEFLON");
   materialVec.push_back(teflon);
 
+  G4Material * copper = pNistManager->FindOrBuildMaterial("G4_Cu");
+  materialVec.push_back(copper);
+
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
     G4cout << materialVec[i]->GetName() << " ";
