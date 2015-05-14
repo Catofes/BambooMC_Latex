@@ -1,6 +1,7 @@
 #include "detector/HpXenonGasDetector.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
+#include "analysis/PandaXSensitiveDetector.hh"
 #include "BambooUtils.hh"
 
 #include <G4Isotope.hh>
@@ -12,6 +13,7 @@
 #include <G4NistManager.hh>
 #include <G4VisAttributes.hh>
 #include <G4Tubs.hh>
+#include <G4SDManager.hh>
 // anonymous namespace to register the HpXenonGasDetector
 
 namespace {
@@ -105,6 +107,7 @@ G4bool HpXenonGasDetector::construct()
   double density = 56.588 * kg/m3;
 
   G4Material * hpXe = new G4Material("High Pressure Xenon with Xe136 enriched", density, 1, kStateGas, _xenonTemperature, _xenonPressure);
+  hpXe->AddElement(enrichedXe, 1.0);
   G4Material * copper = G4Material::GetMaterial("G4_Cu");
   G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselOuterRadius, _vesselHeight/2., 0., 2.*pi);
 
@@ -131,6 +134,10 @@ G4bool HpXenonGasDetector::construct()
   _partPhysicalVolume = _copperVesselPhysicalVolume;
   
   _partContainerLogicalVolume = _hpXenonLogicalVolume;
+  PandaXSensitiveDetector * hpXeSD = new PandaXSensitiveDetector("HpXeSD");
+  G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+  sdManager->AddNewDetector(hpXeSD);
+  _hpXenonLogicalVolume->SetSensitiveDetector(hpXeSD);
   G4cout << "High Pressure Xenon Mass: " << _hpXenonLogicalVolume->GetMass()/kg << " kg." << G4endl;
   return true;
 }
