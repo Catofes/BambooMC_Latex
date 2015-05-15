@@ -22,14 +22,17 @@ PandaXGenerator::PandaXGenerator(const G4String &name)
   : BambooGenerator(name)
 {
   _particleGun = new G4GeneralParticleSource();
+  _pandaxParticleSource = new PandaXParticleSource();
 }
 
 PandaXGenerator::~PandaXGenerator()
 {
   delete _particleGun;
+  delete _pandaxParticleSource;
 }
 
 void PandaXGenerator::GeneratePrimaries(G4Event * anEvent)
 {
-  _particleGun->GeneratePrimaryVertex(anEvent);
+  _pandaxParticleSource->GeneratePrimaryVertex(anEvent);
+  //  _particleGun->GeneratePrimaryVertex(anEvent);
 }

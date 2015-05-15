@@ -2,6 +2,7 @@
 #define PANDAXGENERATOR_H
 
 #include "generator/BambooGenerator.hh"
+#include "generator/PandaXParticleSource.hh"
 
 class G4GeneralParticleSource;
 class G4Event;
@@ -18,6 +19,6 @@ public:
 private:
 
   G4GeneralParticleSource * _particleGun;
-
+  PandaXParticleSource * _pandaxParticleSource;
 };
 #endif //PANDAXGENERATOR_H
