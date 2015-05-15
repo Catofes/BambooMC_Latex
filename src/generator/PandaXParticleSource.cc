@@ -21,7 +21,6 @@ PandaXParticleSource::PandaXParticleSource()
   _posGenerator->SetCentreCoords(G4ThreeVector(51*m, 0, 1*m));
   _posGenerator->SetRadius(1.6*m);
   _posGenerator->SetHalfZ(1.2*m);
-  _posGenerator->ConfineSourceToVolume("HpXenonGasDetector");
   _r3 = new TRandom3();
   _r3->SetSeed(0);
 }
@@ -34,7 +33,7 @@ PandaXParticleSource::~PandaXParticleSource()
 
 void PandaXParticleSource::GeneratePrimaryVertex(G4Event * pEvent)
 {
-
+  _posGenerator->ConfineSourceToVolume("HighPressureXenon");
   G4ThreeVector pos = _posGenerator->GenerateOne();
   G4PrimaryVertex * vertex = new G4PrimaryVertex(pos, 0.0);
   G4cout << "(" << pos.x()/m << ", " << pos.y()/m << ", " << pos.z()/m << ")" << G4endl; 
@@ -43,10 +42,10 @@ void PandaXParticleSource::GeneratePrimaryVertex(G4Event * pEvent)
   GenerateDoubleElectronFourMomentum(v1, v2);
   G4ParticleDefinition * electronDefinition = G4Electron::ElectronDefinition();
   G4PrimaryParticle * e1 = new G4PrimaryParticle(electronDefinition);
-  e1->Set4Momentum(v1.Px(), v1.Py(), v1.Pz(), v1.E());
+  e1->Set4Momentum(v1.Px()*MeV, v1.Py()*MeV, v1.Pz()*MeV, v1.E()*MeV);
   vertex->SetPrimary(e1);
   G4PrimaryParticle * e2 = new G4PrimaryParticle(electronDefinition);
-  e2->Set4Momentum(v2.Px(), v2.Py(), v2.Pz(), v2.E());
+  e2->Set4Momentum(v2.Px()*MeV, v2.Py()*MeV, v2.Pz()*MeV, v2.E()*MeV);
   G4cout<< v1.E() << " + " << v2.E() << " = " << v1.E() + v2.E() << G4endl;
   vertex->SetPrimary(e2);
   G4cout << "Total number of particle: " << vertex->GetNumberOfParticle() << G4endl;
@@ -55,16 +54,18 @@ void PandaXParticleSource::GeneratePrimaryVertex(G4Event * pEvent)
 
 void PandaXParticleSource::GenerateDoubleElectronFourMomentum(TLorentzVector & v2, TLorentzVector & v3)
 {
-  // 0 -> Xe136
-  // 1 -> Ba136
+  // 0 -> Xe136 + 54 electorns
+  // 1 -> Ba136 + 54 electrons
   // 2 -> e-
   // 3 -> e-
   // 4 -> combination of 2 and 3
   double m0 = 135.907219 * 931.494061; // MeV
   double m1 = 135.9045759 * 931.494061; // MeV
+  m0 = 136 * 931.494061 - 86429.152/1000;
+  m1 = 136 * 931.494061 - 88887.14/1000;
   double m2 = 0.510998928; // MeV
-
   double m4; // 2m2 < m4 < m0 - m1
+  m1 -= 2.*m2;
   double e1, e2;
   double p1, p4;
   double e2p, p2p;			// p - prime
