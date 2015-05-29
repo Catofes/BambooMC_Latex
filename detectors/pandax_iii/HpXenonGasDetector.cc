@@ -14,6 +14,14 @@
 #include <G4VisAttributes.hh>
 #include <G4Tubs.hh>
 #include <G4SDManager.hh>
+#include <G4UniformElectricField.hh>
+#include <G4FieldManager.hh>
+#include <G4EqMagElectricField.hh>
+#include <G4ClassicalRK4.hh>
+#include <G4MagIntegratorStepper.hh>
+#include <G4MagIntegratorDriver.hh>
+#include <G4ChordFinder.hh>
+
 // anonymous namespace to register the HpXenonGasDetector
 
 namespace {
@@ -49,6 +57,8 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
   _xenonPressure = BambooUtils::evaluate(dp.getParameterAsString("xenon_pressure"));
   _xenonTemperature = BambooUtils::evaluate(dp.getParameterAsString("xenon_temperature"));
 
+  _electricFieldZ = BambooUtils::evaluate(dp.getParameterAsString("electric_field_z"));
+
   if (_vesselOuterRadius <= 0) {
     _vesselOuterRadius = 760 * mm;
   }
@@ -78,11 +88,54 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
   if (_xenonPressure <= 0) {
     _xenonPressure = 10.0 * bar; 
   }
+
+  if (_electricFieldZ>0) {
+    _electricFieldZ = _electricFieldZ * volt / cm;
+  } else {
+    _electricFieldZ = 0;
+  }
+
+  _hpXe = 0;
   G4cout << "HpXenonGasDetector found..." << G4endl;
 }
 
 
 G4bool HpXenonGasDetector::construct()
+{
+  G4Material * copper = G4Material::GetMaterial("G4_Cu");
+  G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselOuterRadius, _vesselHeight/2., 0., 2.*pi);
+
+  _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
+  _copperVesselPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
+
+  G4VisAttributes * vesselVis = new G4VisAttributes();
+  vesselVis->SetColour(224./255, 126./255, 11./255, 0.4);
+  //  vesselVis->SetVisibility(_isVisible);
+  _copperVesselLogicalVolume->SetVisAttributes(vesselVis);
+
+
+    
+  _partLogicalVolume = _copperVesselLogicalVolume;
+  _partPhysicalVolume = _copperVesselPhysicalVolume;
+
+  // create the xenon detector
+  createEnrichedXenon();
+
+  bool top;
+  createXenonVolume(top = true);
+  createXenonVolume(top = false);
+  _partContainerLogicalVolume = 0;
+  PandaXSensitiveDetector * hpXeSD = new PandaXSensitiveDetector("HpXeSD");
+  G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+  sdManager->AddNewDetector(hpXeSD);
+  _hpXenonLogicalVolumeTop->SetSensitiveDetector(hpXeSD);
+  _hpXenonLogicalVolumeBottom->SetSensitiveDetector(hpXeSD);
+  G4cout << "High Pressure Xenon Mass: " << _hpXenonLogicalVolumeTop->GetMass()/kg + _hpXenonLogicalVolumeBottom->GetMass()/kg << " kg." << G4endl;
+
+  return true;
+}
+
+void HpXenonGasDetector::createEnrichedXenon()
 {
   // the enriched xenon gas
   G4Isotope * Xe136 = new G4Isotope ("Xe136", 54, 136, 135.907219 * g/mole);
@@ -106,41 +159,56 @@ G4bool HpXenonGasDetector::construct()
 
   double density = 56.588 * kg/m3;
 
-  G4Material * hpXe = new G4Material("High Pressure Xenon with Xe136 enriched", density, 1, kStateGas, _xenonTemperature, _xenonPressure);
-  hpXe->AddElement(enrichedXe, 1.0);
-  G4Material * copper = G4Material::GetMaterial("G4_Cu");
-  G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselOuterRadius, _vesselHeight/2., 0., 2.*pi);
+  _hpXe = new G4Material("High Pressure Xenon with Xe136 enriched", density, 1, kStateGas, _xenonTemperature, _xenonPressure);
+  _hpXe->AddElement(enrichedXe, 1.0);
+  
+}
 
-  _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
-  _copperVesselPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
-
-  G4VisAttributes * vesselVis = new G4VisAttributes();
-  vesselVis->SetColour(224./255, 126./255, 11./255, 0.4);
-  //  vesselVis->SetVisibility(_isVisible);
-  _copperVesselLogicalVolume->SetVisAttributes(vesselVis);
+void HpXenonGasDetector::createXenonVolume (bool top)
+{
 
   double gasTubRadius = _vesselOuterRadius - _vesselBarrelThickness;
   double gasHeight = _vesselHeight - 2.* _vesselEndThickness;
-  G4VSolid * xenonTub = new G4Tubs("CopperVesselTub", 0, gasTubRadius, gasHeight/2., 0., 2.*pi);
-  _hpXenonLogicalVolume = new G4LogicalVolume(xenonTub, hpXe, "HighPressureXenonLog", 0, 0, 0);
-  _hpXenonPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), _hpXenonLogicalVolume, "HighPressureXenon", _copperVesselLogicalVolume, false, 0);
+  G4VSolid * xenonTub = new G4Tubs("CopperVesselTub", 0, gasTubRadius, gasHeight/4., 0., 2.*pi);
+  G4String name("HighPressureXenonLog");
+  double factor = 1;
+  G4LogicalVolume * hpLV;
+  if (top) {
+    name += "Top";   
+  } else {
+    name += "Bottom";
+    factor = -1;
+  }
+  hpLV = new G4LogicalVolume(xenonTub, _hpXe, name, 0, 0, 0);
+
+  if (_electricFieldZ!=0) {
+    G4Field * electricField = new G4UniformElectricField(G4ThreeVector(0, 0, -factor*_electricFieldZ));
+    G4EqMagElectricField * equation = new G4EqMagElectricField((G4ElectroMagneticField*)electricField);
+    G4MagIntegratorStepper * stepper = new G4ClassicalRK4(equation, 8);
+    G4FieldManager * localFieldManager = new G4FieldManager(electricField);
+    G4MagInt_Driver * driver = new G4MagInt_Driver(0.01*mm, stepper, stepper->GetNumberOfVariables());
+    G4ChordFinder * chordFinder = new G4ChordFinder(driver);
+    localFieldManager->SetChordFinder(chordFinder);
+    hpLV->SetFieldManager(localFieldManager, true);
+  }
+
+  G4VPhysicalVolume * pV;
+
+  G4RotationMatrix * mat = new G4RotationMatrix();
+  if (top) {
+    mat->rotateX(pi);
+  }
+  pV = new G4PVPlacement(mat, G4ThreeVector(0, 0, factor*gasHeight/4), hpLV, "HighPressureXenon", _copperVesselLogicalVolume, false, 0);
+
   G4VisAttributes * xenonVis = new G4VisAttributes();
   xenonVis->SetColour(140./255, 140./255, 1., 0.4);
-  //  vesselVis->SetVisibility(_isVisible);
-  _hpXenonLogicalVolume->SetVisAttributes(xenonVis);
+  hpLV->SetVisAttributes(xenonVis);
 
-    
-  _partLogicalVolume = _copperVesselLogicalVolume;
-  _partPhysicalVolume = _copperVesselPhysicalVolume;
-  
-  _partContainerLogicalVolume = _hpXenonLogicalVolume;
-  PandaXSensitiveDetector * hpXeSD = new PandaXSensitiveDetector("HpXeSD");
-  G4SDManager * sdManager = G4SDManager::GetSDMpointer();
-  sdManager->AddNewDetector(hpXeSD);
-  _hpXenonLogicalVolume->SetSensitiveDetector(hpXeSD);
-  G4cout << "High Pressure Xenon Mass: " << _hpXenonLogicalVolume->GetMass()/kg << " kg." << G4endl;
-  return true;
+  if (top) {
+    _hpXenonLogicalVolumeTop = hpLV;
+    _hpXenonPhysicalVolumeTop = pV;
+  } else {
+    _hpXenonLogicalVolumeBottom = hpLV;
+    _hpXenonPhysicalVolumeBottom = pV;
+  }
 }
-
-
-

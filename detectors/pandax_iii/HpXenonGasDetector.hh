@@ -3,6 +3,8 @@
 
 #include "detector/BambooDetectorPart.hh"
 
+class G4Material;
+
 class HpXenonGasDetector : public BambooDetectorPart
 {
 
@@ -13,6 +15,10 @@ public:
   virtual G4bool construct();
 
 private:
+
+  void createEnrichedXenon();
+
+  void createXenonVolume(bool top);
 
   double _vesselOuterRadius;
   double _vesselBarrelThickness;
@@ -26,10 +32,15 @@ private:
   double _xenonPressure;
   double _xenonTemperature;
 
+  double _electricFieldZ;
+
+  G4Material * _hpXe;
   G4LogicalVolume * _copperVesselLogicalVolume;
   G4VPhysicalVolume * _copperVesselPhysicalVolume;
-  G4LogicalVolume * _hpXenonLogicalVolume;
-  G4VPhysicalVolume * _hpXenonPhysicalVolume;
+  G4LogicalVolume * _hpXenonLogicalVolumeTop;
+  G4LogicalVolume * _hpXenonLogicalVolumeBottom;
+  G4VPhysicalVolume * _hpXenonPhysicalVolumeTop;
+  G4VPhysicalVolume * _hpXenonPhysicalVolumeBottom;
 };
 
 
