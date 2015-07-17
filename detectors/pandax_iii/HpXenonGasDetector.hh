@@ -34,6 +34,8 @@ private:
 
   double _electricFieldZ;
 
+  double _xe136Fraction;
+
   G4Material * _hpXe;
   G4LogicalVolume * _copperVesselLogicalVolume;
   G4VPhysicalVolume * _copperVesselPhysicalVolume;
