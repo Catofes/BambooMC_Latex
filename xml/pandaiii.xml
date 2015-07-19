@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+  <run number="9001"/>
+  <geometry>
+    <material name="PandaXIIIMaterial"/>
+    <detector name="SampleWorldBox">
+      <parameter name="half_x" value="19750"/>
+      <parameter name="half_y" value="9750"/>
+      <parameter name="half_z" value="10000"/>
+    </detector>
+    <detector name="PandaXIIIOuterRock" parent="SampleWorldBox">
+      <parameter name="half_x" value="19250"/>
+      <parameter name="half_y" value="9250"/>
+      <parameter name="half_z" value="9500"/>
+    </detector>
+    <detector name="PandaXIIIConcreteShield" parent="PandaXIIIOuterRock">
+      <parameter name="radius" value="6250"/>
+      <parameter name="length" value="20000"/>
+      <parameter name="height" value="13000"/>
+    </detector>
+    <detector name="PandaXIIIPEShield" parent="PandaXIIIConcreteShield">
+      <parameter name="radius" value="5250"/>
+      <parameter name="length" value="20000"/>
+      <parameter name="height" value="12000"/>
+      <parameter name="shiftZ" value="500"/>
+    </detector>
+    <detector name="PandaXIIIWaterShield" parent="PandaXIIIPEShield">
+      <parameter name="radius" value="5249"/>
+      <parameter name="length" value="20000"/>
+      <parameter name="height" value="11999"/>
+      <parameter name="shiftZ" value="0.5"/>
+    </detector>
+    <detector name="CopperVessel" parent="PandaXIIIWaterShield">
+      <parameter name="outerRadius" value="800"/>
+      <parameter name="wallThickness" value="50"/>
+      <parameter name="topThickness" value="150"/>
+      <parameter name="height" value="2300"/>
+    </detector>
+    <detector name="GasCylinderDetector" parent="CopperVessel">
+      <parameter name="radius" value="750"/>
+      <parameter name="height" value="2000"/>
+    </detector>
+  </geometry>
+  <physics name="SimpleUnderGroundPhysics">
+    <parameter name="cutlength" value="0.005*mm"/>
+  </physics>
+  <generator name="SimpleGPSGenerator"/>
+  <analysis name="PandaXAnalysis"/>
+</BambooMC>
