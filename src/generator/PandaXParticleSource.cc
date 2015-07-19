@@ -9,6 +9,11 @@
 #include <TRandom3.h>
 #include <TMath.h>
 
+#include <CLHEP/Units/SystemOfUnits.h>
+
+using CLHEP::m;
+using CLHEP::MeV;
+
 PandaXParticleSource::PandaXParticleSource()
 {
   _biasRndm = new G4SPSRandomGenerator();
