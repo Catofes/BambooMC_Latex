@@ -204,6 +204,9 @@ G4bool PandaXIIILab::construct ()
   }
 
   _partContainerLogicalVolume = _waterPoolLogicalVolume;
+
+  G4cout << "Concrete Mass: " << (_concreteWallLogicalVolume->GetMass()-_waterPoolLogicalVolume->GetMass()-_innerSpaceLogicalVolume->GetMass())/kg << " kg." << G4endl;
+
   return true;
 }
 
