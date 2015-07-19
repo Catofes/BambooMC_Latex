@@ -2,6 +2,8 @@
 #define BAMBOODETECTORPART_H
 
 #include <globals.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4PhysicalConstants.hh>
 
 class G4LogicalVolume;
 class G4VPhysicalVolume;

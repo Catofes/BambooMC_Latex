@@ -4,7 +4,6 @@
 
 #include <Shielding.hh>
 #include <QString>
-//#include <HadronPhysicsShielding.hh>
 
 // anonymous namespace to register the SimpleUnderGroundPhysics
 namespace {
@@ -58,8 +57,15 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
 
   // hadron physics
   RegisterPhysics(new G4HadronElasticPhysicsHP(verbose));
-  RegisterPhysics(new HadronPhysicsShielding(verbose));
 
+  // shielding, changed api for different version of geant4.
+#ifdef G4VERSION_NUMBER
+#if G4VERSION_NUMBER<1000
+  RegisterPhysics(new HadronPhysicsShielding(verbose));
+#else
+  RegisterPhysics(new G4HadronPhysicsShielding(verbose));
+#endif
+#endif
   // stopping physics
   RegisterPhysics(new G4StoppingPhysics(verbose));
 

@@ -1,11 +1,9 @@
 #include "BambooUtils.hh"
 
-#include <CLHEP/Units/SystemOfUnits.h>
+#include <G4SystemOfUnits.hh>
 
 #include <map>
 #include <QString>
-
-using namespace CLHEP;
 
 namespace BambooUtils {
 
@@ -117,10 +115,6 @@ namespace BambooUtils {
     uMap["mole"] = mole;
     uMap["becquerel"] = becquerel;
     uMap["curie"] = curie;
-    uMap["gray"] = gray;
-    uMap["kilogray"] = kilogray;
-    uMap["milligray"] = milligray;
-    uMap["microgray"] = microgray;
     uMap["candela"] = candela;
     uMap["lumen"] = lumen;
     uMap["lux"] = lux;

@@ -1,5 +1,6 @@
 #include "BambooGlobalVariables.hh"
 
+#include <G4SystemOfUnits.hh>
 #include <QXmlStreamReader>
 #include <QFile>
 #include <iostream>
