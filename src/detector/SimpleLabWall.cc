@@ -116,6 +116,9 @@ G4bool SimpleLabWall::construct()
   _concreteWallLogicalVolume->SetVisAttributes(concreteVis);
 
   _partContainerLogicalVolume = _concreteWallLogicalVolume;
+
+  G4cout << "Rock Mass: " << _rockWallLogicalVolume->GetMass()/kg << G4endl;
+  G4cout << "Concrete Mass: " << _concreteWallLogicalVolume->GetMass()/kg << G4endl;
   return true;
 }
 

@@ -85,7 +85,7 @@ G4bool WaterShield::construct ()
   G4Material * water = G4Material::GetMaterial("G4_WATER");
   _partLogicalVolume = 0;
   if (_shape == 1) {
-    G4Box * waterShieldBox = new G4Box("WaterShieldBox", _length, _width, _height/2.);
+    G4Box * waterShieldBox = new G4Box("WaterShieldBox", _length/2., _width/2., _height/2.);
     _partLogicalVolume = new G4LogicalVolume(waterShieldBox, water, "WaterShieldLog", 0, 0, 0);
   } else if (_shape == 2) {
     G4Tubs * waterShieldTub = new G4Tubs("WaterShieldTub", 0, _radius, _height/2., 0., 2. * M_PI);
