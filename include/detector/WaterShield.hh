@@ -20,6 +20,8 @@ private:
   double _height;
 
   double _radius;
+
+  bool _countingFluxIn;
 };
 
 

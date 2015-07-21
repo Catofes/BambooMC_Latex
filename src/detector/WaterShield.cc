@@ -1,6 +1,7 @@
 #include "detector/WaterShield.hh"
 #include "detector/BambooDetectorFactory.hh"
 #include "BambooGlobalVariables.hh"
+#include "analysis/PandaXSensitiveDetector.hh"
 
 #include <G4Material.hh>
 #include <G4ThreeVector.hh>
@@ -9,6 +10,9 @@
 #include <G4NistManager.hh>
 #include <G4Box.hh>
 #include <G4Tubs.hh>
+#include <G4SDManager.hh>
+#include <G4VSDFilter.hh>
+#include <G4SDParticleFilter.hh>
 
 #include <G4VisAttributes.hh>
 
@@ -62,6 +66,14 @@ WaterShield::WaterShield (const G4String & name)
     _width = 5.0 * m;
     _height = 10.0 * m;
   }
+
+  _countingFluxIn = false;
+  if (_shape == 1) {
+    int cFi = dp.getParameterAsInt("counting_flux_in");
+    if (cFi == 1) {
+      _countingFluxIn = true;
+    }
+  }
   G4cout << "WaterShield found..." << G4endl;
 }
 
@@ -83,6 +95,18 @@ G4bool WaterShield::construct ()
   _partLogicalVolume->SetVisAttributes(waterShieldVisAtt);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "WaterShield", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
+
+  if (_countingFluxIn) {
+    PandaXSensitiveDetector * waterSD = new PandaXSensitiveDetector("WaterSD", false, false);
+    G4SDManager * sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(waterSD);
+    _partLogicalVolume->SetSensitiveDetector(waterSD);
+    G4cout << "Enable PandaXSensitiveDetector for Water." << G4endl;
+    G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
+    ((G4SDParticleFilter *) gammaFilter )->add("gamma");
+    waterSD->SetFilter(gammaFilter);
+    G4cout << G4endl;
+  }
   return true;
 }
 
