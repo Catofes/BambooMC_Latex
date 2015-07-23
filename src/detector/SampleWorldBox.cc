@@ -36,8 +36,6 @@ SampleWorldBox::SampleWorldBox (const G4String & name)
 
 G4bool SampleWorldBox::construct ()
 {
-  G4NistManager* pNistManager = G4NistManager::Instance();
-  pNistManager->FindOrBuildMaterial("G4_AIR");
   G4Material * air = G4Material::GetMaterial("G4_AIR");
   G4Box * worldBox = new G4Box("WorldBox", _halfX, _halfY, _halfZ);
   _partLogicalVolume = new G4LogicalVolume(worldBox, air, "WorldLog", 0, 0, 0);

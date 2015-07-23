@@ -94,6 +94,17 @@ void SampleMaterial::defineMaterials()
   marble->AddElement(Ca, 30.29 * 0.01);
   materialVec.push_back(marble);
 
+  G4double vacuumAtomicNumber = 1.;
+  G4double vacuumMassOfMole = 1.008 * g/mole;
+  G4double vacuumDensity = 1.e-25*g/cm3;
+  G4double vacuumTemperature = 2.73*kelvin;
+  G4double vacuumPressure = 3.0e-18*pascal;
+  G4Material * vacuum  = new G4Material("vacuum", vacuumAtomicNumber,
+                                        vacuumMassOfMole, vacuumDensity,
+                                        kStateGas, vacuumTemperature,
+                                        vacuumPressure);
+  materialVec.push_back(vacuum);
+  
   G4Material * air = pNistManager->FindOrBuildMaterial("G4_AIR");
   materialVec.push_back(air);
 

@@ -80,8 +80,6 @@ WaterShield::WaterShield (const G4String & name)
 G4bool WaterShield::construct ()
 {
   // add construction code here ...
-  G4NistManager * pNistManager = G4NistManager::Instance();
-  pNistManager->FindOrBuildMaterial("G4_WATER");
   G4Material * water = G4Material::GetMaterial("G4_WATER");
   _partLogicalVolume = 0;
   if (_shape == 1) {
@@ -91,13 +89,13 @@ G4bool WaterShield::construct ()
     G4Tubs * waterShieldTub = new G4Tubs("WaterShieldTub", 0, _radius, _height/2., 0., 2. * M_PI);
     _partLogicalVolume = new G4LogicalVolume(waterShieldTub, water, "WaterShieldLog", 0, 0, 0);
   }
-  G4VisAttributes * waterShieldVisAtt = new G4VisAttributes(G4Colour(0.,0., 0.8));
+  G4VisAttributes * waterShieldVisAtt = new G4VisAttributes(G4Colour(0., 0., 0.8, 0.8));
   _partLogicalVolume->SetVisAttributes(waterShieldVisAtt);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "WaterShield", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
 
   if (_countingFluxIn) {
-    PandaXSensitiveDetector * waterSD = new PandaXSensitiveDetector("WaterSD", false, false);
+    PandaXSensitiveDetector * waterSD = new PandaXSensitiveDetector("WaterSD", false, true);
     G4SDManager * sdManager = G4SDManager::GetSDMpointer();
     sdManager->AddNewDetector(waterSD);
     _partLogicalVolume->SetSensitiveDetector(waterSD);

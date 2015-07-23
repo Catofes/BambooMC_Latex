@@ -2,6 +2,7 @@
 #include "detector/BambooDetectorFactory.hh"
 #include "analysis/PandaXSensitiveDetector.hh"
 #include "BambooGlobalVariables.hh"
+#include "BambooUtils.hh"
 
 #include <G4Material.hh>
 #include <G4Box.hh>
@@ -10,7 +11,7 @@
 #include <G4PVPlacement.hh>
 #include <G4NistManager.hh>
 #include <G4SDManager.hh>
-
+#include <G4VisAttributes.hh>
 // anonymous namespace to register the SampleBoxDetector
 
 namespace {
@@ -30,24 +31,41 @@ SampleBoxDetector::SampleBoxDetector (const G4String & name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
     ->findDetectorPartParameters("SampleBoxDetector");
-  _halfX = dp.getParameterAsDouble("half_x");
-  _halfY = dp.getParameterAsDouble("half_y");
-  _halfZ = dp.getParameterAsDouble("half_z");
+  _halfX = BambooUtils::evaluate(dp.getParameterAsString("half_x"));
+  _halfY = BambooUtils::evaluate(dp.getParameterAsString("half_y"));
+  _halfZ = BambooUtils::evaluate(dp.getParameterAsString("half_z"));
+
+  if (_halfX == 0) {
+    _halfX = 1.0 * m;
+  }
+  if (_halfY == 0) {
+    _halfY = 1.0 * m;
+  }
+  if (_halfZ == 0) {
+    _halfZ = 1.0 * m;
+  }
+
+  G4cout << "SampleBoxDetector found..." << G4endl;
 }
 
 G4bool SampleBoxDetector::construct ()
 {
-  G4NistManager* pNistManager = G4NistManager::Instance();
-  pNistManager->FindOrBuildMaterial("G4_lXe");
-  G4Material * xenon = G4Material::GetMaterial("G4_lXe");
+  G4Material * liquidXenon = G4Material::GetMaterial("G4_lXe");
   G4Box * sampleDetectorBox = new G4Box("SampleDetectorBox", _halfX, _halfY, _halfZ);
-  _partLogicalVolume = new G4LogicalVolume(sampleDetectorBox, xenon, "SampleDetectorLog", 0, 0, 0);
+  _partLogicalVolume = new G4LogicalVolume(sampleDetectorBox, liquidXenon, "SampleDetectorLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "SampleDetector", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
+
+  // visibility attributes
+  G4VisAttributes * sampleBoxVisAtt = new G4VisAttributes(G4Colour(0., 0.6, 0.2));
+  _partLogicalVolume->SetVisAttributes(sampleBoxVisAtt);
+
+  // add sensitive detector for energy deposition
   PandaXSensitiveDetector * sampleBoxSD = new PandaXSensitiveDetector("SampleBoxSD");
   G4SDManager * sdManager = G4SDManager::GetSDMpointer();
   sdManager->AddNewDetector(sampleBoxSD);
   _partLogicalVolume->SetSensitiveDetector(sampleBoxSD);
+ 
   return true;
 }
 

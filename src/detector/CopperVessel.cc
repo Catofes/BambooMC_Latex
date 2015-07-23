@@ -42,9 +42,6 @@ CopperVessel::CopperVessel (const G4String & name)
 
 G4bool CopperVessel::construct ()
 {
-  // add construction code here ...
-  G4NistManager * pNistManager = G4NistManager::Instance();
-  pNistManager->FindOrBuildMaterial("G4_Cu");
   G4Material * copper = G4Material::GetMaterial("G4_Cu");
 
   G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _outerRadius, _height/2., 0., 2.*pi);
@@ -57,15 +54,7 @@ G4bool CopperVessel::construct ()
   G4VisAttributes * copperVesselVisAtt = new G4VisAttributes(G4Colour(207./255, 180./255, 132./255));
   vesselLog->SetVisAttributes(copperVesselVisAtt);
 
-  G4double atomicNumber = 1.;
-  G4double massOfMole = 1.008 * g/mole;
-  G4double density = 1.e-25*g/cm3;
-  G4double temperature = 2.73*kelvin;
-  G4double pressure = 3.0e-18*pascal;
-  G4Material * vacuum  = new G4Material("vacuum", atomicNumber, massOfMole,
-                                        density, kStateGas, temperature,
-                                        pressure);
-
+  G4Material * vacuum = G4Material::GetMaterial("vacuum");
   G4VSolid * vacuumTub = new G4Tubs("CopperVesselVacuumTub", 0, _outerRadius-_wallThickness, _height/2.-_topThickness, 0., 2.*pi);
 
   G4LogicalVolume * vacuumLog = new G4LogicalVolume(vacuumTub, vacuum, "CopperVesselVacuumLog", 0, 0, 0);

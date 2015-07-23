@@ -44,11 +44,10 @@ SampleCylinderDetector::SampleCylinderDetector (const G4String & name)
 
 G4bool SampleCylinderDetector::construct ()
 {
-  G4NistManager* pNistManager = G4NistManager::Instance();
-  pNistManager->FindOrBuildMaterial("G4_lXe");
-  G4Material * xenon = G4Material::GetMaterial("G4_lXe");
+  G4Material * liquidXenon = G4Material::GetMaterial("G4_lXe");
   G4Tubs * sampleDetectorTub = new G4Tubs("SampleDetectorTub", 0, _radius, _height/2., 0., 2.* M_PI);
-  _partLogicalVolume = new G4LogicalVolume(sampleDetectorTub, xenon, "SampleDetectorLog", 0, 0, 0);
+  _partLogicalVolume = new G4LogicalVolume(sampleDetectorTub, liquidXenon
+                                           , "SampleDetectorLog", 0, 0, 0);
   _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _partLogicalVolume, "SampleDetector", _parentPart->getContainerLogicalVolume(), false, 0);
   _partContainerLogicalVolume = _partLogicalVolume;
   G4VisAttributes * sampleDetectorVisAtt = new G4VisAttributes(G4Colour(0.,0.6, 0.1));
