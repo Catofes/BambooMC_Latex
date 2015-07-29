@@ -17,7 +17,11 @@ PandaXEventAction::~PandaXEventAction ()
 
 void PandaXEventAction::BeginOfEventAction (const G4Event *aEvent)
 {
-  _dataManager->_eventId = aEvent->GetEventID();
+  int eventId = aEvent->GetEventID();
+  _dataManager->_eventId = eventId;
+  if (eventId%100000 == 0) {
+    G4cout << "Processing event " << eventId << "..." << G4endl;
+  }
 }
 
 void PandaXEventAction::EndOfEventAction (const G4Event *aEvent)
