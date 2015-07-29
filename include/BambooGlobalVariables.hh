@@ -76,6 +76,12 @@ public:
 
   string getGeometryParameterAsString(const string & parameter) const;
 
+  int getMaterialParameterAsInt(const string & parameter) const;
+
+  double getMaterialParameterAsDouble(const string & parameter) const;
+
+  string getMaterialParameterAsString(const string & parameter) const;
+
   int getPhysicsParameterAsInt(const string & parameter) const;
 
   double getPhysicsParameterAsDouble(const string & parameter) const;
@@ -110,6 +116,8 @@ private:
 
   bool loadPhysics(QXmlStreamReader & xs);
 
+  bool loadMaterialParameter(QXmlStreamReader & xs);
+
   bool loadPhysicsParameter(QXmlStreamReader & xs);
 
   bool loadAnalysisParameter(QXmlStreamReader & xs);
@@ -127,6 +135,8 @@ private:
   vector<BambooDetectorPart *> _detectorPartList;
 
   map<string, string> _geometryParameters;
+
+  map<string, string> _materialParameters;
 
   map<string, string> _physicsParameters;
 
@@ -147,6 +157,8 @@ private:
   bool _readGeometry;
 
   bool _readDetector;
+
+  bool _readMaterial;
 
   bool _readPhysics;
 

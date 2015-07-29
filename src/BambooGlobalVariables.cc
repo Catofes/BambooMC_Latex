@@ -92,6 +92,7 @@ BambooGlobalVariables::BambooGlobalVariables ()
     _outDataName("pandaxout.root"),
     _readGeometry(false),
     _readDetector(false),
+    _readMaterial(false),
     _readPhysics(false),
     _readAnalysis(false)
 {
@@ -145,11 +146,15 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
 	if (_readDetector) {
 	  if(!loadDetectorParameter(xs))
 	    return false;
-	} else if (_readGeometry) {
+	} else if (_readGeometry && !_readMaterial) {
 	  if (!loadGeometryParameter(xs)) {
 	    return false;
 	  }
-	} else if (_readPhysics) {
+	} else if (_readMaterial) {
+          if (!loadMaterialParameter(xs)) {
+            return false;
+          }
+        } else if (_readPhysics) {
           if (!loadPhysicsParameter(xs)) {
             return false;
           }
@@ -167,6 +172,7 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
 	if (!loadMaterial(xs)) {
 	  return false;
 	}
+	_readMaterial = true;
       }
       if (xs.name() == "physics") {
 	if (!loadPhysics(xs))
@@ -192,6 +198,9 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       }
       if (xs.name() == "detector" ) {
 	_readDetector = false;
+      }
+      if (xs.name() == "material" ) {
+        _readMaterial = false;
       }
       if (xs.name() == "physics" ) {
         _readPhysics = false;
@@ -299,6 +308,33 @@ string BambooGlobalVariables::getGeometryParameterAsString(const string & parame
 {
   map<string, string>::const_iterator res = _geometryParameters.find(parameter);
   if (res!=_geometryParameters.end()) {
+    return res->second;
+  }
+  return string("");
+}
+
+int BambooGlobalVariables::getMaterialParameterAsInt(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _materialParameters.find(parameter);
+  if (res!=_materialParameters.end()) {
+    return QString(res->second.c_str()).toInt();
+  }
+  return 0;
+}
+
+double BambooGlobalVariables::getMaterialParameterAsDouble(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _materialParameters.find(parameter);
+  if (res!=_materialParameters.end()) {
+    return QString(res->second.c_str()).toDouble();
+  }
+  return 0;
+}
+
+string BambooGlobalVariables::getMaterialParameterAsString(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _materialParameters.find(parameter);
+  if (res!=_materialParameters.end()) {
     return res->second;
   }
   return string("");
@@ -439,6 +475,16 @@ bool BambooGlobalVariables::loadPhysics(QXmlStreamReader & xs)
   Q_ASSERT(xs.isStartElement() && xs.name() == "physics");
   _physicsName = xs.attributes().value("name").toString().toStdString();
   cout << endl << "physics -- " << _physicsName << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::loadMaterialParameter(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "parameter");
+  string name = xs.attributes().value("name").toString().toStdString();
+  string value = xs.attributes().value("value").toString().toStdString();
+  _materialParameters[name] = value;
+  cout << "material parameter: " << name << " => " << value << endl;
   return true;
 }
 
