@@ -204,17 +204,20 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
   if (!validateDetector()) {
     return false;
   }
-  if (!nPhysics>1) {
-    cerr << "More than 1 physics lists are specified! (Only 1 are required!" << endl;
+  if (nPhysics!=1) {
+    cerr << "1 (and ONLY 1) physics class should be specified!" << endl;
     return false;
   }
-  if (!nGenerator>1) {
-    cerr << "More than 1 generators are specified! (Only 1 are required!" << endl;
+  if (nGenerator!=1) {
+    cerr << "1 (and ONLY 1) generator class should be specified!" << endl;
     return false;
   }
-  if (!nAnalysis>1) {
-    cerr << "More than 1 analysis classes are specified! (Only 1 are required!" << endl;
+  if (nAnalysis!=1) {
+    cerr << "1 (and ONLY 1) analysis class should be specified!" << endl;
     return false;
+  }
+  if (_materialName.empty()) {
+    _materialName = "SampleMaterial";
   }
   return true;
 }
