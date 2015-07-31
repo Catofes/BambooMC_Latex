@@ -54,12 +54,7 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
   _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
   _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
 
-  _xenonPressure = BambooUtils::evaluate(dp.getParameterAsString("xenon_pressure"));
-  _xenonTemperature = BambooUtils::evaluate(dp.getParameterAsString("xenon_temperature"));
-
   _electricFieldZ = BambooUtils::evaluate(dp.getParameterAsString("electric_field_z"));
-
-  _xe136Fraction = BambooUtils::evaluate(dp.getParameterAsString("xe136_fraction"));
 
   if (_vesselOuterRadius <= 0) {
     _vesselOuterRadius = 760 * mm;
@@ -83,25 +78,12 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
     _shiftZ = 0 * mm;
   }
 
-  if (_xenonTemperature <= 0) {
-    _xenonTemperature = STP_Temperature;
-  }
-
-  if (_xenonPressure <= 0) {
-    _xenonPressure = 10.0 * bar; 
-  }
-
   if (_electricFieldZ>0) {
     _electricFieldZ = _electricFieldZ * volt / cm;
   } else {
     _electricFieldZ = 0;
   }
 
-  if (_xe136Fraction <= 0) {
-    _xe136Fraction = 0.8;
-  }
-
-  _hpXe = 0;
   G4cout << "HpXenonGasDetector found..." << G4endl;
 }
 
@@ -125,8 +107,6 @@ G4bool HpXenonGasDetector::construct()
   _partPhysicalVolume = _copperVesselPhysicalVolume;
 
   // create the xenon detector
-  createEnrichedXenon();
-
   bool top;
   createXenonVolume(top = true);
   createXenonVolume(top = false);
@@ -139,45 +119,6 @@ G4bool HpXenonGasDetector::construct()
   G4cout << "High Pressure Xenon Mass: " << _hpXenonLogicalVolumeTop->GetMass()/kg + _hpXenonLogicalVolumeBottom->GetMass()/kg << " kg." << G4endl;
 
   return true;
-}
-
-void HpXenonGasDetector::createEnrichedXenon()
-{
-
-  double xe128NaturalFraction = 0.019102;
-  double xe129NaturalFraction = 0.264006;
-  double xe130NaturalFraction = 0.04071;
-  double xe131NaturalFraction = 0.212324;
-  double xe132NaturalFraction = 0.269086;
-  double xe134NaturalFraction = 0.104357;
-  // the enriched xenon gas
-  G4Isotope * Xe136 = new G4Isotope ("Xe136", 54, 136, 135.907219 * g/mole);
-  G4Isotope * Xe128 = new G4Isotope ("Xe128", 54, 128, 127.9035313 * g/mole);
-  G4Isotope * Xe129 = new G4Isotope ("Xe129", 54, 129, 128.9047794 * g/mole);
-  G4Isotope * Xe130 = new G4Isotope ("Xe130", 54, 130, 129.9035080 * g/mole);
-  G4Isotope * Xe131 = new G4Isotope ("Xe131", 54, 131, 130.9050824 * g/mole);
-  G4Isotope * Xe132 = new G4Isotope ("Xe132", 54, 132, 131.9041535 * g/mole);
-  G4Isotope * Xe134 = new G4Isotope ("Xe134", 54, 134, 133.9053945 * g/mole);
-
-  G4Element * enrichedXe = new G4Element("enriched Xe", "Xe", 7);
-  enrichedXe->AddIsotope(Xe136, _xe136Fraction);
-
-  double restFraction = 1.0 - _xe136Fraction;
-  enrichedXe->AddIsotope(Xe128, restFraction * xe128NaturalFraction);
-  enrichedXe->AddIsotope(Xe129, restFraction * xe129NaturalFraction);
-  enrichedXe->AddIsotope(Xe130, restFraction * xe130NaturalFraction);
-  enrichedXe->AddIsotope(Xe131, restFraction * xe131NaturalFraction);
-  enrichedXe->AddIsotope(Xe132, restFraction * xe132NaturalFraction);
-  enrichedXe->AddIsotope(Xe134, restFraction * xe134NaturalFraction);
-
-  G4cout << "Enriched Xe Atomic Mass: " << enrichedXe->GetA()/g*mole << " g/mole." << G4endl;
-
-  double r = k_Boltzmann*Avogadro;
-  double density = (enrichedXe->GetA())*_xenonPressure/_xenonTemperature/r;
-  G4cout << "Enriched Xe Gas Density: " << density/kg*m3 << " kg/m3." << G4endl;
-  _hpXe = new G4Material("High Pressure Xenon with Xe136 enriched", density, 1, kStateGas, _xenonTemperature, _xenonPressure);
-  _hpXe->AddElement(enrichedXe, 1.0);
-  
 }
 
 void HpXenonGasDetector::createXenonVolume (bool top)
@@ -195,7 +136,8 @@ void HpXenonGasDetector::createXenonVolume (bool top)
     name += "Bottom";
     factor = -1;
   }
-  hpLV = new G4LogicalVolume(xenonTub, _hpXe, name, 0, 0, 0);
+  G4Material * enrichedXe = G4Material::GetMaterial("EnrichedXe136");
+  hpLV = new G4LogicalVolume(xenonTub, enrichedXe, name, 0, 0, 0);
 
   if (_electricFieldZ!=0) {
     G4Field * electricField = new G4UniformElectricField(G4ThreeVector(0, 0, -factor*_electricFieldZ));
