@@ -1,6 +1,7 @@
 #include "detector/PandaXIIIMaterial.hh"
 #include "detector/BambooMaterialFactory.hh"
 #include "BambooGlobalVariables.hh"
+#include "BambooUtils.hh"
 
 #include <G4Material.hh>
 #include <G4NistManager.hh>
@@ -26,6 +27,21 @@ PandaXIIIMaterial::PandaXIIIMaterial (const G4String & name)
   : BambooMaterial(name)
 {
   G4cout << "PandaXIIIMaterial found..." << G4endl;
+
+  _xe136Fraction = BambooGlobalVariables::Instance()->getMaterialParameterAsDouble("xe136_fraction");
+  _xenonTemperature = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_temperature"));
+  _xenonPressure = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_pressure"));
+
+  if (_xe136Fraction <= 0 ) {
+    _xe136Fraction = 0.8;
+  }
+  if (_xenonTemperature <= 0) {
+    _xenonTemperature = STP_Temperature;
+  }
+  if (_xenonPressure <= 0) {
+    _xenonPressure = 10.0 * bar;
+  }
+
 }
 
 
@@ -75,7 +91,15 @@ void PandaXIIIMaterial::defineMaterials()
   elementVec.push_back(Pb);
   G4Element * Sn = pNistManager->FindOrBuildElement(50);
   elementVec.push_back(Sn);
-  //from HpXenonGasDetector
+
+  // enriched Xe136
+  double xe128NaturalFraction = 0.019102;
+  double xe129NaturalFraction = 0.264006;
+  double xe130NaturalFraction = 0.04071;
+  double xe131NaturalFraction = 0.212324;
+  double xe132NaturalFraction = 0.269086;
+  double xe134NaturalFraction = 0.104357;
+
   G4Isotope * Xe136 = new G4Isotope ("Xe136", 54, 136, 135.907219 * g/mole);
   G4Isotope * Xe128 = new G4Isotope ("Xe128", 54, 128, 127.9035313 * g/mole);
   G4Isotope * Xe129 = new G4Isotope ("Xe129", 54, 129, 128.9047794 * g/mole);
@@ -84,27 +108,35 @@ void PandaXIIIMaterial::defineMaterials()
   G4Isotope * Xe132 = new G4Isotope ("Xe132", 54, 132, 131.9041535 * g/mole);
   G4Isotope * Xe134 = new G4Isotope ("Xe134", 54, 134, 133.9053945 * g/mole);
 
-  G4Element * enrichedXe = new G4Element("enriched Xe", "Xe", 7);
-  enrichedXe->AddIsotope(Xe136, 0.8);
-  enrichedXe->AddIsotope(Xe128, 0.004200157);
-  enrichedXe->AddIsotope(Xe129, 0.05804977);
-  enrichedXe->AddIsotope(Xe130, 0.008951335);
-  enrichedXe->AddIsotope(Xe131, 0.046685906);
-  enrichedXe->AddIsotope(Xe132, 0.059166763);
-  enrichedXe->AddIsotope(Xe134, 0.022946069);
+  G4Element * enrichedXe = new G4Element("EnrichedXe", "EXe", 7);
+  enrichedXe->AddIsotope(Xe136, _xe136Fraction);
+  double restFraction = 1.0 - _xe136Fraction;
+  enrichedXe->AddIsotope(Xe128, restFraction * xe128NaturalFraction);
+  enrichedXe->AddIsotope(Xe129, restFraction * xe129NaturalFraction);
+  enrichedXe->AddIsotope(Xe130, restFraction * xe130NaturalFraction);
+  enrichedXe->AddIsotope(Xe131, restFraction * xe131NaturalFraction);
+  enrichedXe->AddIsotope(Xe132, restFraction * xe132NaturalFraction);
+  enrichedXe->AddIsotope(Xe134, restFraction * xe134NaturalFraction);
+
+  G4cout << "Enriched Xe Atomic Mass: " << enrichedXe->GetA()/g*mole << " g/mole." << G4endl;
+
+
   elementVec.push_back(enrichedXe);
 
   G4cout << "Avaliable elements: " << G4endl;
   for (size_t i=0; i<elementVec.size(); ++i) {
-    G4cout << elementVec[i]->GetName() << " ";
+    G4cout << elementVec[i]->GetName();
+    if (i != elementVec.size()-1)
+      G4cout << ", ";
   }
   G4cout << G4endl;
   
-  double density = 56.588 * kg/m3;
-
-  G4Material* xenon = new G4Material("HP_Xe_enriched", density, 1, kStateGas, STP_Temperature, 10*bar);
-  xenon->AddElement(enrichedXe, 1.0);
-  materialVec.push_back(xenon);
+  double r = k_Boltzmann*Avogadro;
+  double enrichedXeDensity = (enrichedXe->GetA())*_xenonPressure/_xenonTemperature/r;
+  G4cout << "Enriched Xe Gas Density: " << enrichedXeDensity/kg*m3 << " kg/m3." << G4endl;
+  G4Material * hpXe = new G4Material("EnrichedXe136", enrichedXeDensity, 1, kStateGas, _xenonTemperature, _xenonPressure);
+  hpXe->AddElement(enrichedXe, 1.0);
+  materialVec.push_back(hpXe);
 
   G4Material * concrete = pNistManager->FindOrBuildMaterial("G4_CONCRETE");
   materialVec.push_back(concrete);
@@ -172,7 +204,9 @@ void PandaXIIIMaterial::defineMaterials()
 
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
-    G4cout << materialVec[i]->GetName() << " ";
+    G4cout << materialVec[i]->GetName();
+    if (i != materialVec.size()-1)
+      G4cout << ", ";
   }
   G4cout << G4endl;
 }

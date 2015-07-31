@@ -14,6 +14,10 @@ public:
 
 private:
 
+  double _xe136Fraction;
+  double _xenonTemperature;
+  double _xenonPressure;
+
 };
 
 
