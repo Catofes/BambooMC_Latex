@@ -18,11 +18,11 @@ private:
 
   void createXenonVolume(bool top);
 
-  double _vesselOuterRadius;
+  double _vesselInnerRadius;
   double _vesselBarrelThickness;
   double _vesselEndThickness;
 
-  double _vesselHeight;
+  double _vesselInnerHeight;
   double _shiftX;
   double _shiftY;
   double _shiftZ;

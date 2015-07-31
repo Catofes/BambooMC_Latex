@@ -44,11 +44,11 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
   DetectorParameters dp = BambooGlobalVariables::Instance()
     ->findDetectorPartParameters("HpXenonGasDetector");
 
-  _vesselOuterRadius = BambooUtils::evaluate(dp.getParameterAsString("vessel_outer_radius"));
+  _vesselInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_radius"));
   _vesselBarrelThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_barrel_thickness"));
   _vesselEndThickness = BambooUtils::evaluate(dp.getParameterAsString("vessel_end_thickness"));
 
-  _vesselHeight = BambooUtils::evaluate(dp.getParameterAsString("vessel_height"));
+  _vesselInnerHeight = BambooUtils::evaluate(dp.getParameterAsString("vessel_inner_height"));
 
   _shiftX = BambooUtils::evaluate(dp.getParameterAsString("shift_x"));
   _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
@@ -56,11 +56,11 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
 
   _electricFieldZ = BambooUtils::evaluate(dp.getParameterAsString("electric_field_z"));
 
-  if (_vesselOuterRadius <= 0) {
-    _vesselOuterRadius = 760 * mm;
+  if (_vesselInnerRadius <= 0) {
+    _vesselInnerRadius = 750 * mm;
   }
-  if (_vesselHeight <= 0) {
-    _vesselHeight = 2020.* mm;
+  if (_vesselInnerHeight <= 0) {
+    _vesselInnerHeight = 2000.* mm;
   }
   if (_vesselBarrelThickness <=0) {
     _vesselBarrelThickness = 10. * mm;
@@ -91,10 +91,14 @@ HpXenonGasDetector::HpXenonGasDetector (const G4String & name)
 G4bool HpXenonGasDetector::construct()
 {
   G4Material * copper = G4Material::GetMaterial("G4_Cu");
-  G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselOuterRadius, _vesselHeight/2., 0., 2.*pi);
+  G4VSolid * vesselTub = new G4Tubs("CopperVesselTub", 0, _vesselInnerRadius + _vesselBarrelThickness, _vesselInnerHeight/2. + _vesselEndThickness, 0., 2.*pi);
 
   _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
-  _copperVesselPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
+
+  G4RotationMatrix * mat = new G4RotationMatrix();
+  mat->rotateY(pi/2);
+  
+  _copperVesselPhysicalVolume = new G4PVPlacement(mat, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
 
   G4VisAttributes * vesselVis = new G4VisAttributes();
   vesselVis->SetColour(224./255, 126./255, 11./255, 0.4);
@@ -124,8 +128,8 @@ G4bool HpXenonGasDetector::construct()
 void HpXenonGasDetector::createXenonVolume (bool top)
 {
 
-  double gasTubRadius = _vesselOuterRadius - _vesselBarrelThickness;
-  double gasHeight = _vesselHeight - 2.* _vesselEndThickness;
+  double gasTubRadius = _vesselInnerRadius;
+  double gasHeight = _vesselInnerHeight;
   G4VSolid * xenonTub = new G4Tubs("CopperVesselTub", 0, gasTubRadius, gasHeight/4., 0., 2.*pi);
   G4String name("HighPressureXenonLog");
   double factor = 1;
