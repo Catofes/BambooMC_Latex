@@ -2,7 +2,7 @@
 <BambooMC>
   <run number="9001"/>
   <geometry>
-    <material name="PandaXIIIMaterial"/>
+    <material name="SampleMaterial"/>
     <detector name="SimpleLabWall">
       <parameter name="length" value="20*m"/>
       <parameter name="width" value="15*m"/>
@@ -27,5 +27,7 @@
   <analysis name="PandaXAnalysis">
     <parameter name="EnableEnergyDeposition" value="0"/>
     <parameter name="EnableFlatSurfaceFlux" value="1"/>
+    <parameter name="enable_primary_particle" value="1"/>
+    <parameter name="save_null_event" value="0"/>
   </analysis>
 </BambooMC>
