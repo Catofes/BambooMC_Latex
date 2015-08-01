@@ -17,13 +17,15 @@ class PandaXDataManager {
   friend class PandaXEventAction;
 
 public:
-  PandaXDataManager(bool enableEnergyDeposition = true, bool enableFlatSurfaceFlux = false);
+  PandaXDataManager(bool enableEnergyDeposition = true, bool enableFlatSurfaceFlux = false, bool enablePrimaryParticle = false);
 
   ~PandaXDataManager();
 
   void book(const std::string & name = "pandaxout.root");
 
   void save();
+
+  void saveNullEvent(bool t);
 
   void fillEvent(const G4Event * aEvent);
 
@@ -61,7 +63,21 @@ private:
   std::vector<double> _pz;
   std::vector<int> _surface;
 
+  // variables for primary particle
+  int _nPrimaries;
+  std::vector<std::string > _primaryType;
+  std::vector<int> _primaryId;
+  std::vector<double> _primaryEnergy;
+  std::vector<double> _primaryPx;
+  std::vector<double> _primaryPy;
+  std::vector<double> _primaryPz;
+  std::vector<double> _primaryX;
+  std::vector<double> _primaryY;
+  std::vector<double> _primaryZ;
+
   bool _recordEnergyDeposition;
   bool _recordFlatSurfaceFlux;
+  bool _recordPrimaryParticle;
+  bool _saveNullEvent;
 };
 #endif

@@ -14,8 +14,12 @@
 
 #include <iostream>
 
-PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFlatSurfaceFlux)
-  : _rootFile(0), _mcTree(0), _recordEnergyDeposition(enableEnergyDeposition), _recordFlatSurfaceFlux(enableFlatSurfaceFlux)
+PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFlatSurfaceFlux, bool enablePrimaryParticle)
+  : _rootFile(0), _mcTree(0),
+    _recordEnergyDeposition(enableEnergyDeposition),
+    _recordFlatSurfaceFlux(enableFlatSurfaceFlux),
+    _recordPrimaryParticle(enablePrimaryParticle),
+    _saveNullEvent(false)
 {
 }
 
@@ -65,11 +69,28 @@ void PandaXDataManager::book(const std::string & name)
     _mcTree->Branch("pz", &_pz);
     _mcTree->Branch("surface", &_surface);
   }
+  if (_recordPrimaryParticle) {
+    _mcTree->Branch("nPrimaries", &_nPrimaries);
+    _mcTree->Branch("primaryType", &_primaryType);
+    _mcTree->Branch("primaryId", &_primaryId);
+    _mcTree->Branch("primaryEnergy", &_primaryEnergy);
+    _mcTree->Branch("primaryPx", &_primaryPx);
+    _mcTree->Branch("primaryPy", &_primaryPy);
+    _mcTree->Branch("primaryPz", &_primaryPz);
+    _mcTree->Branch("primaryX", &_primaryX);
+    _mcTree->Branch("primaryY", &_primaryY);
+    _mcTree->Branch("primaryZ", &_primaryZ);
+  }
 }
 
 void PandaXDataManager::save()
 {
   _mcTree->Write();
+}
+
+void PandaXDataManager::saveNullEvent(bool t)
+{
+  _saveNullEvent = t;
 }
 
 void PandaXDataManager::fillEvent(const G4Event *aEvent)
@@ -121,8 +142,32 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
       }
     }
   }
+  if (_recordPrimaryParticle) {
+    // loop over all primary particles...
+    int nVertex = aEvent->GetNumberOfPrimaryVertex();
+    for (int iV=0; iV<nVertex; ++iV) {
+      G4PrimaryVertex * vertex = aEvent->GetPrimaryVertex(iV);
+      int nParticles = vertex->GetNumberOfParticle();
+      double x = vertex->GetX0();
+      double y = vertex->GetY0();
+      double z = vertex->GetZ0();
+      for (int ip=0; ip<nParticles; ++ip) {
+	G4PrimaryParticle * particle = vertex->GetPrimary(ip);
+	_primaryType.push_back(particle->GetParticleDefinition()->GetParticleName());
+	_primaryEnergy.push_back(particle->GetTotalEnergy());
+	_primaryPx.push_back(particle->GetPx());
+	_primaryPy.push_back(particle->GetPy());
+	_primaryPz.push_back(particle->GetPz());
+	_primaryX.push_back(x);
+	_primaryY.push_back(y);
+	_primaryZ.push_back(z);
+	_nPrimaries++;
+      }
+    }
+  }
   if ((_recordEnergyDeposition&&_nHits>0)
-      ||(_recordFlatSurfaceFlux&&_nTracks>0))
+      ||(_recordFlatSurfaceFlux&&_nTracks>0)
+      ||(_saveNullEvent&&_recordPrimaryParticle))
     _mcTree->Fill();
 }
 
@@ -152,5 +197,16 @@ void PandaXDataManager::resetData()
     _py.clear();
     _pz.clear();
     _surface.clear();
+  }
+  if (_recordPrimaryParticle) {
+    _nPrimaries = 0;
+    _primaryType.clear();
+    _primaryEnergy.clear();
+    _primaryPx.clear();
+    _primaryPy.clear();
+    _primaryPz.clear();
+    _primaryX.clear();
+    _primaryY.clear();
+    _primaryZ.clear();
   }
 }
