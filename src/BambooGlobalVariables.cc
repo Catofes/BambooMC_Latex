@@ -422,8 +422,8 @@ double BambooGlobalVariables::getGeneratorParameterAsDouble(const string & param
 
 string BambooGlobalVariables::getGeneratorParameterAsString(const string & parameter) const
 {
-  map<string, string>::const_iterator res = _analysisParameters.find(parameter);
-  if (res!=_analysisParameters.end()) {
+  map<string, string>::const_iterator res = _generatorParameters.find(parameter);
+  if (res!=_generatorParameters.end()) {
     return res->second;
   }
   return string("");
