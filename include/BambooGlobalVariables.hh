@@ -94,6 +94,12 @@ public:
 
   string getAnalysisParameterAsString(const string & parameter) const;
 
+  int getGeneratorParameterAsInt(const string & parameter) const;
+
+  double getGeneratorParameterAsDouble(const string & parameter) const;
+
+  string getGeneratorParameterAsString(const string & parameter) const;
+
   const string & getOutDataName () const;
 
   void setOutDataName(const string &name);
@@ -122,6 +128,8 @@ private:
 
   bool loadAnalysisParameter(QXmlStreamReader & xs);
 
+  bool loadGeneratorParameter(QXmlStreamReader & xs);
+
   bool loadGenerator(QXmlStreamReader & xs);
 
   bool loadAnalysis(QXmlStreamReader & xs);
@@ -141,6 +149,8 @@ private:
   map<string, string> _physicsParameters;
 
   map<string, string> _analysisParameters;
+
+  map<string, string> _generatorParameters;
 
   static BambooGlobalVariables * _instance;
 
@@ -163,6 +173,8 @@ private:
   bool _readPhysics;
 
   bool _readAnalysis;
+
+  bool _readGenerator;
 };
 
 #endif

@@ -162,6 +162,10 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
           if (!loadAnalysisParameter(xs)) {
             return false;
           }
+        } else if (_readGenerator) {
+          if (!loadGeneratorParameter(xs)) {
+            return false;
+          }
         } else {
           return false;
         }
@@ -183,6 +187,7 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       if (xs.name() == "generator") {
 	if (!loadGenerator(xs))
 	  return false;
+	_readGenerator = true;
 	nGenerator++;
       }
       if (xs.name() == "analysis") {
@@ -207,6 +212,9 @@ bool BambooGlobalVariables::loadXMLFile(const G4String & filename)
       }
       if (xs.name() == "analysis" ) {
         _readAnalysis = false;
+      }
+      if (xs.name() == "generator" ) {
+        _readGenerator = false;
       }
     }
   }
@@ -394,6 +402,33 @@ string BambooGlobalVariables::getAnalysisParameterAsString(const string & parame
   return string("");
 }
 
+int BambooGlobalVariables::getGeneratorParameterAsInt(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _generatorParameters.find(parameter);
+  if (res!=_generatorParameters.end()) {
+    return QString(res->second.c_str()).toInt();
+  }
+  return 0;
+}
+
+double BambooGlobalVariables::getGeneratorParameterAsDouble(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _generatorParameters.find(parameter);
+  if (res!=_generatorParameters.end()) {
+    return QString(res->second.c_str()).toDouble();
+  }
+  return 0;
+}
+
+string BambooGlobalVariables::getGeneratorParameterAsString(const string & parameter) const
+{
+  map<string, string>::const_iterator res = _analysisParameters.find(parameter);
+  if (res!=_analysisParameters.end()) {
+    return res->second;
+  }
+  return string("");
+}
+
 const string & BambooGlobalVariables::getOutDataName () const
 {
   return _outDataName;
@@ -505,6 +540,16 @@ bool BambooGlobalVariables::loadAnalysisParameter(QXmlStreamReader & xs)
   string value = xs.attributes().value("value").toString().toStdString();
   _analysisParameters[name] = value;
   cout << "analysis parameter: " << name << " => " << value << endl;
+  return true;
+}
+
+bool BambooGlobalVariables::loadGeneratorParameter(QXmlStreamReader & xs)
+{
+  Q_ASSERT(xs.isStartElement() && xs.name() == "parameter");
+  string name = xs.attributes().value("name").toString().toStdString();
+  string value = xs.attributes().value("value").toString().toStdString();
+  _generatorParameters[name] = value;
+  cout << "generator parameter: " << name << " => " << value << endl;
   return true;
 }
 
