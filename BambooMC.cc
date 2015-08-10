@@ -2,6 +2,7 @@
 #include <G4String.hh>
 
 #include <QBBC.hh>
+#include <G4PhysListFactory.hh>
 
 #ifdef G4VIS_USE
 #include <G4VisExecutive.hh>
@@ -34,10 +35,16 @@ int main(int argc, char * argv[])
   runManager->SetRunIDCounter(BambooGlobalVariables::Instance()->getRunNumber());
   runManager->SetUserInitialization(new BambooDetectorConstruction);
 
-  G4VModularPhysicsList* physicsList = BambooPhysicsFactory::Instance()
-    ->createPhysics(BambooGlobalVariables::Instance()->getPhysicsName());
+  if (BambooGlobalVariables::Instance()->getPhysicsName().find("Physics")==std::string::npos) {
+    G4PhysListFactory * physListFactory = new G4PhysListFactory();
+    G4VUserPhysicsList * physicsList = physListFactory->GetReferencePhysList(BambooGlobalVariables::Instance()->getPhysicsName());
+    runManager->SetUserInitialization(physicsList);
+  } else {
+    G4VModularPhysicsList* physicsList = BambooPhysicsFactory::Instance()
+      ->createPhysics(BambooGlobalVariables::Instance()->getPhysicsName());
 
-  runManager->SetUserInitialization(physicsList);
+    runManager->SetUserInitialization(physicsList);
+  }
 
   G4VUserPrimaryGeneratorAction * generator = BambooGeneratorFactory::Instance()
     ->createGenerator(BambooGlobalVariables::Instance()->getGeneratorName());

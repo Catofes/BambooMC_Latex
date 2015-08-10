@@ -3,6 +3,7 @@
 #include "BambooGlobalVariables.hh"
 
 #include <Shielding.hh>
+#include <G4EmLivermorePhysics.hh>
 #include <QString>
 
 // anonymous namespace to register the SimpleUnderGroundPhysics
@@ -45,6 +46,8 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
 
   // EM Physics
   RegisterPhysics(new G4EmStandardPhysics(verbose));
+
+  RegisterPhysics(new G4EmLivermorePhysics(verbose));
 
     // Synchroton Radiation & GN Physics
   RegisterPhysics( new G4EmExtraPhysics(verbose) );
