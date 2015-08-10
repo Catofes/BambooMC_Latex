@@ -58,6 +58,7 @@ private:
   int _nTracks;
   std::vector<double> _trackEnergy;
   std::vector<std::string> _trackName;
+  std::vector<std::string> _trackParent;
   std::vector<double> _px;
   std::vector<double> _py;
   std::vector<double> _pz;

@@ -24,6 +24,7 @@ void PandaXSensitiveDetector::Initialize(G4HCofThisEvent* hc)
   _eDHitsCollection = new PandaXEnergyDepositionHitsCollection(SensitiveDetectorName, collectionName[0]);
   hc->AddHitsCollection(GetCollectionID(0), _eDHitsCollection);
   _particleTypes.clear();
+  _trackTypes.clear();
   _fsFluxHitsCollection = new PandaXFlatSurfaceFluxHitsCollection(SensitiveDetectorName, collectionName[1]);
   hc->AddHitsCollection(GetCollectionID(1), _fsFluxHitsCollection);
 }
@@ -67,12 +68,21 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
   if (_recordFlatSurfaceFlux) {
     G4StepPoint * preStep = aStep->GetPreStepPoint();
+    int trackId = aStep->GetTrack()->GetTrackID();
+    if (_trackTypes.find(trackId)==_trackTypes.end()) {
+      _trackTypes[trackId] = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
+      G4cout << _trackTypes[trackId] << G4endl;
+    }
     if (preStep->GetStepStatus() == fGeomBoundary) {
       G4VSolid * solid = preStep->GetPhysicalVolume()->GetLogicalVolume()->GetSolid();
       G4Box * box = (G4Box *) solid;
       PandaXFlatSurfaceFluxHit * hit = new PandaXFlatSurfaceFluxHit();
       hit->setEnergy(preStep->GetTotalEnergy());
       hit->setTrackName(aStep->GetTrack()->GetParticleDefinition()->GetParticleName());
+      int parentId = aStep->GetTrack()->GetParentID();
+      if (parentId && _trackTypes.find(parentId)!=_trackTypes.end()) {
+        hit->setParentName(_trackTypes[parentId]);
+      }
       G4ThreeVector p = preStep->GetMomentum();
       G4ThreeVector &rp = p;
       hit->setMomentum(rp);

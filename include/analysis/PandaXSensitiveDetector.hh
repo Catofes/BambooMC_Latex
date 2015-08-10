@@ -36,6 +36,7 @@ private:
   PandaXEnergyDepositionHitsCollection * _eDHitsCollection;
   PandaXFlatSurfaceFluxHitsCollection * _fsFluxHitsCollection;
   std::map<int, std::string> _particleTypes;
+  std::map<int, std::string> _trackTypes;
 };
 
 #endif // PANDAXSENSITIVEDETECTOR_H
