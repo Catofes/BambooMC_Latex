@@ -1,4 +1,5 @@
 #include "analysis/PandaXSensitiveDetector.hh"
+#include "analysis/PandaXDataManager.hh"
 
 #include <G4Step.hh>
 #include <G4HCofThisEvent.hh>
@@ -68,11 +69,7 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
   if (_recordFlatSurfaceFlux) {
     G4StepPoint * preStep = aStep->GetPreStepPoint();
-    int trackId = aStep->GetTrack()->GetTrackID();
-    if (_trackTypes.find(trackId)==_trackTypes.end()) {
-      _trackTypes[trackId] = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
-      G4cout << _trackTypes[trackId] << G4endl;
-    }
+    std::map<int, std::string> trackMap = PandaXDataManager::Instance()->getTrackMap();
     if (preStep->GetStepStatus() == fGeomBoundary) {
       G4VSolid * solid = preStep->GetPhysicalVolume()->GetLogicalVolume()->GetSolid();
       G4Box * box = (G4Box *) solid;
@@ -80,8 +77,8 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       hit->setEnergy(preStep->GetTotalEnergy());
       hit->setTrackName(aStep->GetTrack()->GetParticleDefinition()->GetParticleName());
       int parentId = aStep->GetTrack()->GetParentID();
-      if (parentId && _trackTypes.find(parentId)!=_trackTypes.end()) {
-        hit->setParentName(_trackTypes[parentId]);
+      if (parentId && trackMap.find(parentId)!=trackMap.end()) {
+         hit->setParentName(trackMap[parentId]);
       }
       G4ThreeVector p = preStep->GetMomentum();
       G4ThreeVector &rp = p;

@@ -14,6 +14,8 @@
 
 #include <iostream>
 
+PandaXDataManager * PandaXDataManager::_instance = 0;
+
 PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFlatSurfaceFlux, bool enablePrimaryParticle)
   : _rootFile(0), _mcTree(0),
     _recordEnergyDeposition(enableEnergyDeposition),
@@ -21,6 +23,7 @@ PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFl
     _recordPrimaryParticle(enablePrimaryParticle),
     _saveNullEvent(false)
 {
+  _instance = this;
 }
 
 PandaXDataManager::~PandaXDataManager ()
@@ -212,4 +215,18 @@ void PandaXDataManager::resetData()
     _primaryY.clear();
     _primaryZ.clear();
   }
+  _trackMap.clear();
+}
+
+std::map<int, std::string> & PandaXDataManager::getTrackMap ()
+{
+  return _trackMap;
+}
+
+PandaXDataManager * PandaXDataManager::Instance ()
+{
+  if (_instance == 0) {
+    return new PandaXDataManager();
+  }
+  return _instance;
 }

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 class TFile;
 class TTree;
@@ -28,6 +29,10 @@ public:
   void saveNullEvent(bool t);
 
   void fillEvent(const G4Event * aEvent);
+
+  std::map<int, std::string> & getTrackMap ();
+
+  static PandaXDataManager * Instance();
 
 private:
   void resetData();
@@ -80,5 +85,9 @@ private:
   bool _recordFlatSurfaceFlux;
   bool _recordPrimaryParticle;
   bool _saveNullEvent;
+
+  std::map<int, std::string> _trackMap;
+
+  static PandaXDataManager * _instance;
 };
 #endif

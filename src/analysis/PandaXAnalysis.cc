@@ -3,6 +3,7 @@
 #include "analysis/PandaXRunAction.hh"
 #include "analysis/PandaXEventAction.hh"
 #include "analysis/PandaXDataManager.hh"
+#include "analysis/PandaXTrackingAction.hh"
 #include "BambooGlobalVariables.hh"
 #include "BambooUtils.hh"
 
@@ -53,6 +54,7 @@ PandaXAnalysis::PandaXAnalysis (const G4String &name)
   }
   _runAction = new PandaXRunAction(dm);
   _eventAction = new PandaXEventAction(dm);
+  _trackingAction = new PandaXTrackingAction(dm);
 }
 
 PandaXAnalysis::~PandaXAnalysis()
