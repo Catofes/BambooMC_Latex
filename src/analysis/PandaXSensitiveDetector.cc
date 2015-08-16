@@ -24,8 +24,6 @@ void PandaXSensitiveDetector::Initialize(G4HCofThisEvent* hc)
 {
   _eDHitsCollection = new PandaXEnergyDepositionHitsCollection(SensitiveDetectorName, collectionName[0]);
   hc->AddHitsCollection(GetCollectionID(0), _eDHitsCollection);
-  _particleTypes.clear();
-  _trackTypes.clear();
   _fsFluxHitsCollection = new PandaXFlatSurfaceFluxHitsCollection(SensitiveDetectorName, collectionName[1]);
   hc->AddHitsCollection(GetCollectionID(1), _fsFluxHitsCollection);
 }
@@ -44,13 +42,11 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     PandaXEnergyDepositionHit * hit = new PandaXEnergyDepositionHit();
     int hitId = aStep->GetTrack()->GetTrackID();
     hit->setTrackId(hitId);
-    if (_particleTypes.find(hitId)==_particleTypes.end()) {
-      _particleTypes[hitId] = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
-    }
+    std::map<int, std::string> trackMap = PandaXDataManager::Instance()->getTrackMap();
     int parentId = aStep->GetTrack()->GetParentID();
     hit->setParentId(parentId);
-    if (parentId && _particleTypes.find(parentId)!=_particleTypes.end()) {
-      hit->setParent(_particleTypes[parentId]);
+    if (parentId && trackMap.find(parentId)!=trackMap.end()) {
+      hit->setParent(trackMap[parentId]);
     }
     hit->setEnergy(edep);
     hit->setX(aStep->GetPreStepPoint()->GetPosition().x());

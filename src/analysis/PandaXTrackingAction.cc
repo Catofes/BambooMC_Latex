@@ -19,3 +19,7 @@ void PandaXTrackingAction::PreUserTrackingAction (const G4Track * aTrack)
     trackMap[trackId] = aTrack->GetParticleDefinition()->GetParticleName();
   }
 }
+
+void PandaXTrackingAction::PostUserTrackingAction (const G4Track * )
+{
+}

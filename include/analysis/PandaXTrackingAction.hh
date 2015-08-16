@@ -15,6 +15,7 @@ public:
   ~PandaXTrackingAction();
 
   virtual void PreUserTrackingAction (const G4Track * aTrack);
+  virtual void PostUserTrackingAction (const G4Track * aTrack);
 
   void setDataManager (PandaXDataManager * manager);
 

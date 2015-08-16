@@ -16,6 +16,96 @@
 
 PandaXDataManager * PandaXDataManager::_instance = 0;
 
+TemporaryParticle::TemporaryParticle ()
+  : _type("unknown"), _energy(0), _px(0), _py(0), _pz(0),
+    _x(0), _y(0), _z(0)
+{
+}
+
+TemporaryParticle::~TemporaryParticle ()
+{
+}
+
+const std::string & TemporaryParticle::getParticleType() const
+{
+  return _type;
+}
+
+void TemporaryParticle::setParticleType (const std::string type)
+{
+  _type = type;
+}
+
+double TemporaryParticle::getEnergy () const
+{
+  return _energy;
+}
+
+void TemporaryParticle::setEnergy(double e)
+{
+  _energy = e;
+}
+
+double TemporaryParticle::getPx () const
+{
+  return _px;
+}
+
+void TemporaryParticle::setPx (double v)
+{
+  _px = v;
+}
+
+double TemporaryParticle::getPy () const
+{
+  return _py;
+}
+
+void TemporaryParticle::setPy (double v)
+{
+  _py = v;
+}
+
+double TemporaryParticle::getPz () const
+{
+  return _pz;
+}
+
+void TemporaryParticle::setPz (double v)
+{
+  _pz = v;
+}
+
+double TemporaryParticle::getX () const
+{
+  return _x;
+}
+
+void TemporaryParticle::setX (double v)
+{
+  _x = v;
+}
+
+double TemporaryParticle::getY () const
+{
+  return _y;
+}
+
+void TemporaryParticle::setY (double v)
+{
+  _y = v;
+}
+
+double TemporaryParticle::getZ () const
+{
+  return _z;
+}
+
+void TemporaryParticle::setZ (double v)
+{
+  _z = v;
+}
+
 PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFlatSurfaceFlux, bool enablePrimaryParticle)
   : _rootFile(0), _mcTree(0),
     _recordEnergyDeposition(enableEnergyDeposition),
@@ -97,7 +187,7 @@ void PandaXDataManager::saveNullEvent(bool t)
   _saveNullEvent = t;
 }
 
-void PandaXDataManager::fillEvent(const G4Event *aEvent)
+void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
 {
   G4HCofThisEvent * hCthis = aEvent->GetHCofThisEvent();
   int nHitCollections = hCthis->GetNumberOfCollections();
@@ -148,32 +238,55 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent)
     }
   }
   if (_recordPrimaryParticle) {
-    // loop over all primary particles...
-    int nVertex = aEvent->GetNumberOfPrimaryVertex();
-    for (int iV=0; iV<nVertex; ++iV) {
-      G4PrimaryVertex * vertex = aEvent->GetPrimaryVertex(iV);
-      int nParticles = vertex->GetNumberOfParticle();
-      double x = vertex->GetX0();
-      double y = vertex->GetY0();
-      double z = vertex->GetZ0();
-      for (int ip=0; ip<nParticles; ++ip) {
-	G4PrimaryParticle * particle = vertex->GetPrimary(ip);
-	_primaryType.push_back(particle->GetParticleDefinition()->GetParticleName());
-	_primaryEnergy.push_back(particle->GetTotalEnergy());
-	_primaryPx.push_back(particle->GetPx());
-	_primaryPy.push_back(particle->GetPy());
-	_primaryPz.push_back(particle->GetPz());
-	_primaryX.push_back(x);
-	_primaryY.push_back(y);
-	_primaryZ.push_back(z);
+    if (!partial || _particles.size()==0) {
+      // loop over all primary particles...
+      int nVertex = aEvent->GetNumberOfPrimaryVertex();
+      for (int iV=0; iV<nVertex; ++iV) {
+	G4PrimaryVertex * vertex = aEvent->GetPrimaryVertex(iV);
+	int nParticles = vertex->GetNumberOfParticle();
+	double x = vertex->GetX0();
+	double y = vertex->GetY0();
+	double z = vertex->GetZ0();
+	for (int ip=0; ip<nParticles; ++ip) {
+	  G4PrimaryParticle * particle = vertex->GetPrimary(ip);
+	  _primaryType.push_back(particle->GetParticleDefinition()->GetParticleName());
+	  _primaryEnergy.push_back(particle->GetTotalEnergy());
+	  _primaryPx.push_back(particle->GetPx());
+	  _primaryPy.push_back(particle->GetPy());
+	  _primaryPz.push_back(particle->GetPz());
+	  _primaryX.push_back(x);
+	  _primaryY.push_back(y);
+	  _primaryZ.push_back(z);
+	  _nPrimaries++;
+	}
+      }
+    } else {
+      for (size_t ip=0; ip<_particles.size(); ++ip) {
+	TemporaryParticle & particle = _particles[ip];
+	_primaryType.push_back(particle.getParticleType());
+	_primaryEnergy.push_back(particle.getEnergy());
+	_primaryPx.push_back(particle.getPx());
+	_primaryPy.push_back(particle.getPy());
+	_primaryPz.push_back(particle.getPz());
+	_primaryX.push_back(particle.getX());
+	_primaryY.push_back(particle.getY());
+	_primaryZ.push_back(particle.getZ());
 	_nPrimaries++;
       }
+    }
+    if (partial) {
+      // clear the temporary particles
+      _particles = _tparticles;
+      _tparticles.clear();
     }
   }
   if ((_recordEnergyDeposition&&_nHits>0)
       ||(_recordFlatSurfaceFlux&&_nTracks>0)
       ||(_saveNullEvent&&_recordPrimaryParticle))
     _mcTree->Fill();
+  if (partial) {
+    resetPartialEvent (aEvent);
+  }
 }
 
 void PandaXDataManager::resetData()
@@ -218,6 +331,22 @@ void PandaXDataManager::resetData()
   _trackMap.clear();
 }
 
+void PandaXDataManager::resetPartialEvent(const G4Event * aEvent)
+{
+  G4HCofThisEvent * hCthis = aEvent->GetHCofThisEvent();
+  int nHitCollections = hCthis->GetNumberOfCollections();
+  for (int i=0; i<nHitCollections; ++i) {
+    G4VHitsCollection * hitsCollection = hCthis->GetHC(i);
+    if (hitsCollection->GetName().contains("EnergyDepositionHits")) {
+      PandaXEnergyDepositionHitsCollection * hC = (PandaXEnergyDepositionHitsCollection*)hitsCollection;
+      hC->GetVector()->clear();
+    } else if (hitsCollection->GetName().contains("FlatSurfaceFluxHits")) {
+      PandaXFlatSurfaceFluxHitsCollection * hC = (PandaXFlatSurfaceFluxHitsCollection*)hitsCollection;
+      hC->GetVector()->clear();
+    }    
+  }
+}
+
 std::map<int, std::string> & PandaXDataManager::getTrackMap ()
 {
   return _trackMap;
@@ -229,4 +358,9 @@ PandaXDataManager * PandaXDataManager::Instance ()
     return new PandaXDataManager();
   }
   return _instance;
+}
+
+void PandaXDataManager::addTemporaryParticle (const TemporaryParticle & tp)
+{
+  _tparticles.push_back(tp);
 }

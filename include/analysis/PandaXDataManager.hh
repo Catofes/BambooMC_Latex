@@ -12,6 +12,46 @@ class TTree;
 
 class G4Event;
 
+class TemporaryParticle {
+public:
+  TemporaryParticle();
+  ~TemporaryParticle();
+
+  const std::string & getParticleType() const;
+  void setParticleType(const std::string type);
+
+  double getEnergy() const;
+  void setEnergy(double e);
+
+  double getPx() const;
+  void setPx(double v);
+
+  double getPy() const;
+  void setPy(double v);
+
+  double getPz() const;
+  void setPz(double v);
+
+  double getX() const;
+  void setX(double v);
+
+  double getY() const;
+  void setY(double v);
+
+  double getZ() const;
+  void setZ(double v);
+  
+private:
+  std::string _type;
+  double _energy;
+  double _px;
+  double _py;
+  double _pz;
+  double _x;
+  double _y;
+  double _z;
+};
+
 class PandaXDataManager {
 
   friend class PandaXRunAction;
@@ -28,14 +68,19 @@ public:
 
   void saveNullEvent(bool t);
 
-  void fillEvent(const G4Event * aEvent);
+  void fillEvent(const G4Event * aEvent, bool partial = false);
 
   std::map<int, std::string> & getTrackMap ();
 
   static PandaXDataManager * Instance();
 
+  void addTemporaryParticle(const TemporaryParticle & tp);
+
 private:
   void resetData();
+
+  //! reset the hits collection of the event
+  void resetPartialEvent(const G4Event * aEvent);
 
   TFile * _rootFile;
   TTree * _mcTree;
@@ -85,6 +130,9 @@ private:
   bool _recordFlatSurfaceFlux;
   bool _recordPrimaryParticle;
   bool _saveNullEvent;
+
+  std::vector<TemporaryParticle> _particles;
+  std::vector<TemporaryParticle> _tparticles;
 
   std::map<int, std::string> _trackMap;
 
