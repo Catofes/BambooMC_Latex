@@ -45,8 +45,6 @@ SimpleUnderGroundPhysics::SimpleUnderGroundPhysics(const G4String &name) : Bambo
   G4int verbose = 1;
 
   // EM Physics
-  RegisterPhysics(new G4EmStandardPhysics(verbose));
-
   RegisterPhysics(new G4EmLivermorePhysics(verbose));
 
     // Synchroton Radiation & GN Physics
