@@ -202,6 +202,13 @@ void PandaXIIIMaterial::defineMaterials()
   G4Material * copper = pNistManager->FindOrBuildMaterial("G4_Cu");
   materialVec.push_back(copper);
 
+  G4Material * lowCarbonSteel = new G4Material("Low_Carbon_Steel", 7.85*g/cm3, 3);
+  lowCarbonSteel->AddElement(Fe, 0.988);
+  lowCarbonSteel->AddElement(C, 0.002);
+  lowCarbonSteel->AddElement(Mn, 0.01);
+
+  materialVec.push_back(lowCarbonSteel);
+
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
     G4cout << materialVec[i]->GetName();

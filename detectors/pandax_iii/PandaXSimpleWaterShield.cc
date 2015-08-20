@@ -67,24 +67,33 @@ PandaXSimpleWaterShield::PandaXSimpleWaterShield (const G4String & name)
 G4bool PandaXSimpleWaterShield::construct ()
 {
   // add construction code here ...
-  G4Material * water = G4Material::GetMaterial("G4_WATER");
-  _partLogicalVolume = 0;
 
+  G4Material * lowCarbonSteel = G4Material::GetMaterial("Low_Carbon_Steel");
+  double steelThickness = 1.0*cm;
+  G4Box * carbonSteelBox = new G4Box("CarbonSteelBox", _length/2.+steelThickness, _width/2.+steelThickness, _height/2.+steelThickness);
+  _partLogicalVolume = new G4LogicalVolume(carbonSteelBox, lowCarbonSteel, "CarbonSteelTankLog", 0, 0, 0);
+  _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "CarbonSteelTank", _parentPart->getContainerLogicalVolume(), false, 0);
+  G4VisAttributes * carbonSteelTankVisAtt = new G4VisAttributes(G4Colour(0.8, 0.8, 0.7, 0.5));
+  carbonSteelTankVisAtt->SetVisibility(_isVisible);
+  _partLogicalVolume->SetVisAttributes(carbonSteelTankVisAtt);
+
+  G4Material * water = G4Material::GetMaterial("G4_WATER");
   G4Box * waterShieldBox = new G4Box("PandaXSimpleWaterShieldBox", _length/2., _width/2., _height/2.);
-  _partLogicalVolume = new G4LogicalVolume(waterShieldBox, water, "PandaXSimpleWaterShieldLog", 0, 0, 0);
+  G4LogicalVolume * waterShieldLog = new G4LogicalVolume(waterShieldBox, water, "PandaXSimpleWaterShieldLog", 0, 0, 0);
 
   G4VisAttributes * waterShieldVisAtt = new G4VisAttributes(G4Colour(0., 0.9, 0.2, 0.5));
   waterShieldVisAtt->SetVisibility(_isVisible);
-  _partLogicalVolume->SetVisAttributes(waterShieldVisAtt);
+  waterShieldLog->SetVisAttributes(waterShieldVisAtt);
 
-  _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "PandaXSimpleWaterShield", _parentPart->getContainerLogicalVolume(), false, 0);
-  _partContainerLogicalVolume = _partLogicalVolume;
+  G4VPhysicalVolume * waterShield = new G4PVPlacement(0, G4ThreeVector(), waterShieldLog, "PandaXSimpleWaterShield", _partLogicalVolume, false, 0);
+  G4cout << getName() << ": " << waterShield->GetName() << " created." << G4endl;
+  _partContainerLogicalVolume = waterShieldLog;
 
   if (_countingFluxIn) {
     PandaXSensitiveDetector * waterSD = new PandaXSensitiveDetector("WaterSD", false, true);
     G4SDManager * sdManager = G4SDManager::GetSDMpointer();
     sdManager->AddNewDetector(waterSD);
-    _partLogicalVolume->SetSensitiveDetector(waterSD);
+    waterShieldLog->SetSensitiveDetector(waterSD);
     G4cout << "Enable PandaXSensitiveDetector for Water." << G4endl;
     G4VSDFilter * gammaFilter = new G4SDParticleFilter("gammaFilter");
     ((G4SDParticleFilter *) gammaFilter )->add("gamma");
