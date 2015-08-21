@@ -20,6 +20,9 @@ public:
   const std::string & getParticleType() const;
   void setParticleType(const std::string type);
 
+  int getId() const;
+  void setId(int i);
+
   double getEnergy() const;
   void setEnergy(double e);
 
@@ -43,6 +46,7 @@ public:
   
 private:
   std::string _type;
+  int _id;
   double _energy;
   double _px;
   double _py;
@@ -130,6 +134,7 @@ private:
   bool _recordFlatSurfaceFlux;
   bool _recordPrimaryParticle;
   bool _saveNullEvent;
+  bool _partialSaved;
 
   std::vector<TemporaryParticle> _particles;
   std::vector<TemporaryParticle> _tparticles;

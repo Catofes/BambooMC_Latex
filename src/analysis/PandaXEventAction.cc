@@ -19,6 +19,7 @@ void PandaXEventAction::BeginOfEventAction (const G4Event *aEvent)
 {
   int eventId = aEvent->GetEventID();
   _dataManager->_eventId = eventId;
+  _dataManager->_partialSaved = false;
   if (eventId%100000 == 0) {
     G4cout << "Processing event " << eventId << "..." << G4endl;
   }

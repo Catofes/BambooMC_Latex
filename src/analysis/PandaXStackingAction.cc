@@ -16,9 +16,16 @@ PandaXStackingAction::~PandaXStackingAction()
 G4ClassificationOfNewTrack PandaXStackingAction::ClassifyNewTrack (const G4Track *aTrack)
 {
   const G4ParticleDefinition *def = aTrack->GetParticleDefinition();
-  if (aTrack->GetTrackStatus() == fPostponeToNextEvent) {
+  if (def->GetParticleType()=="nucleus"
+      && (aTrack->GetTrackStatus() == fPostponeToNextEvent
+	  || (def->GetParticleName().contains("[0.0]") && aTrack->GetKineticEnergy() <= 0.0 && aTrack->GetTrackID()>1))) {
+    // the postponed nucleus set in stepping,
+    // or the nucleus at ground state with 0 kinetic energy
+    // (except the first track),
+    // will be pushed to the waiting stack.
     TemporaryParticle tp;
     tp.setParticleType(def->GetParticleName());
+    tp.setId(aTrack->GetTrackID());
     tp.setEnergy(aTrack->GetTotalEnergy());
     tp.setPx(aTrack->GetMomentum().x());
     tp.setPy(aTrack->GetMomentum().y());

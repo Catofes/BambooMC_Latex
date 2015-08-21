@@ -17,7 +17,7 @@
 PandaXDataManager * PandaXDataManager::_instance = 0;
 
 TemporaryParticle::TemporaryParticle ()
-  : _type("unknown"), _energy(0), _px(0), _py(0), _pz(0),
+  : _type("unknown"), _id(0), _energy(0), _px(0), _py(0), _pz(0),
     _x(0), _y(0), _z(0)
 {
 }
@@ -34,6 +34,16 @@ const std::string & TemporaryParticle::getParticleType() const
 void TemporaryParticle::setParticleType (const std::string type)
 {
   _type = type;
+}
+
+int TemporaryParticle::getId() const
+{
+  return _id;
+}
+
+void TemporaryParticle::setId (int i)
+{
+  _id = i;
 }
 
 double TemporaryParticle::getEnergy () const
@@ -111,7 +121,8 @@ PandaXDataManager::PandaXDataManager (bool enableEnergyDeposition, bool enableFl
     _recordEnergyDeposition(enableEnergyDeposition),
     _recordFlatSurfaceFlux(enableFlatSurfaceFlux),
     _recordPrimaryParticle(enablePrimaryParticle),
-    _saveNullEvent(false)
+    _saveNullEvent(false),
+    _partialSaved(false)
 {
   _instance = this;
 }
@@ -189,6 +200,8 @@ void PandaXDataManager::saveNullEvent(bool t)
 
 void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
 {
+  if (!partial && _partialSaved)
+    return;
   G4HCofThisEvent * hCthis = aEvent->GetHCofThisEvent();
   int nHitCollections = hCthis->GetNumberOfCollections();
   resetData();
@@ -250,6 +263,7 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
 	for (int ip=0; ip<nParticles; ++ip) {
 	  G4PrimaryParticle * particle = vertex->GetPrimary(ip);
 	  _primaryType.push_back(particle->GetParticleDefinition()->GetParticleName());
+          _primaryId.push_back(particle->GetTrackID());
 	  _primaryEnergy.push_back(particle->GetTotalEnergy());
 	  _primaryPx.push_back(particle->GetPx());
 	  _primaryPy.push_back(particle->GetPy());
@@ -264,6 +278,7 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
       for (size_t ip=0; ip<_particles.size(); ++ip) {
 	TemporaryParticle & particle = _particles[ip];
 	_primaryType.push_back(particle.getParticleType());
+        _primaryId.push_back(particle.getId());
 	_primaryEnergy.push_back(particle.getEnergy());
 	_primaryPx.push_back(particle.getPx());
 	_primaryPy.push_back(particle.getPy());
@@ -287,6 +302,7 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
   if (partial) {
     resetPartialEvent (aEvent);
   }
+  _partialSaved = partial;
 }
 
 void PandaXDataManager::resetData()
@@ -320,6 +336,7 @@ void PandaXDataManager::resetData()
   if (_recordPrimaryParticle) {
     _nPrimaries = 0;
     _primaryType.clear();
+    _primaryId.clear();
     _primaryEnergy.clear();
     _primaryPx.clear();
     _primaryPy.clear();
