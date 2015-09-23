@@ -31,17 +31,26 @@ PandaXIIIMaterial::PandaXIIIMaterial (const G4String & name)
   _xe136Fraction = BambooGlobalVariables::Instance()->getMaterialParameterAsDouble("xe136_fraction");
   _xenonTemperature = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_temperature"));
   _xenonPressure = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_pressure"));
+  _enrichedXenonDensity = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("enriched_xenon_density"));
+  _tmaMassFraction = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("tma_mass_fraction"));
 
   if (_xe136Fraction <= 0 ) {
     _xe136Fraction = 0.8;
   }
   if (_xenonTemperature <= 0) {
-    _xenonTemperature = STP_Temperature;
+    _xenonTemperature = 300 * kelvin;
   }
   if (_xenonPressure <= 0) {
     _xenonPressure = 10.0 * bar;
   }
-
+  if (_enrichedXenonDensity < 0) {
+    _enrichedXenonDensity = 0;
+  } else {
+    _enrichedXenonDensity *= kg / m3;
+  }
+  if (_tmaMassFraction <= 0 || _tmaMassFraction > 1) {
+    _tmaMassFraction = 0.03;
+  }
 }
 
 
@@ -120,7 +129,6 @@ void PandaXIIIMaterial::defineMaterials()
 
   G4cout << "Enriched Xe Atomic Mass: " << enrichedXe->GetA()/g*mole << " g/mole." << G4endl;
 
-
   elementVec.push_back(enrichedXe);
 
   G4cout << "Avaliable elements: " << G4endl;
@@ -132,11 +140,29 @@ void PandaXIIIMaterial::defineMaterials()
   G4cout << G4endl;
   
   double r = k_Boltzmann*Avogadro;
-  double enrichedXeDensity = (enrichedXe->GetA())*_xenonPressure/_xenonTemperature/r;
-  G4cout << "Enriched Xe Gas Density: " << enrichedXeDensity/kg*m3 << " kg/m3." << G4endl;
-  G4Material * hpXe = new G4Material("EnrichedXe136", enrichedXeDensity, 1, kStateGas, _xenonTemperature, _xenonPressure);
+  if (_enrichedXenonDensity == 0) {
+    _enrichedXenonDensity = (enrichedXe->GetA())*_xenonPressure/_xenonTemperature/r;
+  }
+
+  G4Material * hpXe = new G4Material("EnrichedXe136", _enrichedXenonDensity, 1, kStateGas, _xenonTemperature, _xenonPressure * (1 - _tmaMassFraction));
   hpXe->AddElement(enrichedXe, 1.0);
   materialVec.push_back(hpXe);
+
+  // tma density at 21.1 C, and 101325 Pa.
+  double tmaDensity0 = 2.5 * kg / m3;
+  double tmaDensity = tmaDensity0 * (STP_Temperature + 21.1)/STP_Pressure * _xenonPressure * _tmaMassFraction / _xenonTemperature;
+  G4Material * TMA = new G4Material("Trimethylamine", tmaDensity, 3, kStateGas, _xenonTemperature, _xenonPressure * _tmaMassFraction);
+  TMA->AddElement(N, 1);
+  TMA->AddElement(C, 3);
+  TMA->AddElement(H, 9);
+  materialVec.push_back(TMA);
+
+  // hpxe + tma mixture
+  double xe_tma_density = _enrichedXenonDensity + tmaDensity;
+  G4Material * XeTMAMixture = new G4Material("XeTMAMixture", xe_tma_density, 2, kStateGas, _xenonTemperature, _xenonPressure);
+  XeTMAMixture->AddMaterial(hpXe, 1 - _tmaMassFraction);
+  XeTMAMixture->AddMaterial(TMA, _tmaMassFraction);
+  materialVec.push_back(XeTMAMixture);
 
   G4Material * concrete = pNistManager->FindOrBuildMaterial("G4_CONCRETE");
   materialVec.push_back(concrete);
@@ -175,7 +201,6 @@ void PandaXIIIMaterial::defineMaterials()
   
   G4Material* Sigconcrete=pNistManager->ConstructNewMaterial("Sigconcrete",els,weights,2.4*g/cm3);
   materialVec.push_back(Sigconcrete);
-
 
   G4Material * marble = new G4Material("MARBLE", 2.71*g/cm3, 7, kStateSolid);
   marble->AddElement( C, 11.88 * 0.01);
