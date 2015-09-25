@@ -120,7 +120,6 @@ G4bool HpXenonGasDetector::construct()
   sdManager->AddNewDetector(hpXeSD);
   _hpXenonLogicalVolumeTop->SetSensitiveDetector(hpXeSD);
   _hpXenonLogicalVolumeBottom->SetSensitiveDetector(hpXeSD);
-  G4cout << "High Pressure Xenon Mass: " << _hpXenonLogicalVolumeTop->GetMass()/kg + _hpXenonLogicalVolumeBottom->GetMass()/kg << " kg." << G4endl;
 
   return true;
 }
@@ -140,8 +139,8 @@ void HpXenonGasDetector::createXenonVolume (bool top)
     name += "Bottom";
     factor = -1;
   }
-  G4Material * enrichedXe = G4Material::GetMaterial("EnrichedXe136");
-  hpLV = new G4LogicalVolume(xenonTub, enrichedXe, name, 0, 0, 0);
+  G4Material * XeTMAMixture = G4Material::GetMaterial("XeTMAMixture");
+  hpLV = new G4LogicalVolume(xenonTub, XeTMAMixture, name, 0, 0, 0);
 
   if (_electricFieldZ!=0) {
     G4Field * electricField = new G4UniformElectricField(G4ThreeVector(0, 0, -factor*_electricFieldZ));
@@ -160,7 +159,7 @@ void HpXenonGasDetector::createXenonVolume (bool top)
   if (top) {
     mat->rotateX(pi);
   }
-  pV = new G4PVPlacement(mat, G4ThreeVector(0, 0, factor*gasHeight/4), hpLV, "HighPressureXenon", _copperVesselLogicalVolume, false, 0);
+  pV = new G4PVPlacement(mat, G4ThreeVector(0, 0, factor*gasHeight/4), hpLV, "HighPressureXenonTMA", _copperVesselLogicalVolume, false, 0);
 
   G4VisAttributes * xenonVis = new G4VisAttributes();
   xenonVis->SetColour(140./255, 140./255, 1., 0.4);

@@ -29,22 +29,14 @@ PandaXIIIMaterial::PandaXIIIMaterial (const G4String & name)
   G4cout << "PandaXIIIMaterial found..." << G4endl;
 
   _xe136Fraction = BambooGlobalVariables::Instance()->getMaterialParameterAsDouble("xe136_fraction");
-  _xenonTemperature = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_temperature"));
-  _xenonPressure = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("xenon_pressure"));
   _enrichedXenonDensity = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("enriched_xenon_density"));
   _tmaMassFraction = BambooUtils::evaluate(BambooGlobalVariables::Instance()->getMaterialParameterAsString("tma_mass_fraction"));
 
   if (_xe136Fraction <= 0 ) {
-    _xe136Fraction = 0.8;
-  }
-  if (_xenonTemperature <= 0) {
-    _xenonTemperature = 300 * kelvin;
-  }
-  if (_xenonPressure <= 0) {
-    _xenonPressure = 10.0 * bar;
+    _xe136Fraction = 0.9;
   }
   if (_enrichedXenonDensity < 0) {
-    _enrichedXenonDensity = 0;
+    _enrichedXenonDensity = 56.58842421 * kg/m3;
   } else {
     _enrichedXenonDensity *= kg / m3;
   }
@@ -128,6 +120,8 @@ void PandaXIIIMaterial::defineMaterials()
   enrichedXe->AddIsotope(Xe134, restFraction * xe134NaturalFraction);
 
   G4cout << "Enriched Xe Atomic Mass: " << enrichedXe->GetA()/g*mole << " g/mole." << G4endl;
+  G4cout << "Xe136 mole fraction: " << _xe136Fraction << G4endl;
+  G4cout << "Xe136 mass fraction: " << Xe136->GetA()*0.9/enrichedXe->GetA() << G4endl;
 
   elementVec.push_back(enrichedXe);
 
@@ -138,28 +132,35 @@ void PandaXIIIMaterial::defineMaterials()
       G4cout << ", ";
   }
   G4cout << G4endl;
-  
-  double r = k_Boltzmann*Avogadro;
-  if (_enrichedXenonDensity == 0) {
-    _enrichedXenonDensity = (enrichedXe->GetA())*_xenonPressure/_xenonTemperature/r;
-  }
 
-  G4Material * hpXe = new G4Material("EnrichedXe136", _enrichedXenonDensity, 1, kStateGas, _xenonTemperature, _xenonPressure * (1 - _tmaMassFraction));
+  double gasTemperature = 300 * kelvin;
+  double xenonPressure = 10.17 * bar;
+  G4Material * hpXe = new G4Material("EnrichedXe136", _enrichedXenonDensity, 1, kStateGas, gasTemperature, xenonPressure );
   hpXe->AddElement(enrichedXe, 1.0);
   materialVec.push_back(hpXe);
-
-  // tma density at 21.1 C, and 101325 Pa.
-  double tmaDensity0 = 2.5 * kg / m3;
-  double tmaDensity = tmaDensity0 * (STP_Temperature + 21.1)/STP_Pressure * _xenonPressure * _tmaMassFraction / _xenonTemperature;
-  G4Material * TMA = new G4Material("Trimethylamine", tmaDensity, 3, kStateGas, _xenonTemperature, _xenonPressure * _tmaMassFraction);
+  G4cout << "Xenon pressure = " << xenonPressure/bar << " bar." << G4endl;
+  double xenon_unit_amount = _enrichedXenonDensity*m3/(enrichedXe->GetA()*mole);
+  G4cout << "Xenon unit amount " << xenon_unit_amount << " mole." << G4endl;
+  
+  double tmaDensity = _enrichedXenonDensity/(1.-_tmaMassFraction)*_tmaMassFraction;
+  double tma_molecule_mass = 59.1103 * g/mole;
+  double tma_unit_amount = tmaDensity*m3/(tma_molecule_mass*mole);
+  double tmaPressure = xenonPressure * tma_unit_amount / xenon_unit_amount;
+  G4cout << "TMA pressure = " << tmaPressure / bar << " bar." << G4endl;
+  G4cout << "TMA unit amount " << tma_unit_amount << " mole." <<  G4endl;
+  G4cout << "TMA mole fraction " << tma_unit_amount/(tma_unit_amount+xenon_unit_amount) << G4endl;
+  G4cout << "TMA density: " << tmaDensity/kg*m3 << " kg/m3" << G4endl;
+  G4Material * TMA = new G4Material("Trimethylamine", tmaDensity, 3, kStateGas, gasTemperature, tmaPressure);
   TMA->AddElement(N, 1);
   TMA->AddElement(C, 3);
   TMA->AddElement(H, 9);
   materialVec.push_back(TMA);
 
+  G4cout << "TMA molecule mass: " << TMA->GetMassOfMolecule()/g*Avogadro << " g/mol." << G4endl;
+
   // hpxe + tma mixture
   double xe_tma_density = _enrichedXenonDensity + tmaDensity;
-  G4Material * XeTMAMixture = new G4Material("XeTMAMixture", xe_tma_density, 2, kStateGas, _xenonTemperature, _xenonPressure);
+  G4Material * XeTMAMixture = new G4Material("XeTMAMixture", xe_tma_density, 2, kStateGas, gasTemperature, xenonPressure+tmaPressure);
   XeTMAMixture->AddMaterial(hpXe, 1 - _tmaMassFraction);
   XeTMAMixture->AddMaterial(TMA, _tmaMassFraction);
   materialVec.push_back(XeTMAMixture);

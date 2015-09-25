@@ -15,8 +15,6 @@ public:
 private:
 
   double _xe136Fraction;
-  double _xenonTemperature;
-  double _xenonPressure;
   double _enrichedXenonDensity;
   double _tmaMassFraction;
 };
