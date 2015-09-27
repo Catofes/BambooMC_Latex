@@ -24,7 +24,7 @@ cd $BAMBOO_SOURCE/include/detector
 for a in $BAMBOO_SOURCE/detectors/$det_set/*.hh
 do
     bname=$(basename $a)
-    if [ -e $bname ]
+    if [ -e "$bname" ]
     then
         echo "remove symbolic link for $bname..."
         rm $bname
@@ -36,7 +36,7 @@ cd $BAMBOO_SOURCE/src/detector
 for a in $BAMBOO_SOURCE/detectors/$det_set/*.cc
 do
     bname=$(basename $a)
-    if [ -e $bname ]
+    if [ -e "$bname" ]
     then
         echo "remove symbolic link for $bname..."
         rm $bname

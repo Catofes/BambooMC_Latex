@@ -24,7 +24,7 @@ cd $BAMBOO_SOURCE/include/detector
 for a in $BAMBOO_SOURCE/detectors/$det_set/*.hh
 do
     bname=$(basename $a)
-    if [ ! -e $bname ]
+    if [ ! -e "$bname" ]
     then
         echo "create symbolic link for $bname..."
         ln -s $a
@@ -36,7 +36,7 @@ cd $BAMBOO_SOURCE/src/detector
 for a in $BAMBOO_SOURCE/detectors/$det_set/*.cc
 do
     bname=$(basename $a)
-    if [ ! -e $bname ]
+    if [ ! -e "$bname" ]
     then
         echo "create symbolic link for $bname..."
         ln -s $a
