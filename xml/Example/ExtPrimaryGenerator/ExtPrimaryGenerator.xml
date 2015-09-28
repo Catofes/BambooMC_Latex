@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+  <run number="9001"/>
+  <geometry>
+    <material name="PandaXIIIMaterial"/>
+    <detector name="SimpleLabWall">
+      <parameter name="length" value="20*m"/>
+      <parameter name="width" value="15*m"/>
+      <parameter name="height" value="12*m"/>
+      <parameter name="rock_wall_thickness" value="3*m"/>
+      <parameter name="concrete_wall_thickness" value="0.5*m"/>
+      <parameter name="concrete_floor_thickness" value="0.5*m"/>
+      <parameter name="visible" value="0"/>
+    </detector>
+    <detector name="PandaXSimpleWaterShield" parent="SimpleLabWall">
+      <parameter name="length" value="20*m"/>
+      <parameter name="width" value="15*m"/>
+      <parameter name="height" value="12*m"/>
+      <parameter name="visible" value="1"/>
+      <parameter name="counting_flux_in" value="0"/>
+    </detector>
+    <detector name="WaterShield" parent="PandaXSimpleWaterShield">
+      <parameter name="shape" value="1"/>
+      <parameter name="length" value="18"/>
+      <parameter name="width" value="13"/>
+      <parameter name="height" value="10"/>
+      <parameter name="counting_flux_in" value="1"/>
+    </detector>
+    <detector name="HpXenonGasDetector" parent="WaterShield">
+      <parameter name="vessel_inner_radius" value="750*mm"/>
+      <parameter name="vessel_inner_height" value="2000*mm"/>
+      <parameter name="vessel_barrel_thickness" value="10*mm"/>
+      <parameter name="vessel_end_thickness" value="150*mm"/>
+    </detector>
+  </geometry>
+  <physics name="SimpleUnderGroundPhysics">
+    <parameter name="cutlength" value="0.005*mm"/>
+  </physics>
+  <generator name="ExtPrimaryGenerator">
+    <parameter name="InputFile" value="/root/herbertqiao/GIT/BambooMC/xml/Example/ExtPrimaryGenerator/Un1000000Sd1.asc"/>
+  </generator>
+  <analysis name="PandaXAnalysis">
+    <parameter name="EnableEnergyDeposition" value="1"/>
+    <parameter name="EnableFlatSurfaceFlux" value="0"/>
+    <parameter name="EnablePrimaryParticle" value="1"/>
+  </analysis>
+</BambooMC>
+
