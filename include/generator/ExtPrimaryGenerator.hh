@@ -10,18 +10,23 @@
 #include "G4ParticleGun.hh"
 
 
-
 class ParticleInfo {
 public:
-    ParticleInfo() { }
+    ParticleInfo() {
+        ParticleType = 0;
+        px = 0;
+        py = 0;
+        pz = 0;
+        Time = 0;
+    }
 
     ~ParticleInfo() { }
 
-    int ParticleType = 0;
-    double px = 0;
-    double py = 0;
-    double pz = 0;
-    double Time = 0;
+    int ParticleType;
+    double px;
+    double py;
+    double pz;
+    double Time;
 };
 
 class ExtPrimaryGenerator : public BambooGenerator {
@@ -41,7 +46,7 @@ private:
     G4String _InputFile = "";
     std::vector<std::vector<ParticleInfo>> _GunData;
     G4ParticleGun *_gun;
-    unsigned int _num = 0;
+    unsigned int _num;
 };
 
 #endif

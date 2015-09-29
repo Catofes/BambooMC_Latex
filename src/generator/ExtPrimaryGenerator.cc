@@ -28,6 +28,7 @@ namespace {
 
 
 ExtPrimaryGenerator::ExtPrimaryGenerator(const G4String &name) : BambooGenerator(name) {
+    _num = 0;
     this->_InputFile = G4String(BambooGlobalVariables::Instance()->getGeneratorParameterAsString("InputFile"));
     if (this->_InputFile.empty()) {
         throw std::runtime_error("Wrong Input File. Can't Generator Any Particle.");
@@ -142,7 +143,7 @@ void ExtPrimaryGenerator::GeneratePrimaries(G4Event *event) {
         G4ParticleMomentum momentum(pMag * sintheta * cos(phi), pMag * sintheta * sin(phi),
                                     pMag * costheta);
 
-        G4strstreambuf* oldBuffer = dynamic_cast<G4strstreambuf*>(G4cout.rdbuf(0));
+        G4strstreambuf *oldBuffer = dynamic_cast<G4strstreambuf *>(G4cout.rdbuf(0));
         this->_gun->SetParticleMomentum(momentum * GeV);
         G4cout.rdbuf(oldBuffer);
         this->_gun->SetParticlePosition(loc * mm);
