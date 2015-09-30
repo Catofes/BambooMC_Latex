@@ -12,41 +12,41 @@
 
 class ParticleInfo {
 public:
-    ParticleInfo() {
-        ParticleType = 0;
-        px = 0;
-        py = 0;
-        pz = 0;
-        Time = 0;
-    }
+  ParticleInfo() {
+    ParticleType = 0;
+    px = 0;
+    py = 0;
+    pz = 0;
+    Time = 0;
+  }
 
-    ~ParticleInfo() { }
+  ~ParticleInfo() { }
 
-    int ParticleType;
-    double px;
-    double py;
-    double pz;
-    double Time;
+  int ParticleType;
+  double px;
+  double py;
+  double pz;
+  double Time;
 };
 
 class ExtPrimaryGenerator : public BambooGenerator {
 
 public:
-    ExtPrimaryGenerator(const G4String &name);
+  ExtPrimaryGenerator(const G4String &name);
 
-    ~ExtPrimaryGenerator();
+  ~ExtPrimaryGenerator();
 
-    void GeneratePrimaries(G4Event *event);
+  void GeneratePrimaries(G4Event *event);
 
-    void GenerateLoc(G4ThreeVector *loc);
+  void GenerateLoc(G4ThreeVector *loc);
 
 private:
-    void LoadFile();
+  void LoadFile();
 
-    G4String _InputFile = "";
-    std::vector<std::vector<ParticleInfo>> _GunData;
-    G4ParticleGun *_gun;
-    unsigned int _num;
+  G4String _InputFile;
+  std::vector<std::vector<ParticleInfo>> _GunData;
+  G4ParticleGun *_gun;
+  unsigned int _num;
 };
 
 #endif
