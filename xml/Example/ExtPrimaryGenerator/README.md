@@ -13,9 +13,25 @@
     1  9802004  0  0  -.4865E-01  0.6431E-02  -.2368E+00  0.3727E+01  0.21949E+06  # 214Po alpha decay   7833.500
 
 
-
 * Add ExtPrimaryGenerator in xml file and set path to asc file.
 
 
       <generator name="ExtPrimaryGenerator">
         <parameter name="InputFile" value="/root/herbertqiao/GIT/BambooMC/xml/Example/ExtPrimaryGenerator/Un1000000Sd1.asc"/>
+
+
+
+###Parameters
+
+
+* InputFile. The path of the external particle info file.
+
+
+        <parameter name="InputFile" value="/root/herbertqiao/GIT/BambooMC/xml/Example/ExtPrimaryGenerator/Un1000000Sd1.asc"/>
+
+* Type. (Default `Loc`)Select from `Function` or `Loc`. If you use Function. **Please Rewrite GenerateLoc Function**.
+* LocX. (Default 0).When `Type` is `Loc`, Particle will generate in the position pointed by `LocX`, `LocY`, `LocZ` in mm.
+* LocY. (Default 0)
+* LocZ. (Default 0)
+* RndRotate. (Default 0) Set 1 to random rotate the particles momentum. All particle in one event will rotate same angle.
+

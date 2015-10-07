@@ -47,6 +47,11 @@ private:
     std::vector<std::vector<ParticleInfo>> _GunData;
     G4ParticleGun *_gun;
     unsigned int _num;
+    G4String _loc_type;
+    double _loc_x;
+    double _loc_y;
+    double _loc_z;
+    bool _rotate;
 };
 
 #endif

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+    <run number="9001"/>
+    <geometry>
+        <material name="PandaXIIIMaterial"/>
+        <detector name="SimpleWorldBox">
+            <parameter name="half_x" value="1*m"/>
+            <parameter name="half_y" value="1*m"/>
+            <paramater name="half_z" value="1*m"/>
+        </detector>
+        <detector name="SampleBoxDetector" parent="SimpleWorldBox">
+            <parameter name="half_x" value="1*mm"/>
+            <parameter name="shift_x" value="2*mm"/>
+        </detector>
+        <detector name="SampleBoxDetector" parent="SimpleWorldBox">
+            <parameter name="half_x" value="1*mm"/>
+            <parameter name="shift_x" value="2*mm"/>
+            <parameter name="material" value="G4_CU"/>
+        </detector>
+        <detector name="SampleBoxDetector" parent="SimpleWorldBox">
+            <parameter name="half_x" value="1*mm"/>
+            <parameter name="shift_x" value="0*mm"/>
+            <parameter name="material" value="G4_AL"/>
+        </detector>
+    </geometry>
+    <physics name="SimpleUnderGroundPhysics">
+        <parameter name="cutlength" value="0.005*mm"/>
+    </physics>
+    <generator name="ExtPrimaryGenerator">
+        <parameter name="InputFile" value="input"/>
+    </generator>
+    <analysis name="PandaXAnalysis">
+        <parameter name="EnableEnergyDeposition" value="0"/>
+        <parameter name="EnableFlatSurfaceFlux" value="1"/>
+    </analysis>
+</BambooMC>
