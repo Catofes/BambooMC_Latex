@@ -52,6 +52,7 @@ private:
     double _loc_y;
     double _loc_z;
     bool _rotate;
+
 };
 
 #endif

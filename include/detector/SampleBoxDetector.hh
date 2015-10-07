@@ -13,6 +13,10 @@ private:
   double _halfX;
   double _halfY;
   double _halfZ;
+  double _shiftX;
+  double _shiftY;
+  double _shiftZ;
+  G4String _material;
 };
 
 

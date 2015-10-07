@@ -142,7 +142,7 @@ void PandaXIIIMaterial::defineMaterials()
   double xenon_unit_amount = _enrichedXenonDensity*m3/(enrichedXe->GetA()*mole);
   G4cout << "Xenon unit amount " << xenon_unit_amount << " mole." << G4endl;
   
-  double tmaDensity = _enrichedXenonDensity/(1.-_tmaMassFraction)*_tmaMassFraction;
+  double tmaDensity = _enrichedXenonDensity * _tmaMassFraction;
   double tma_molecule_mass = 59.1103 * g/mole;
   double tma_unit_amount = tmaDensity*m3/(tma_molecule_mass*mole);
   double tmaPressure = xenonPressure * tma_unit_amount / xenon_unit_amount;
@@ -161,8 +161,8 @@ void PandaXIIIMaterial::defineMaterials()
   // hpxe + tma mixture
   double xe_tma_density = _enrichedXenonDensity + tmaDensity;
   G4Material * XeTMAMixture = new G4Material("XeTMAMixture", xe_tma_density, 2, kStateGas, gasTemperature, xenonPressure+tmaPressure);
-  XeTMAMixture->AddMaterial(hpXe, 1 - _tmaMassFraction);
-  XeTMAMixture->AddMaterial(TMA, _tmaMassFraction);
+  XeTMAMixture->AddMaterial(hpXe, 1. / (1. + _tmaMassFraction));
+  XeTMAMixture->AddMaterial(TMA, _tmaMassFraction / (1. + _tmaMassFraction));
   materialVec.push_back(XeTMAMixture);
 
   G4Material * concrete = pNistManager->FindOrBuildMaterial("G4_CONCRETE");
