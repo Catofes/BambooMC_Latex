@@ -1,1 +1,0 @@
-/root/herbertqiao/GIT/BambooMC/detectors/pandax_iii/PandaXIIILab.cc
