@@ -24,9 +24,6 @@ FIND_PACKAGE(Qt COMPONENTS Xml REQUIRED)
 # set include directories
 INCLUDE_DIRECTORIES(${ROOT_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${QT_INCLUDE_DIR})
 
-# build with debug symbols
-ADD_DEFINITIONS("-g")
-
 # with c++0x support, dangerous
 ADD_DEFINITIONS("-std=c++0x")
 
