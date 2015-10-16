@@ -43,7 +43,7 @@ public:
 private:
     void LoadFile();
 
-    G4String _InputFile = "";
+    G4String _InputFile;
     std::vector<std::vector<ParticleInfo>> _GunData;
     G4ParticleGun *_gun;
     unsigned int _num;
