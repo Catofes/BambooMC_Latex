@@ -42,6 +42,7 @@ public:
 
 private:
   void LoadFile();
+
   G4String _InputFile;
   std::vector<std::vector<ParticleInfo>> _GunData;
   G4ParticleGun *_gun;
@@ -51,6 +52,7 @@ private:
   double _loc_y;
   double _loc_z;
   bool _rotate;
+
 };
 
 #endif

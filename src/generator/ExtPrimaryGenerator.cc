@@ -34,6 +34,21 @@ ExtPrimaryGenerator::ExtPrimaryGenerator(const G4String &name) : BambooGenerator
     throw std::runtime_error("Wrong Input File. Can't Generator Any Particle.");
   }
   this->LoadFile();
+  this->_loc_type = G4String(BambooGlobalVariables::Instance()->getGeneratorParameterAsString("Type"));
+  if (this->_loc_type == "Function");
+  else if (this->_loc_type == "Loc");
+  else if (this->_loc_type.empty())
+    this->_loc_type = G4String("Loc");
+  else {
+    throw std::runtime_error("Wrong Type. Can't Know Particle Generate Location.");
+  }
+  this->_loc_x = BambooGlobalVariables::Instance()->getGeneratorParameterAsDouble("LocX");
+  this->_loc_y = BambooGlobalVariables::Instance()->getGeneratorParameterAsDouble("LocY");
+  this->_loc_z = BambooGlobalVariables::Instance()->getGeneratorParameterAsDouble("LocZ");
+  if (BambooGlobalVariables::Instance()->getGeneratorParameterAsInt("RndRotate") == 1)
+    this->_rotate = true;
+  else
+    this->_rotate = false;
   this->_gun = new G4ParticleGun();
 }
 
@@ -126,7 +141,10 @@ void ExtPrimaryGenerator::GeneratePrimaries(G4Event *event) {
     throw std::runtime_error("Can't Generate Event. Data Out of Range.");
   }
   G4ThreeVector loc(0, 0, 0);
-  this->GenerateLoc(&loc);
+  if (_loc_type == "Function")
+    this->GenerateLoc(&loc);
+  else
+    loc.set(_loc_x, _loc_y, _loc_z);
   std::vector<ParticleInfo> particles = _GunData[_num];
   G4double costheta = -1 + 2 * G4UniformRand();
   //randomize phi
@@ -139,10 +157,11 @@ void ExtPrimaryGenerator::GeneratePrimaries(G4Event *event) {
     G4ParticleDefinition *particle = particleTable->FindParticle(p.ParticleType);
 
     this->_gun->SetParticleDefinition(particle);
-    double pMag = sqrt(p.px * p.px + p.py * p.py + p.pz * p.pz);
-    G4ParticleMomentum momentum(pMag * sintheta * cos(phi), pMag * sintheta * sin(phi),
-                                pMag * costheta);
-
+    G4ParticleMomentum momentum(p.px, p.py, p.pz);
+    if (_rotate) {
+      double pMag = sqrt(p.px * p.px + p.py * p.py + p.pz * p.pz);
+      momentum.set(pMag * sintheta * cos(phi), pMag * sintheta * sin(phi), pMag * costheta);
+    }
     G4strstreambuf *oldBuffer = dynamic_cast<G4strstreambuf *>(G4cout.rdbuf(0));
     this->_gun->SetParticleMomentum(momentum * GeV);
     G4cout.rdbuf(oldBuffer);
