@@ -49,10 +49,10 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       hit->setParent(trackMap[parentId]);
     }
     hit->setEnergy(edep);
-    hit->setX(aStep->GetPreStepPoint()->GetPosition().x());
-    hit->setY(aStep->GetPreStepPoint()->GetPosition().y());
-    hit->setZ(aStep->GetPreStepPoint()->GetPosition().z());
-    hit->setT(aStep->GetPreStepPoint()->GetGlobalTime());
+    hit->setX(aStep->GetPostStepPoint()->GetPosition().x());
+    hit->setY(aStep->GetPostStepPoint()->GetPosition().y());
+    hit->setZ(aStep->GetPostStepPoint()->GetPosition().z());
+    hit->setT(aStep->GetPostStepPoint()->GetGlobalTime());
     hit->setType(aStep->GetTrack()->GetParticleDefinition()->GetParticleName());
     if (aStep->GetTrack()->GetCreatorProcess()) {
       hit->setCreatorProcess(aStep->GetTrack()->GetCreatorProcess()->GetProcessName());
