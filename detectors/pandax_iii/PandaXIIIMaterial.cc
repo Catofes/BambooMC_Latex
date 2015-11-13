@@ -41,7 +41,7 @@ PandaXIIIMaterial::PandaXIIIMaterial (const G4String & name)
     _enrichedXenonDensity *= kg / m3;
   }
   if (_tmaMassFraction <= 0 || _tmaMassFraction > 1) {
-    _tmaMassFraction = 0.03;
+    _tmaMassFraction = 0.01;
   }
 }
 

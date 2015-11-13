@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+  <run number="9001"/>
+  <geometry>
+    <material name="PandaXIIIMaterial">
+      <!-- the density is kg/m3 -->
+      <parameter name="enriched_xenon_density" value="56.58842421"/>
+    </material>
+    <detector name="SimpleLabWall">
+      <parameter name="length" value="20*m"/>
+      <parameter name="width" value="15*m"/>
+      <parameter name="height" value="12*m"/>
+      <parameter name="rock_wall_thickness" value="3*m"/>
+      <parameter name="concrete_wall_thickness" value="0.5*m"/>
+      <parameter name="concrete_floor_thickness" value="0.5*m"/>
+      <parameter name="visible" value="0"/>
+    </detector>
+    <detector name="PandaXSimpleWaterShield" parent="SimpleLabWall">
+      <parameter name="length" value="13*m"/>
+      <parameter name="width" value="12.5*m"/>
+      <parameter name="height" value="12.5*m"/>
+      <parameter name="visible" value="1"/>
+      <parameter name="counting_flux_in" value="0"/>
+    </detector>
+    <detector name="WaterShield" parent="PandaXSimpleWaterShield">
+      <parameter name="shape" value="1"/>
+      <parameter name="length" value="12"/>
+      <parameter name="width" value="11.5"/>
+      <parameter name="height" value="11.5"/>
+      <parameter name="counting_flux_in" value="0"/>
+    </detector>
+    <detector name="HpXenonGasDetector" parent="WaterShield">
+      <parameter name="is_sensitive" value="0"/>
+    </detector>
+    <detector name="PandaXIIITPC00" parent="HpXenonGasDetector">
+      <parameter name="num_rings" value="34"/>
+      <parameter name="ring_inner_radius" value="687*mm"/>
+      <parameter name="ring_height" value="10*mm"/>
+      <parameter name="ring_spacing" value="10*mm"/>
+      <parameter name="ring_thickness" value="5*mm"/>
+      <parameter name="cathode_frame_height" value="5*mm"/>
+      <parameter name="num_supporting_bars" value="24"/>
+      <parameter name="readout_plate_thickness" value="5*mm"/>
+      <parameter name="build_sensitive_gas" value="1"/>
+      <parameter name="electric_field_direction" value="1"/>
+      <parameter name="electric_field" value="1000"/>
+    </detector>
+  </geometry>
+  <physics name="SimpleUnderGroundPhysics">
+    <parameter name="cutlength" value="0.02*mm"/>
+  </physics>
+  <generator name="SimpleGPSGenerator"/>
+  <analysis name="PandaXAnalysis">
+    <parameter name="EnableEnergyDeposition" value="1"/>
+    <parameter name="EnableFlatSurfaceFlux" value="0"/>
+    <parameter name="enable_primary_particle" value="1"/>
+    <parameter name="save_null_event" value="0"/>
+    <parameter name="enable_decay_chain_splitting" value="1"/>
+  </analysis>
+</BambooMC>

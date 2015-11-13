@@ -27,14 +27,12 @@ private:
   double _shiftY;
   double _shiftZ;
 
-  double _electricFieldZ;
+  bool _isSensitive;
 
   G4LogicalVolume * _copperVesselLogicalVolume;
   G4VPhysicalVolume * _copperVesselPhysicalVolume;
-  G4LogicalVolume * _hpXenonLogicalVolumeTop;
-  G4LogicalVolume * _hpXenonLogicalVolumeBottom;
-  G4VPhysicalVolume * _hpXenonPhysicalVolumeTop;
-  G4VPhysicalVolume * _hpXenonPhysicalVolumeBottom;
+  G4LogicalVolume * _XeTubLogicalVolume;
+  G4VPhysicalVolume * _XeTubPhysicalVolume;
 };
 
 
