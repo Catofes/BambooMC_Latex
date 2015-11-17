@@ -9,27 +9,24 @@
     <detector name="SimpleLabWall">
       <parameter name="length" value="20*m"/>
       <parameter name="width" value="15*m"/>
-      <parameter name="height" value="12*m"/>
+      <parameter name="height" value="13*m"/>
       <parameter name="rock_wall_thickness" value="3*m"/>
-      <parameter name="concrete_wall_thickness" value="0.5*m"/>
-      <parameter name="concrete_floor_thickness" value="0.5*m"/>
+      <parameter name="concrete_wall_thickness" value="0.6*m"/>
+      <parameter name="concrete_floor_thickness" value="0.6*m"/>
       <parameter name="visible" value="0"/>
     </detector>
     <detector name="PandaXSimpleWaterShield" parent="SimpleLabWall">
-      <parameter name="length" value="13*m"/>
-      <parameter name="width" value="12.5*m"/>
-      <parameter name="height" value="12.5*m"/>
+      <parameter name="length" value="20*m"/>
+      <parameter name="width" value="15*m"/>
+      <parameter name="height" value="13*m"/>
       <parameter name="visible" value="1"/>
       <parameter name="counting_flux_in" value="0"/>
     </detector>
-    <detector name="WaterShield" parent="PandaXSimpleWaterShield">
-      <parameter name="shape" value="1"/>
-      <parameter name="length" value="12"/>
-      <parameter name="width" value="11.5"/>
-      <parameter name="height" value="11.5"/>
-      <parameter name="counting_flux_in" value="0"/>
-    </detector>
-    <detector name="HpXenonGasDetector" parent="WaterShield">
+    <detector name="HpXenonGasDetector" parent="PandaXSimpleWaterShield">
+      <parameter name="vessel_inner_radius" value="750*mm"/>
+      <parameter name="vessel_inner_height" value="2000*mm"/>
+      <parameter name="vessel_barrel_thickness" value="30*mm"/>
+      <parameter name="vessel_end_thickness" value="150*mm"/>
       <parameter name="is_sensitive" value="0"/>
     </detector>
     <detector name="PandaXIIITPC00" parent="HpXenonGasDetector">
