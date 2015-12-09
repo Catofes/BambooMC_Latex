@@ -63,6 +63,7 @@ PandaXIIITPC00::PandaXIIITPC00(const G4String &name)
 
   _nSupportingBars = dp.getParameterAsInt("num_supporting_bars");
   _readoutPlateThickness = BambooUtils::evaluate(dp.getParameterAsString("readout_plate_thickness"));
+  _readoutPlateKaptonThickness = BambooUtils::evaluate(dp.getParameterAsString("readout_plate_kapton_thickness"));
   int buildGas = dp.getParameterAsInt("build_sensitive_gas");
 
   _electricFieldDirection = dp.getParameterAsInt("electric_field_direction");
@@ -109,6 +110,9 @@ PandaXIIITPC00::PandaXIIITPC00(const G4String &name)
   if (_readoutPlateThickness <= 0) {
     _readoutPlateThickness = 5 * mm;
   }
+  if (_readoutPlateKaptonThickness <= 0) {
+    _readoutPlateKaptonThickness = 0.05 * mm;
+  }
   if (buildGas != 1 && buildGas != 0) {
     G4cout << "build_sensitive_gas should be set to either 0 or 1. 0 will be used as default." << G4endl;
   }
@@ -116,7 +120,8 @@ PandaXIIITPC00::PandaXIIITPC00(const G4String &name)
   if (_electricFieldDirection != 0 && _electricFieldDirection != 1
       && _electricFieldDirection != 2 && _electricFieldDirection != 3) {
     _electricFieldDirection = 0;
-    G4cout << "The direction of the electric field can either be 0, 1, 2 and 3. 0 will be used by default." << G4endl;
+    G4cout << "The direction of the electric field can either be 0, 1, 2 and 3. 0 will be used by default." <<
+    G4endl;
   }
 
   if (_electricField > 0) {
@@ -237,35 +242,45 @@ G4bool PandaXIIITPC00::construct() {
   new G4PVPlacement(0, G4ThreeVector(0, 0, -barLength - _readoutPlateThickness / 2), _readoutPlateLog, "ReadoutPlate",
                     _parentPart->getContainerLogicalVolume(), false, 1);
 
+  G4Material *kapton = G4Material::GetMaterial("G4_KAPTON");
+  G4VSolid *readoutPlateKaptonSolid = new G4Tubs("readoutPlateKaptonSolid", 0, _ringInnerRadius,
+                                                 _readoutPlateKaptonThickness / 2, 0, 2 * pi);
+  _readoutPlateKaptonLog = new G4LogicalVolume(readoutPlateKaptonSolid, kapton, "ReadoutPlateKaptonLog", 0, 0, 0);
+  G4VisAttributes *kaptonVis = new G4VisAttributes();
+  kaptonVis->SetColour(100. / 255, 100. / 255, 224. / 100, 0.8);
+  _readoutPlateKaptonLog->SetVisAttributes(kaptonVis);
+  new G4PVPlacement(0, G4ThreeVector(0, 0, barLength - _readoutPlateKaptonThickness / 2), _readoutPlateKaptonLog,
+                    "ReadoutPlateKapton", _parentPart->getContainerLogicalVolume(), false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0, 0, -barLength + _readoutPlateKaptonThickness / 2), _readoutPlateKaptonLog,
+                    "ReadoutPlateKapton", _parentPart->getContainerLogicalVolume(), false, 1);
 
   if (_buildSenstivieGas) {
     G4Material *XeTMAMixture = G4Material::GetMaterial("XeTMAMixture");
     G4VisAttributes *gasVis;
     //construct and place UpXe.
-    G4Tubs * xeTub = new G4Tubs("xeTub", 0, _ringInnerRadius, (barLength - _cathodeHeight/2) / 2, 0, 2 * pi);
+    G4Tubs *xeTub = new G4Tubs("xeTub", 0, _ringInnerRadius,
+                               (barLength - _cathodeHeight / 2 - _readoutPlateKaptonThickness) / 2, 0, 2 * pi);
     _upXeLogicalVolume = new G4LogicalVolume(xeTub, XeTMAMixture, "UpXeLog");
     _downXeLogicalVolume = new G4LogicalVolume(xeTub, XeTMAMixture, "DownXeLog");
-    if (_electricFieldDirection == 0)
-      goto PLACEMENT;
-    {
-      G4cout << "Construct electric field in xenon..." << G4endl; 
+    if (_electricFieldDirection != 0) {
+      G4cout << "Construct electric field in xenon..." << G4endl;
       G4ThreeVector eVec(0, 0, 0);
       switch (_electricFieldDirection) {
-      case 1:
-        eVec.setX(_electricField);
-        break;
-      case 2:
-        eVec.setY(_electricField);
-        break;
-      case 3:
-        eVec.setZ(_electricField);
-        break;
+        case 1:
+          eVec.setX(_electricField);
+          break;
+        case 2:
+          eVec.setY(_electricField);
+          break;
+        case 3:
+          eVec.setZ(_electricField);
+          break;
       }
 
       // field for xenon (up)
-      G4Field * electricField_up = new G4UniformElectricField(-eVec);
-      G4EqMagElectricField * equation_up = new G4EqMagElectricField((G4ElectroMagneticField *) electricField_up);
-      G4MagIntegratorStepper * stepper_up = new G4ClassicalRK4(equation_up, 8);
+      G4Field *electricField_up = new G4UniformElectricField(-eVec);
+      G4EqMagElectricField *equation_up = new G4EqMagElectricField((G4ElectroMagneticField *) electricField_up);
+      G4MagIntegratorStepper *stepper_up = new G4ClassicalRK4(equation_up, 8);
       G4FieldManager *localFieldManager_up = new G4FieldManager(electricField_up);
       G4MagInt_Driver *driver_up = new G4MagInt_Driver(0.01 * mm, stepper_up, stepper_up->GetNumberOfVariables());
       G4ChordFinder *chordFinder_up = new G4ChordFinder(driver_up);
@@ -273,21 +288,22 @@ G4bool PandaXIIITPC00::construct() {
       _upXeLogicalVolume->SetFieldManager(localFieldManager_up, true);
 
       // field for xenon (down)
-      G4Field * electricField_down = new G4UniformElectricField(eVec);
-      G4EqMagElectricField * equation_down = new G4EqMagElectricField((G4ElectroMagneticField *) electricField_down);
-      G4MagIntegratorStepper * stepper_down = new G4ClassicalRK4(equation_down, 8);
+      G4Field *electricField_down = new G4UniformElectricField(eVec);
+      G4EqMagElectricField *equation_down = new G4EqMagElectricField(
+              (G4ElectroMagneticField *) electricField_down);
+      G4MagIntegratorStepper *stepper_down = new G4ClassicalRK4(equation_down, 8);
       G4FieldManager *localFieldManager_down = new G4FieldManager(electricField_down);
-      G4MagInt_Driver *driver_down = new G4MagInt_Driver(0.01 * mm, stepper_down, stepper_down->GetNumberOfVariables());
+      G4MagInt_Driver *driver_down = new G4MagInt_Driver(0.01 * mm, stepper_down,
+                                                         stepper_down->GetNumberOfVariables());
       G4ChordFinder *chordFinder_down = new G4ChordFinder(driver_down);
       localFieldManager_down->SetChordFinder(chordFinder_down);
       _downXeLogicalVolume->SetFieldManager(localFieldManager_down, true);
     }
-PLACEMENT:
     // placement of xenon
-    new G4PVPlacement(0, G4ThreeVector(0, 0, (barLength+_cathodeHeight/2)/2),
+    new G4PVPlacement(0, G4ThreeVector(0, 0, (barLength + _cathodeHeight / 2 - _readoutPlateKaptonThickness) / 2),
                       _upXeLogicalVolume, "ActiveXenon", _parentPart->getContainerLogicalVolume(), false,
                       0);
-    new G4PVPlacement(0, G4ThreeVector(0, 0, -(barLength+_cathodeHeight/2)/2),
+    new G4PVPlacement(0, G4ThreeVector(0, 0, -(barLength + _cathodeHeight / 2 - _readoutPlateKaptonThickness) / 2),
                       _downXeLogicalVolume, "ActiveXenon", _parentPart->getContainerLogicalVolume(),
                       false, 1);
 
@@ -304,6 +320,5 @@ PLACEMENT:
     _downXeLogicalVolume->SetSensitiveDetector(xeSD);
 
   }
-
   return true;
 }

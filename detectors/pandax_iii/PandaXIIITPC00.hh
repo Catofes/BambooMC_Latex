@@ -41,8 +41,8 @@ private:
   int _electricFieldDirection;
 
   double _electricField;
- 
-  
+
+
   G4LogicalVolume * _ringsLog;
   G4VPhysicalVolume * _ringsPhys;
 
@@ -50,8 +50,9 @@ private:
   G4VPhysicalVolume * _cathodePhys;
 
   double _readoutPlateThickness;
+  double _readoutPlateKaptonThickness;
   G4LogicalVolume * _readoutPlateLog;
-
+  G4LogicalVolume * _readoutPlateKaptonLog;
   G4LogicalVolume * _upXeLogicalVolume;
   G4LogicalVolume * _downXeLogicalVolume;
 };
