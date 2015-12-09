@@ -235,6 +235,9 @@ void PandaXIIIMaterial::defineMaterials()
 
   materialVec.push_back(lowCarbonSteel);
 
+  G4Material * kapton = pNistManager->FindOrBuildMaterial("G4_KAPTON");
+  materialVec.push_back(kapton);
+
   G4cout << "Available materials: " << G4endl;
   for (size_t i=0; i<materialVec.size(); ++i) {
     G4cout << materialVec[i]->GetName();
