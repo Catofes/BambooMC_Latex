@@ -62,6 +62,8 @@ PandaXIIITPC00::PandaXIIITPC00(const G4String &name)
   _cathodeHeight = BambooUtils::evaluate(dp.getParameterAsString("cathode_height"));
 
   _nSupportingBars = dp.getParameterAsInt("num_supporting_bars");
+  _supporterWidth = BambooUtils::evaluate(dp.getParameterAsString("supporter_width"));
+  _supporterThickness = BambooUtils::evaluate(dp.getParameterAsString("supporter_thickness"));
   _readoutPlateThickness = BambooUtils::evaluate(dp.getParameterAsString("readout_plate_thickness"));
   _readoutPlateKaptonThickness = BambooUtils::evaluate(dp.getParameterAsString("readout_plate_kapton_thickness"));
   int buildGas = dp.getParameterAsInt("build_sensitive_gas");
