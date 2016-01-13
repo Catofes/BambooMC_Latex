@@ -22,7 +22,9 @@
       <parameter name="visible" value="1"/>
       <parameter name="counting_flux_in" value="0"/>
     </detector>
-    <detector name="HpXenonGasDetector" parent="PandaXSimpleWaterShield">
+    <detector name="PandaXIIIVesselSupporter" parent="PandaXSimpleWaterShield">
+    </detector>
+    <detector name="HpXenonGasDetector" parent="PandaXIIIVesselSupporter">
       <parameter name="vessel_inner_radius" value="750*mm"/>
       <parameter name="vessel_inner_height" value="2000*mm"/>
       <parameter name="vessel_barrel_thickness" value="30*mm"/>

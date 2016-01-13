@@ -100,7 +100,7 @@ G4bool HpXenonGasDetector::construct()
   _copperVesselLogicalVolume = new G4LogicalVolume(vesselTub, copper, "CopperVesselLog", 0, 0, 0);
 
   G4RotationMatrix * mat = new G4RotationMatrix();
-  mat->rotateY(pi/2);
+  //mat->rotateY(pi/2);
   
   _copperVesselPhysicalVolume = new G4PVPlacement(mat, G4ThreeVector(_shiftX, _shiftY, _shiftZ), _copperVesselLogicalVolume, "CopperVessel", _parentPart->getContainerLogicalVolume(), false, 0);
 

@@ -36,7 +36,7 @@ SampleBoxDetector::SampleBoxDetector(const G4String &name)
     _shiftX = BambooUtils::evaluate(dp.getParameterAsString("shift_x"));
     _shiftY = BambooUtils::evaluate(dp.getParameterAsString("shift_y"));
     _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
-    _material = BambooUtils::evaluate(dp.getParameterAsString("material"));
+    _material = dp.getParameterAsString("material");
     if (_halfX == 0) {
         _halfX = 1.0 * m;
     }
@@ -47,13 +47,13 @@ SampleBoxDetector::SampleBoxDetector(const G4String &name)
         _halfZ = 1.0 * m;
     }
     if (_shiftX == 0) {
-        _shiftX = 1.0 * m;
+        _shiftX = 0.0 * m;
     }
     if (_shiftY == 0) {
-        _shiftY = 1.0 * m;
+        _shiftY = 0.0 * m;
     }
     if (_shiftZ == 0) {
-        _shiftZ = 1.0 * m;
+        _shiftZ = 0.0 * m;
     }
     if (_material == ""){
         _material = "G4_AIR";
