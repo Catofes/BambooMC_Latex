@@ -55,16 +55,16 @@ PandaXIIIVesselSupporter::PandaXIIIVesselSupporter(const G4String &name)
     _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
 
     if (_steelShellInnerRadius <= 0) {
-        _steelShellInnerRadius = 800 * mm;
+        _steelShellInnerRadius = 6000 * mm;
     }
     if (_steelShellInnerHeight <= 0) {
-        _steelShellInnerHeight = 2500. * mm;
+        _steelShellInnerHeight = 10000. * mm;
     }
     if (_steelShellBarrelThickness <= 0) {
-        _steelShellBarrelThickness = 10. * mm;
+        _steelShellBarrelThickness = 25. * mm;
     }
     if (_steelShellEndThickness <= 0) {
-        _steelShellEndThickness = 10. * mm;
+        _steelShellEndThickness = 25. * mm;
     }
     if (_shiftX == 0) {
         _shiftX = 0 * mm;
