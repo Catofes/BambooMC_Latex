@@ -55,7 +55,7 @@ PandaXIIIVesselSupporter::PandaXIIIVesselSupporter(const G4String &name)
     _shiftZ = BambooUtils::evaluate(dp.getParameterAsString("shift_z"));
 
     if (_steelShellInnerRadius <= 0) {
-        _steelShellInnerRadius = 6000 * mm;
+        _steelShellInnerRadius = 3000 * mm;
     }
     if (_steelShellInnerHeight <= 0) {
         _steelShellInnerHeight = 10000. * mm;
@@ -79,7 +79,7 @@ PandaXIIIVesselSupporter::PandaXIIIVesselSupporter(const G4String &name)
 }
 
 G4bool PandaXIIIVesselSupporter::construct() {
-    G4Material *steel = G4Material::GetMaterial("Low_Carbon_Steel");
+    G4Material *steel = G4Material::GetMaterial("G4_STAINLESS-STEEL");
     G4VSolid *steelShellTub = new G4Tubs("SteelShellTub", 0, _steelShellInnerRadius + _steelShellBarrelThickness,
                                          _steelShellInnerHeight / 2. + _steelShellEndThickness, 0., 2. * pi);
     _steelShellLogicalVolume = new G4LogicalVolume(steelShellTub, steel, "SteelShellTubLog", 0, 0, 0);
@@ -91,7 +91,7 @@ G4bool PandaXIIIVesselSupporter::construct() {
                                                   _parentPart->getContainerLogicalVolume(), false, 0);
 
     G4VisAttributes *vesselVis = new G4VisAttributes();
-    vesselVis->SetColour(51. / 255, 0. / 255, 153. / 255, 0.4);
+    vesselVis->SetColour(230. / 255, 230. / 255, 230. / 255, 0.4);
     _steelShellLogicalVolume->SetVisAttributes(vesselVis);
 
 
@@ -102,7 +102,7 @@ G4bool PandaXIIIVesselSupporter::construct() {
                                                 _steelShellLogicalVolume, false, 0);
 
     vesselVis = new G4VisAttributes();
-    vesselVis->SetColour(102. / 204, 0. / 255, 155. / 255, 0.4);
+    vesselVis->SetColour(30. / 204, 0. / 255, 185. / 255, 0.4);
     _waterTubLogicalVolume->SetVisAttributes(vesselVis);
 
     _partLogicalVolume = _steelShellLogicalVolume;

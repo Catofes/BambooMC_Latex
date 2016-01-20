@@ -235,6 +235,9 @@ void PandaXIIIMaterial::defineMaterials()
 
   materialVec.push_back(lowCarbonSteel);
 
+  G4Material * stainlessSteel = pNistManager->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  materialVec.push_back(stainlessSteel);
+
   G4Material * kapton = pNistManager->FindOrBuildMaterial("G4_KAPTON");
   materialVec.push_back(kapton);
 
