@@ -24,6 +24,8 @@
     </detector>
     <detector name="PandaXIIIVesselSupporter" parent="PandaXSimpleWaterShield">
     </detector>
+    <detector name="PandaXIIIFakeElectronics" parent="PandaXIIIVesselSupporter">
+    </detector>
     <detector name="HpXenonGasDetector" parent="PandaXIIIVesselSupporter">
       <parameter name="vessel_inner_radius" value="750*mm"/>
       <parameter name="vessel_inner_height" value="2000*mm"/>

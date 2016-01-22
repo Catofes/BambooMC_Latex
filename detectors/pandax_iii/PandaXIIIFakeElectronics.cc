@@ -54,8 +54,8 @@ G4bool PandaXIIIFakeElectronics::construct()
   electronicsLog->SetVisAttributes(eVis);
   G4RotationMatrix * mat = new G4RotationMatrix();
   //mat->rotateY(pi/2);
-  new G4PVPlacement (mat, G4ThreeVector(_distance, 0, 0), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
-  new G4PVPlacement (mat, G4ThreeVector(-_distance, 0, 0), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
+  new G4PVPlacement (mat, G4ThreeVector(0, 0, _distance), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
+  new G4PVPlacement (mat, G4ThreeVector(0, 0, -_distance), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
 
   _partPhysicalVolume = 0;
   _partLogicalVolume = electronicsLog;
