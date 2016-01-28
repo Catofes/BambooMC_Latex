@@ -66,8 +66,8 @@ PandaXAnalysis::PandaXAnalysis (const G4String &name)
   }
   _runAction = new PandaXRunAction(dm);
   _eventAction = new PandaXEventAction(dm);
+  _trackingAction = new PandaXTrackingAction(dm);
   if (enableDecayChainSplitting) {
-    _trackingAction = new PandaXTrackingAction(dm);
     _steppingAction = new PandaXSteppingAction(dm);
     _stackingAction = new PandaXStackingAction(dm);
   }
