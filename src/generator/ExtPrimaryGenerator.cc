@@ -27,14 +27,13 @@ namespace
     const bool registered = BambooGeneratorFactory::Instance()->registerGenerator(ExtPrimaryGenerator,
                                                                                   createHQPrimaryGenerator);
 
-    void SplitString(const G4String &s, std::vector<G4String> v, const std::string &c)
+    void SplitString(const G4String &s, std::vector<G4String> &v, const std::string &c)
     {
         std::string::size_type pos1, pos2;
         pos2 = s.find(c);
         pos1 = 0;
         while (std::string::npos != pos2) {
             v.push_back(s.substr(pos1, pos2 - pos1));
-
             pos1 = pos2 + c.size();
             pos2 = s.find(c, pos1);
         }
@@ -59,6 +58,10 @@ ExtPrimaryGenerator::ExtPrimaryGenerator(const G4String &name) : BambooGenerator
     else if (this->_loc_type == "Solid") {
         SplitString(G4String(BambooGlobalVariables::Instance()->getGeneratorParameterAsString("SolidPara")),
                     this->_solid_paras, "|");
+        for (unsigned int i = 0; i < this->_solid_paras.size(); i++) {
+            std::cout << "Solid Paramaters: " << this->_solid_paras[i] << std::endl;
+        }
+
     }
     else if (this->_loc_type.empty())
         this->_loc_type = G4String("Loc");
@@ -123,7 +126,7 @@ void ExtPrimaryGenerator::GenerateSolidLoc(G4ThreeVector &loc)
             throw std::runtime_error("Error Solid Parameters. Miss some parts.");
         double r = std::stod(this->_solid_paras[1]);
         double h = std::stod(this->_solid_paras[2]);
-        loc.setZ((1 - G4UniformRand()) * h);
+        loc.setZ((1 - G4UniformRand() * 2) * h);
         double theta = G4UniformRand() * 2 * pi;
         double r_ = sqrt(G4UniformRand() * r * r);
         loc.setX(r_ * sin(theta));
