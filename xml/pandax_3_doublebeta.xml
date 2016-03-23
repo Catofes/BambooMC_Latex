@@ -53,7 +53,7 @@
     <generator name="ExtPrimaryGenerator">
         <parameter name="InputFile" value="output.data"/>
         <parameter name="Type" value="Solid"/>
-        <parameter name="SolidPara" value="Tub|687|1000"/>
+        <parameter name="SolidPara" value="Tub|687|700"/>
     </generator>
     <analysis name="PandaXAnalysis">
         <parameter name="EnableEnergyDeposition" value="1"/>

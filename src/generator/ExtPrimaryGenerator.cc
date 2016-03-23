@@ -153,7 +153,7 @@ void ExtPrimaryGenerator::GenerateSolidLoc(G4ThreeVector &loc)
     } else {
         throw std::runtime_error("Unknow Solid Type. Should be Tub/Cube");
     }
-
+    loc.rotateY(pi / 2);
 }
 
 void ExtPrimaryGenerator::GenerateLoc(G4ThreeVector &loc)
