@@ -53,9 +53,9 @@ G4bool PandaXIIIFakeElectronics::construct()
   eVis->SetColour(200./255, 10./255, 10./255, 0.8);
   electronicsLog->SetVisAttributes(eVis);
   G4RotationMatrix * mat = new G4RotationMatrix();
-  //mat->rotateY(pi/2);
-  new G4PVPlacement (mat, G4ThreeVector(0, 0, _distance), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
-  new G4PVPlacement (mat, G4ThreeVector(0, 0, -_distance), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
+  mat->rotateX(pi/2);
+  new G4PVPlacement (mat, G4ThreeVector(0, _distance, 0), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
+  new G4PVPlacement (mat, G4ThreeVector(0, -_distance, 0), electronicsLog, "FakeElectronics", _parentPart->getContainerLogicalVolume(), false, 0);
 
   _partPhysicalVolume = 0;
   _partLogicalVolume = electronicsLog;
