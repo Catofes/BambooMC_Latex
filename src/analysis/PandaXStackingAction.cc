@@ -1,5 +1,5 @@
 #include "analysis/PandaXStackingAction.hh"
-
+#include <G4Version.hh>
 #include <G4Track.hh>
 #include <G4StackManager.hh>
 #include <G4EventManager.hh>
@@ -16,9 +16,15 @@ PandaXStackingAction::~PandaXStackingAction()
 G4ClassificationOfNewTrack PandaXStackingAction::ClassifyNewTrack (const G4Track *aTrack)
 {
   const G4ParticleDefinition *def = aTrack->GetParticleDefinition();
+#if G4VERSION_NUMBER<1020
   if (def->GetParticleType()=="nucleus"
       && (aTrack->GetTrackStatus() == fPostponeToNextEvent
-	  || (def->GetParticleName().contains("[0.0]") && aTrack->GetKineticEnergy() <= 0.0 && aTrack->GetTrackID()>1))) {
+      || (def->GetParticleName().contains("[0.0]") && aTrack->GetKineticEnergy() <= 0.0 && aTrack->GetTrackID()>1))) {
+#else // G4VERSION_NUMBER>=1020
+  if (def->GetParticleType()=="nucleus"
+      && (aTrack->GetTrackStatus() == fPostponeToNextEvent
+          || ((!def->GetParticleName().contains("[")) && (!def->GetParticleName().contains("alpha")) && aTrack->GetKineticEnergy() <= 0.0 && aTrack->GetTrackID()>1))) {
+#endif
     // the postponed nucleus set in stepping,
     // or the nucleus at ground state with 0 kinetic energy
     // (except the first track),
