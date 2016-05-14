@@ -93,32 +93,13 @@ void PandaXIIIMaterial::defineMaterials()
   G4Element * Sn = pNistManager->FindOrBuildElement(50);
   elementVec.push_back(Sn);
 
-  // enriched Xe136
-  double xe128NaturalFraction = 0.019102;
-  double xe129NaturalFraction = 0.264006;
-  double xe130NaturalFraction = 0.04071;
-  double xe131NaturalFraction = 0.212324;
-  double xe132NaturalFraction = 0.269086;
-  double xe134NaturalFraction = 0.104357;
-
   G4Isotope * Xe136 = new G4Isotope ("Xe136", 54, 136, 135.907219 * g/mole);
-  G4Isotope * Xe128 = new G4Isotope ("Xe128", 54, 128, 127.9035313 * g/mole);
-  G4Isotope * Xe129 = new G4Isotope ("Xe129", 54, 129, 128.9047794 * g/mole);
-  G4Isotope * Xe130 = new G4Isotope ("Xe130", 54, 130, 129.9035080 * g/mole);
-  G4Isotope * Xe131 = new G4Isotope ("Xe131", 54, 131, 130.9050824 * g/mole);
-  G4Isotope * Xe132 = new G4Isotope ("Xe132", 54, 132, 131.9041535 * g/mole);
   G4Isotope * Xe134 = new G4Isotope ("Xe134", 54, 134, 133.9053945 * g/mole);
 
-  G4Element * enrichedXe = new G4Element("EnrichedXe", "EXe", 7);
-  enrichedXe->AddIsotope(Xe136, _xe136Fraction);
+  G4Element * enrichedXe = new G4Element("EnrichedXe", "EXe", 2);
   double restFraction = 1.0 - _xe136Fraction;
-  enrichedXe->AddIsotope(Xe128, restFraction * xe128NaturalFraction);
-  enrichedXe->AddIsotope(Xe129, restFraction * xe129NaturalFraction);
-  enrichedXe->AddIsotope(Xe130, restFraction * xe130NaturalFraction);
-  enrichedXe->AddIsotope(Xe131, restFraction * xe131NaturalFraction);
-  enrichedXe->AddIsotope(Xe132, restFraction * xe132NaturalFraction);
-  enrichedXe->AddIsotope(Xe134, restFraction * xe134NaturalFraction);
-
+  enrichedXe->AddIsotope(Xe136, _xe136Fraction);
+  enrichedXe->AddIsotope(Xe134, restFraction);
   G4cout << "Enriched Xe Atomic Mass: " << enrichedXe->GetA()/g*mole << " g/mole." << G4endl;
   G4cout << "Xe136 mole fraction: " << _xe136Fraction << G4endl;
   G4cout << "Xe136 mass fraction: " << Xe136->GetA()*0.9/enrichedXe->GetA() << G4endl;
@@ -141,7 +122,7 @@ void PandaXIIIMaterial::defineMaterials()
   G4cout << "Xenon pressure = " << xenonPressure/bar << " bar." << G4endl;
   double xenon_unit_amount = _enrichedXenonDensity*m3/(enrichedXe->GetA()*mole);
   G4cout << "Xenon unit amount " << xenon_unit_amount << " mole." << G4endl;
-  
+
   double tmaDensity = _enrichedXenonDensity * _tmaMassFraction;
   double tma_molecule_mass = 59.1103 * g/mole;
   double tma_unit_amount = tmaDensity*m3/(tma_molecule_mass*mole);
@@ -167,7 +148,7 @@ void PandaXIIIMaterial::defineMaterials()
 
   G4Material * concrete = pNistManager->FindOrBuildMaterial("G4_CONCRETE");
   materialVec.push_back(concrete);
-  
+
   // Siguang's sim Concrete
   std::vector<G4String> els;
   els.clear();
@@ -199,7 +180,7 @@ void PandaXIIIMaterial::defineMaterials()
   weights.push_back(.3506);
   weights.push_back(4e-4);
   weights.push_back(64e-4);
-  
+
   G4Material* Sigconcrete=pNistManager->ConstructNewMaterial("Sigconcrete",els,weights,2.4*g/cm3);
   materialVec.push_back(Sigconcrete);
 
