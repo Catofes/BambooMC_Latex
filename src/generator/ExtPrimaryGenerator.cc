@@ -7,14 +7,10 @@
 #include "BambooUtils.hh"
 #include "BambooGlobalVariables.hh"
 #include "G4RandomTools.hh"
-#include "G4ParticleMomentum.hh"
-#include "G4ThreeVector.hh"
-#include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
-#include <fstream>
-#include <string>
 #include <cmath>
 #include "G4strstreambuf.hh"
+#include <stdexcept>
 
 namespace
 {
@@ -84,6 +80,8 @@ void ExtPrimaryGenerator::LoadFile()
     std::fstream file;
     try {
         file.open(this->_InputFile);
+        if (!file.is_open())
+            throw std::exception();
         int event_id;
         int particle_num;
         while (true) {
