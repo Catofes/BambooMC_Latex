@@ -79,7 +79,7 @@ void ExtPrimaryGenerator::LoadFile()
 {
     std::fstream file;
     try {
-        file.open(this->_InputFile);
+        file.open(this->_InputFile, std::ios::in);
         if (!file.is_open())
             throw std::exception();
         int event_id;
