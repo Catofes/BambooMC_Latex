@@ -199,7 +199,7 @@ void ExtPrimaryGenerator::GenerateLoc(G4ThreeVector &loc)
 
 void ExtPrimaryGenerator::GeneratePrimaries(G4Event *event)
 {
-    if (_num > _GunData.size()) {
+    if (_num >= _GunData.size()) {
         throw std::runtime_error("Can't Generate Event. Data Out of Range.");
     }
     G4ThreeVector loc(0, 0, 0);
