@@ -158,7 +158,7 @@ G4bool PandaXIIITPC00::construct() {
 
   assert(LARGE_ARRAY_SIZE > nPoints);
 
-  double ringsHalfZ = _nRings * (_ringHeight + _ringSpacinmjig) + _cathodeFrameHeight;
+  double ringsHalfZ = _nRings * (_ringHeight + _ringSpacing) + _cathodeFrameHeight;
 
   for (int i = 0; i < _nRings; ++i) {
     zRing[4 * i] = -ringsHalfZ + i * _ringHeight + i * _ringSpacing;
