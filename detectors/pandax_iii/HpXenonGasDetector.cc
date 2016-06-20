@@ -26,14 +26,14 @@
 
 namespace {
 
-  BambooDetectorPart * createHpXenonGasDetector ()
+  BambooDetectorPart * createHpXenonGasDetector (const std::string & name)
   {
-    return new HpXenonGasDetector("HpXenonGasDetector");
+    return new HpXenonGasDetector(name);
   }
 
-  const std::string HpXenonGasDetectorName("HpXenonGasDetector");
+  const std::string HpXenonGasDetectorType("HpXenonGasDetector");
 
-  const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorName, createHpXenonGasDetector);
+  const bool registered = BambooDetectorFactory::Instance()->registerDetectorPart(HpXenonGasDetectorType, createHpXenonGasDetector);
 }
 
 HpXenonGasDetector::HpXenonGasDetector (const G4String & name)

@@ -21,9 +21,9 @@
 
 namespace {
 
-  BambooDetectorPart * createWaterShield ()
+  BambooDetectorPart * createWaterShield (const std::string & name)
   {
-    return new WaterShield("WaterShield");
+    return new WaterShield(name);
   }
 
   const std::string WaterShieldName("WaterShield");

@@ -20,9 +20,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIILab ()
+  BambooDetectorPart * createPandaXIIILab (const std::string & name)
   {
-    return new PandaXIIILab("PandaXIIILab");
+    return new PandaXIIILab(name);
   }
 
   const std::string PandaXIIILabName("PandaXIIILab");

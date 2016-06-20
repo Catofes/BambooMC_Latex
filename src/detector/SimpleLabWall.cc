@@ -16,9 +16,9 @@
 
 namespace {
 
-  BambooDetectorPart * createSimpleLabWall ()
+  BambooDetectorPart * createSimpleLabWall (const std::string & name)
   {
-    return new SimpleLabWall("SimpleLabWall");
+    return new SimpleLabWall(name);
   }
 
   const std::string SimpleLabWallName("SimpleLabWall");

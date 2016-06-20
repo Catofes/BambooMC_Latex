@@ -34,8 +34,8 @@
 
 namespace {
 
-    BambooDetectorPart *createPandaXIIITPC00() {
-      return new PandaXIIITPC00("PandaXIIITPC00");
+    BambooDetectorPart *createPandaXIIITPC00(const std::string & name) {
+      return new PandaXIIITPC00(name);
     }
 
     const std::string PandaXIIITPC00Name("PandaXIIITPC00");

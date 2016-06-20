@@ -16,8 +16,8 @@
 
 namespace {
 
-    BambooDetectorPart *createSampleBoxDetector() {
-        return new SampleBoxDetector("SampleBoxDetector");
+    BambooDetectorPart *createSampleBoxDetector(const std::string & name) {
+        return new SampleBoxDetector(name);
     }
 
     const std::string SampleBoxDetectorName("SampleBoxDetector");

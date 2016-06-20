@@ -14,9 +14,9 @@
 
 namespace {
 
-  BambooDetectorPart * createCopperVessel ()
+  BambooDetectorPart * createCopperVessel (const std::string & name)
   {
-    return new CopperVessel("CopperVessel");
+    return new CopperVessel(name);
   }
 
   const std::string CopperVesselName("CopperVessel");

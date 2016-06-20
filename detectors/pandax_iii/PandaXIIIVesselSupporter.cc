@@ -29,8 +29,8 @@
 
 namespace {
 
-    BambooDetectorPart *createPandaXIIIVesselSupporter() {
-        return new PandaXIIIVesselSupporter("PandaXIIIVesselSupporter");
+    BambooDetectorPart *createPandaXIIIVesselSupporter(const std::string & name) {
+        return new PandaXIIIVesselSupporter(name);
     }
 
     const std::string PandaXIIIVesselSupporterName("PandaXIIIVesselSupporter");

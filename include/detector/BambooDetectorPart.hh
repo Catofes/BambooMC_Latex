@@ -6,37 +6,49 @@
 #include <G4PhysicalConstants.hh>
 
 class G4LogicalVolume;
+
 class G4VPhysicalVolume;
 
-class BambooDetectorPart {
+class BambooDetectorPart
+{
 public:
-  BambooDetectorPart(const G4String &partName);
+    BambooDetectorPart(const G4String &typeName);
 
-  virtual ~BambooDetectorPart() {}
+    virtual ~BambooDetectorPart()
+    { }
 
-  virtual G4bool construct() = 0;
+    virtual G4bool construct() = 0;
 
-  G4String getName() const { return _partName; }
+    G4String getName() const
+    { return _partName; }
 
-  void setParent (BambooDetectorPart * parent);
+    G4String getType() const
+    { return _typeName; }
 
-  G4LogicalVolume * getLogicalVolume ();
+    void setParent(BambooDetectorPart *parent);
 
-  G4LogicalVolume * getContainerLogicalVolume ();
+    void setName(const G4String &name);
 
-  G4VPhysicalVolume * getPhysicalVolume();
+    G4LogicalVolume *getLogicalVolume();
+
+    G4LogicalVolume *getContainerLogicalVolume();
+
+    G4VPhysicalVolume *getPhysicalVolume();
 
 protected:
-  G4String _partName;
+    G4String _partName;
 
-  G4LogicalVolume * _partLogicalVolume;
+    G4String _typeName;
 
-  G4LogicalVolume * _partContainerLogicalVolume;
+    G4LogicalVolume *_partLogicalVolume;
 
-  G4VPhysicalVolume * _partPhysicalVolume;
+    G4LogicalVolume *_partContainerLogicalVolume;
 
-  BambooDetectorPart * _parentPart;
+    G4VPhysicalVolume *_partPhysicalVolume;
 
-  
+    BambooDetectorPart *_parentPart;
+
+
 };
+
 #endif

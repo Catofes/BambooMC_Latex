@@ -15,9 +15,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIOuterRock ()
+  BambooDetectorPart * createPandaXIIIOuterRock (const std::string & name)
   {
-    return new PandaXIIIOuterRock("PandaXIIIOuterRock");
+    return new PandaXIIIOuterRock(name);
   }
 
   const std::string PandaXIIIOuterRockName("PandaXIIIOuterRock");

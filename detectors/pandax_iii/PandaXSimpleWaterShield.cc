@@ -22,9 +22,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXSimpleWaterShield ()
+  BambooDetectorPart * createPandaXSimpleWaterShield (const std::string & name)
   {
-    return new PandaXSimpleWaterShield("PandaXSimpleWaterShield");
+    return new PandaXSimpleWaterShield(name);
   }
 
   const std::string PandaXSimpleWaterShieldName("PandaXSimpleWaterShield");

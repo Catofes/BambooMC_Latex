@@ -14,9 +14,9 @@
 
 namespace {
 
-  BambooDetectorPart * createSampleWorldBox ()
+  BambooDetectorPart * createSampleWorldBox (const std::string & name)
   {
-    return new SampleWorldBox("SampleWorldBox");
+    return new SampleWorldBox(name);
   }
 
   const std::string SampleWorldBoxName("SampleWorldBox");

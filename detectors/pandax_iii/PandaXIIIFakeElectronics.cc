@@ -14,9 +14,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIFakeElectronics ()
+  BambooDetectorPart * createPandaXIIIFakeElectronics (const std::string & name)
   {
-    return new PandaXIIIFakeElectronics("PandaXIIIFakeElectronics");
+    return new PandaXIIIFakeElectronics(name);
   }
 
   const std::string PandaXIIIFakeElectronicsName("PandaXIIIFakeElectronics");

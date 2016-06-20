@@ -19,9 +19,9 @@
 
 namespace {
 
-  BambooDetectorPart * createSampleCylinderDetector ()
+  BambooDetectorPart * createSampleCylinderDetector (const std::string & name)
   {
-    return new SampleCylinderDetector("SampleCylinderDetector");
+    return new SampleCylinderDetector(name);
   }
 
   const std::string SampleCylinderDetectorName("SampleCylinderDetector");

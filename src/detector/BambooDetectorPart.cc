@@ -2,28 +2,33 @@
 #include <G4VPhysicalVolume.hh>
 #include "detector/BambooDetectorPart.hh"
 
-BambooDetectorPart::BambooDetectorPart (const G4String &partName)
-  : _partName(partName), _partLogicalVolume(0), _partContainerLogicalVolume(0),
-    _partPhysicalVolume(0), _parentPart(0)
+BambooDetectorPart::BambooDetectorPart(const G4String &typeName)
+        : _partName(""), _typeName(typeName), _partLogicalVolume(0), _partContainerLogicalVolume(0),
+          _partPhysicalVolume(0), _parentPart(0)
 {
 }
 
-void BambooDetectorPart::setParent (BambooDetectorPart * parent)
+void BambooDetectorPart::setParent(BambooDetectorPart *parent)
 {
-  _parentPart = parent;
+    _parentPart = parent;
 }
 
-G4LogicalVolume * BambooDetectorPart::getLogicalVolume ()
+void BambooDetectorPart::setName(const G4String &name)
 {
-  return _partLogicalVolume;
+    _partName = name;
 }
 
-G4VPhysicalVolume * BambooDetectorPart::getPhysicalVolume ()
+G4LogicalVolume *BambooDetectorPart::getLogicalVolume()
 {
-  return _partPhysicalVolume;
+    return _partLogicalVolume;
 }
 
-G4LogicalVolume * BambooDetectorPart::getContainerLogicalVolume ()
+G4VPhysicalVolume *BambooDetectorPart::getPhysicalVolume()
 {
-  return _partContainerLogicalVolume;
+    return _partPhysicalVolume;
+}
+
+G4LogicalVolume *BambooDetectorPart::getContainerLogicalVolume()
+{
+    return _partContainerLogicalVolume;
 }

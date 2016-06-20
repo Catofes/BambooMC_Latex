@@ -19,9 +19,9 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIPEShield ()
+  BambooDetectorPart * createPandaXIIIPEShield (const std::string & name)
   {
-    return new PandaXIIIPEShield("PandaXIIIPEShield");
+    return new PandaXIIIPEShield(name);
   }
 
   const std::string PandaXIIIPEShieldName("PandaXIIIPEShield");
