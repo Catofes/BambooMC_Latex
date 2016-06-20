@@ -13,7 +13,7 @@ class BambooDetectorFactory
 {
 
 public:
-    typedef BambooDetectorPart *(*CreateDetectorPartCallback)(const std::string &);
+    typedef BambooDetectorPart *(*CreateDetectorPartCallback)(const G4String &);
 
     static BambooDetectorFactory *Instance();
 

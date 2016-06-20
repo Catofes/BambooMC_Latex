@@ -20,7 +20,7 @@
 namespace
 {
 
-    BambooDetectorPart *createGasCylinderDetector(const std::string &name)
+    BambooDetectorPart *createGasCylinderDetector(const G4String &name)
     {
         return new GasCylinderDetector(name);
     }
@@ -35,7 +35,7 @@ GasCylinderDetector::GasCylinderDetector(const G4String &name)
         : BambooDetectorPart(name)
 {
     DetectorParameters dp = BambooGlobalVariables::Instance()
-            ->findDetectorPartParameters(name);
+            ->findDetectorPartParameters(_partName);
     _radius = dp.getParameterAsDouble("radius") * mm;
     _height = dp.getParameterAsDouble("height") * mm;
     _shiftX = dp.getParameterAsDouble("shiftX") * mm;

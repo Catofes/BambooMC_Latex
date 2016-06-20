@@ -29,7 +29,7 @@
 
 namespace {
 
-    BambooDetectorPart *createPandaXIIIVesselSupporter(const std::string & name) {
+    BambooDetectorPart *createPandaXIIIVesselSupporter(const G4String & name) {
         return new PandaXIIIVesselSupporter(name);
     }
 
@@ -43,7 +43,7 @@ PandaXIIIVesselSupporter::PandaXIIIVesselSupporter(const G4String &name)
         : BambooDetectorPart(name) {
 
     DetectorParameters dp = BambooGlobalVariables::Instance()
-            ->findDetectorPartParameters("PandaXIIIVesselSupporter");
+            ->findDetectorPartParameters(_partName);
 
     _steelShellInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("shell_inner_radius"));
     _steelShellBarrelThickness = BambooUtils::evaluate(dp.getParameterAsString("shell_barrel_thickness"));

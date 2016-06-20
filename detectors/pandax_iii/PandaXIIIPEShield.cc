@@ -19,7 +19,7 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXIIIPEShield (const std::string & name)
+  BambooDetectorPart * createPandaXIIIPEShield (const G4String & name)
   {
     return new PandaXIIIPEShield(name);
   }
@@ -33,7 +33,7 @@ PandaXIIIPEShield::PandaXIIIPEShield (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXIIIPEShield");
+    ->findDetectorPartParameters(_partName);
   _radius = dp.getParameterAsDouble("radius") * mm;
   _length=dp.getParameterAsDouble("length")*mm;
   _height = dp.getParameterAsDouble("height") * mm;

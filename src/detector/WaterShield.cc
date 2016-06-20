@@ -21,7 +21,7 @@
 
 namespace {
 
-  BambooDetectorPart * createWaterShield (const std::string & name)
+  BambooDetectorPart * createWaterShield (const G4String & name)
   {
     return new WaterShield(name);
   }
@@ -36,7 +36,7 @@ WaterShield::WaterShield (const G4String & name)
 {
   
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("WaterShield");
+    ->findDetectorPartParameters(_partName);
   _shape = dp.getParameterAsInt("shape");
   if (_shape == 1) {
     _length = dp.getParameterAsDouble("length") * m;

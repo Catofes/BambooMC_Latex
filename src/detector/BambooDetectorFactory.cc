@@ -32,5 +32,5 @@ BambooDetectorPart *BambooDetectorFactory::createDetectorPart(const std::string 
     if (i == _partMap.end()) {
         throw std::runtime_error(std::string("Unknown type [ " + type + " ]  for detector part: ") + name);
     }
-    return (i->second)(name);
+    return (i->second)(G4String(name));
 }

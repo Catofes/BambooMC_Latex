@@ -34,7 +34,7 @@
 
 namespace {
 
-    BambooDetectorPart *createPandaXIIITPC00(const std::string & name) {
+    BambooDetectorPart *createPandaXIIITPC00(const G4String & name) {
       return new PandaXIIITPC00(name);
     }
 
@@ -49,7 +49,7 @@ PandaXIIITPC00::PandaXIIITPC00(const G4String &name)
   //  BambooGlobalVariables *bgv = BambooGlobalVariables::Instance();
 
   DetectorParameters dp = BambooGlobalVariables::Instance()
-          ->findDetectorPartParameters("PandaXIIITPC00");
+          ->findDetectorPartParameters(_partName);
 
   _ringInnerRadius = BambooUtils::evaluate(dp.getParameterAsString("ring_inner_radius"));
   _ringThickness = BambooUtils::evaluate(dp.getParameterAsString("ring_thickness"));

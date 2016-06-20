@@ -16,7 +16,7 @@
 
 namespace {
 
-    BambooDetectorPart *createSampleBoxDetector(const std::string & name) {
+    BambooDetectorPart *createSampleBoxDetector(const G4String & name) {
         return new SampleBoxDetector(name);
     }
 
@@ -29,7 +29,7 @@ namespace {
 SampleBoxDetector::SampleBoxDetector(const G4String &name)
         : BambooDetectorPart(name) {
     DetectorParameters dp = BambooGlobalVariables::Instance()
-            ->findDetectorPartParameters("SampleBoxDetector");
+            ->findDetectorPartParameters(_partName);
     _halfX = BambooUtils::evaluate(dp.getParameterAsString("half_x"));
     _halfY = BambooUtils::evaluate(dp.getParameterAsString("half_y"));
     _halfZ = BambooUtils::evaluate(dp.getParameterAsString("half_z"));

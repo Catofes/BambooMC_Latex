@@ -16,7 +16,7 @@
 
 namespace {
 
-  BambooDetectorPart * createSimpleLabWall (const std::string & name)
+  BambooDetectorPart * createSimpleLabWall (const G4String & name)
   {
     return new SimpleLabWall(name);
   }
@@ -31,7 +31,7 @@ SimpleLabWall::SimpleLabWall (const G4String & name)
 {
 
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("SimpleLabWall");
+    ->findDetectorPartParameters(_partName);
 
   _length = BambooUtils::evaluate(dp.getParameterAsString("length"));
   _width = BambooUtils::evaluate(dp.getParameterAsString("width"));

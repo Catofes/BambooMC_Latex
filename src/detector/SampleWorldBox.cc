@@ -14,7 +14,7 @@
 
 namespace {
 
-  BambooDetectorPart * createSampleWorldBox (const std::string & name)
+  BambooDetectorPart * createSampleWorldBox (const G4String & name)
   {
     return new SampleWorldBox(name);
   }
@@ -28,7 +28,7 @@ SampleWorldBox::SampleWorldBox (const G4String & name)
   : BambooDetectorPart(name)
 {
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("SampleWorldBox");
+    ->findDetectorPartParameters(_partName);
   _halfX = dp.getParameterAsDouble("half_x");
   _halfY = dp.getParameterAsDouble("half_y");
   _halfZ = dp.getParameterAsDouble("half_z");

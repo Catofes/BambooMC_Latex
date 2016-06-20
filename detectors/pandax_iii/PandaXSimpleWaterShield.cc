@@ -22,7 +22,7 @@
 
 namespace {
 
-  BambooDetectorPart * createPandaXSimpleWaterShield (const std::string & name)
+  BambooDetectorPart * createPandaXSimpleWaterShield (const G4String & name)
   {
     return new PandaXSimpleWaterShield(name);
   }
@@ -35,9 +35,9 @@ namespace {
 PandaXSimpleWaterShield::PandaXSimpleWaterShield (const G4String & name)
   : BambooDetectorPart(name)
 {
-  
+
   DetectorParameters dp = BambooGlobalVariables::Instance()
-    ->findDetectorPartParameters("PandaXSimpleWaterShield");
+    ->findDetectorPartParameters(_partName);
   _length = BambooUtils::evaluate(dp.getParameterAsString("length"));
   _width = BambooUtils::evaluate(dp.getParameterAsString("width"));
   _height = BambooUtils::evaluate(dp.getParameterAsString("height"));

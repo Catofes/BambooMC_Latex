@@ -2,8 +2,8 @@
 #include <G4VPhysicalVolume.hh>
 #include "detector/BambooDetectorPart.hh"
 
-BambooDetectorPart::BambooDetectorPart(const G4String &typeName)
-        : _partName(""), _typeName(typeName), _partLogicalVolume(0), _partContainerLogicalVolume(0),
+BambooDetectorPart::BambooDetectorPart(const G4String &partName)
+        : _partName(partName), _typeName(""), _partLogicalVolume(0), _partContainerLogicalVolume(0),
           _partPhysicalVolume(0), _parentPart(0)
 {
 }
