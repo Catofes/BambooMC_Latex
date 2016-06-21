@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BambooMC>
+    <run number="9001"/>
+    <geometry>
+        <material name="LatexMaterial"/>
+        <detector type="LatexWorld" name="World"/>
+        <detector type="LatexLayer" name="Layer3" parent="World">
+            <parameter name="shift_z" value="0*mm"/>
+        </detector>
+        <detector type="LatexLayer" name="Layer4" parent="World">
+            <parameter name="shift_z" value="10.4*mm"/>
+        </detector>
+        <detector type="LatexLayer" name="Layer5" parent="World">
+            <parameter name="shift_z" value="20.8*mm"/>
+        </detector>
+        <detector type="LatexLayer" name="Layer2" parent="World">
+            <parameter name="shift_z" value="-10.4*mm"/>
+        </detector>
+        <detector type="LatexLayer" name="Layer1" parent="World">
+            <parameter name="shift_z" value="-20.8*mm"/>
+        </detector>
+    </geometry>
+    <physics name="SimpleUnderGroundPhysics">
+        <parameter name="cutlength" value="0.02*mm"/>
+    </physics>
+    <generator name="SimpleGPSGenerator"/>
+    <analysis name="PandaXAnalysis">
+        <parameter name="EnableEnergyDeposition" value="1"/>
+        <parameter name="EnableFlatSurfaceFlux" value="0"/>
+        <parameter name="enable_primary_particle" value="1"/>
+        <parameter name="save_null_event" value="0"/>
+        <parameter name="enable_decay_chain_splitting" value="1"/>
+    </analysis>
+</BambooMC>
