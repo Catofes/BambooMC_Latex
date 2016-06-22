@@ -11,6 +11,8 @@
 #include <cmath>
 #include "G4strstreambuf.hh"
 #include <stdexcept>
+#include <G4Navigator.hh>
+#include <G4TransportationManager.hh>
 
 namespace
 {
@@ -58,6 +60,12 @@ ExtPrimaryGenerator::ExtPrimaryGenerator(const G4String &name) : BambooGenerator
             std::cout << "Solid Paramaters: " << this->_solid_paras[i] << std::endl;
         }
 
+    } else if (this->_loc_type == "Volume") {
+        SplitString(G4String(BambooGlobalVariables::Instance()->getGeneratorParameterAsString("VolumePara")),
+                    this->_volume_paras, "|");
+        for (unsigned int i = 0; i < this->_volume_paras.size(); i++) {
+            std::cout << "Volume Paramaters: " << this->_volume_paras[i] << std::endl;
+        }
     }
     else if (this->_loc_type.empty())
         this->_loc_type = G4String("Loc");
@@ -113,6 +121,40 @@ void ExtPrimaryGenerator::LoadFile()
 
 ExtPrimaryGenerator::~ExtPrimaryGenerator()
 {
+}
+
+void ExtPrimaryGenerator::GenerateVolumeLoc(G4ThreeVector &loc)
+{
+    if (this->_volume_paras.size() < 4)
+        throw std::runtime_error("Error Volume Parameters. Should be VolumeName|MaxHalfX|MaxHalfY|MaxHalfZ.");
+    G4String volume_name = _volume_paras[0];
+    double x = std::stod(this->_volume_paras[1]);
+    double y = std::stod(this->_volume_paras[2]);
+    double z = std::stod(this->_volume_paras[3]);
+
+    G4ThreeVector null(0., 0., 0.);
+    G4ThreeVector *ptr;
+    ptr = &null;
+
+    G4VPhysicalVolume *theVolume;
+    G4Navigator *gNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+    for (int i = 0; i < 100000; i++) {
+        loc.setX((1 - G4UniformRand() * 2) * x);
+        loc.setY((1 - G4UniformRand() * 2) * y);
+        loc.setZ((1 - G4UniformRand() * 2) * z);
+        theVolume = gNavigator->LocateGlobalPointAndSetup(loc, ptr, true);
+        if (!theVolume) continue;
+        G4String theVolName = theVolume->GetName();
+        if (theVolName == volume_name)
+            return;
+    }
+    std::cout << "LoopCount = 100000\n";
+    std::cout << "Either the source distribution >> confinement\n";
+    std::cout << "or any confining volume may not overlap with\n";
+    std::cout << "the source distribution or any confining volumes\n";
+    std::cout << "may not exist\n" << std::endl;
+    return;
 }
 
 void ExtPrimaryGenerator::GenerateSolidLoc(G4ThreeVector &loc)
@@ -205,6 +247,8 @@ void ExtPrimaryGenerator::GeneratePrimaries(G4Event *event)
         this->GenerateLoc(loc);
     else if (_loc_type == "Solid")
         this->GenerateSolidLoc(loc);
+    else if (_loc_type == "Volume")
+        this->GenerateVolumeLoc(loc);
     else
         loc.set(_loc_x, _loc_y, _loc_z);
     std::vector<ParticleInfo> particles = _GunData[_num];

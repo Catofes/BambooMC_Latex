@@ -11,6 +11,8 @@
 #include <G4UniformMagField.hh>
 #include <G4TransportationManager.hh>
 #include <G4FieldManager.hh>
+#include <analysis/PandaXSensitiveDetector.hh>
+#include <G4SDManager.hh>
 
 namespace
 {
@@ -52,8 +54,10 @@ G4bool LatexLayer::construct()
     G4Material *pet = G4Material::GetMaterial("G4_TEFLON");
     G4Material *latex = G4Material::GetMaterial("LATEX");
 
-    G4Box *latexBox = new G4Box("latexBox", _halfX, _halfY, _latexZ / 2.);
-    G4LogicalVolume *latexLog = new G4LogicalVolume(latexBox, latex, "latexLog", 0, 0, 0);
+    G4Box *up_latex_box = new G4Box("UpLatexBox", _halfX, _halfY, _latexZ / 2.);
+    G4LogicalVolume *up_latex_log = new G4LogicalVolume(up_latex_box, latex, "UpLatexLog", 0, 0, 0);
+    G4Box *down_latex_box = new G4Box("DownLatexBox", _halfX, _halfY, _latexZ / 2.);
+    G4LogicalVolume *down_latex_log = new G4LogicalVolume(down_latex_box, latex, "DownLatexLog", 0, 0, 0);
 
     G4Box *petBox = new G4Box("petBox", _halfX, _halfY, _latexZ / 2.);
     G4LogicalVolume *petLog = new G4LogicalVolume(petBox, pet, "petLog", 0, 0, 0);
@@ -69,12 +73,19 @@ G4bool LatexLayer::construct()
     G4String upLatexName = _partName;
     upLatexName.append(G4String("UpLatex"));
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ + _latexZ / 2. + _PETZ / 2.),
-                                            latexLog, upLatexName, _parentPart->getContainerLogicalVolume(), false, 0);
+                                            up_latex_log, "Latex", _parentPart->getContainerLogicalVolume(), false, 0);
     G4String downLatexName = _partName;
     downLatexName.append(G4String("DownLatex"));
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ - _latexZ / 2. - _PETZ / 2.),
-                                            latexLog, downLatexName, _parentPart->getContainerLogicalVolume(), false,
+                                            down_latex_log, "Latex", _parentPart->getContainerLogicalVolume(), false,
                                             0);
 
+    G4String SDName = _partName;
+    SDName.append(G4String("SDName"));
+    PandaXSensitiveDetector *xeSD = new PandaXSensitiveDetector(SDName);
+    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(xeSD);
+    up_latex_log->SetSensitiveDetector(xeSD);
+    down_latex_log->SetSensitiveDetector(xeSD);
     return true;
 }

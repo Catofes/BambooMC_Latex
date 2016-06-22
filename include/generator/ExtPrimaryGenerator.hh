@@ -48,6 +48,7 @@ public:
 
     void GenerateSolidLoc(G4ThreeVector &loc);
 
+    void GenerateVolumeLoc(G4ThreeVector &loc);
 
 private:
     void LoadFile();
@@ -58,6 +59,7 @@ private:
     unsigned int _num;
     G4String _loc_type;
     std::vector<G4String> _solid_paras;
+    std::vector<G4String> _volume_paras;
     double _loc_x;
     double _loc_y;
     double _loc_z;
