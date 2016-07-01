@@ -73,11 +73,11 @@ G4bool LatexLayer::construct()
     G4String upLatexName = _partName;
     upLatexName.append(G4String("UpLatex"));
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ + _latexZ / 2. + _PETZ / 2.),
-                                            up_latex_log, "Latex", _parentPart->getContainerLogicalVolume(), false, 0);
+                                            up_latex_log, _partName, _parentPart->getContainerLogicalVolume(), false, 0);
     G4String downLatexName = _partName;
     downLatexName.append(G4String("DownLatex"));
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(_shiftX, _shiftY, _shiftZ - _latexZ / 2. - _PETZ / 2.),
-                                            down_latex_log, "Latex", _parentPart->getContainerLogicalVolume(), false,
+                                            down_latex_log, _partName, _parentPart->getContainerLogicalVolume(), false,
                                             0);
 
     G4String SDName = _partName;

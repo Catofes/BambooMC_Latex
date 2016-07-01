@@ -163,6 +163,10 @@ void PandaXDataManager::book(const std::string &name)
         _mcTree->Branch("yd", &_yd);
         _mcTree->Branch("zd", &_zd);
         _mcTree->Branch("td", &_td);
+        _mcTree->Branch("hpx", &_hpx);
+        _mcTree->Branch("hpy", &_hpy);
+        _mcTree->Branch("hpz", &_hpz);
+        _mcTree->Branch("boundry", &_boundry);
         _mcTree->Branch("energy", &_energy);
     }
     if (_recordFlatSurfaceFlux) {
@@ -224,6 +228,10 @@ void PandaXDataManager::fillEvent(const G4Event *aEvent, bool partial)
                     _yd.push_back(hit->getY() / mm);
                     _zd.push_back(hit->getZ() / mm);
                     _td.push_back(hit->getT() / s);
+                    _hpx.push_back(hit->getPx() / keV);
+                    _hpy.push_back(hit->getPy() / keV);
+                    _hpz.push_back(hit->getPz() / keV);
+                    _boundry.push_back(hit->getBoundry());
                     _energy.push_back(hit->getEnergy() / keV);
                     _totalEnergy += (hit->getEnergy()) / keV;
                     _nHits++;

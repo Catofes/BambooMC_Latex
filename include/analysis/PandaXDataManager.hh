@@ -8,139 +8,159 @@
 #include <map>
 
 class TFile;
+
 class TTree;
 
 class G4Event;
 
-class TemporaryParticle {
+class TemporaryParticle
+{
 public:
-  TemporaryParticle();
-  ~TemporaryParticle();
+    TemporaryParticle();
 
-  const std::string & getParticleType() const;
-  void setParticleType(const std::string type);
+    ~TemporaryParticle();
 
-  int getId() const;
-  void setId(int i);
+    const std::string &getParticleType() const;
 
-  double getEnergy() const;
-  void setEnergy(double e);
+    void setParticleType(const std::string type);
 
-  double getPx() const;
-  void setPx(double v);
+    int getId() const;
 
-  double getPy() const;
-  void setPy(double v);
+    void setId(int i);
 
-  double getPz() const;
-  void setPz(double v);
+    double getEnergy() const;
 
-  double getX() const;
-  void setX(double v);
+    void setEnergy(double e);
 
-  double getY() const;
-  void setY(double v);
+    double getPx() const;
 
-  double getZ() const;
-  void setZ(double v);
-  
-private:
-  std::string _type;
-  int _id;
-  double _energy;
-  double _px;
-  double _py;
-  double _pz;
-  double _x;
-  double _y;
-  double _z;
-};
+    void setPx(double v);
 
-class PandaXDataManager {
+    double getPy() const;
 
-  friend class PandaXRunAction;
-  friend class PandaXEventAction;
+    void setPy(double v);
 
-public:
-  PandaXDataManager(bool enableEnergyDeposition = true, bool enableFlatSurfaceFlux = false, bool enablePrimaryParticle = false);
+    double getPz() const;
 
-  ~PandaXDataManager();
+    void setPz(double v);
 
-  void book(const std::string & name = "pandaxout.root");
+    double getX() const;
 
-  void save();
+    void setX(double v);
 
-  void saveNullEvent(bool t);
+    double getY() const;
 
-  void fillEvent(const G4Event * aEvent, bool partial = false);
+    void setY(double v);
 
-  std::map<int, std::string> & getTrackMap ();
+    double getZ() const;
 
-  static PandaXDataManager * Instance();
-
-  void addTemporaryParticle(const TemporaryParticle & tp);
+    void setZ(double v);
 
 private:
-  void resetData();
-
-  //! reset the hits collection of the event
-  void resetPartialEvent(const G4Event * aEvent);
-
-  TFile * _rootFile;
-  TTree * _mcTree;
-
-  int _runId;
-  int _eventId;
-
-  // variables for the energy deposition.
-  int _nHits;
-  double _totalEnergy;
-  std::vector<int> _trackId;
-  std::vector<int> _parentId;
-  std::vector<std::string > _type;
-  std::vector<std::string > _parentType;
-  std::vector<std::string > _creatorProcess;
-  std::vector<std::string > _depositionProcess;
-  std::vector<std::string > _volume;
-  std::vector<double> _xd;
-  std::vector<double> _yd;
-  std::vector<double> _zd;
-  std::vector<double> _td;
-  std::vector<double> _energy;
-
-  // variables for flux counts
-  int _nTracks;
-  std::vector<double> _trackEnergy;
-  std::vector<std::string> _trackName;
-  std::vector<std::string> _trackParent;
-  std::vector<double> _px;
-  std::vector<double> _py;
-  std::vector<double> _pz;
-  std::vector<int> _surface;
-
-  // variables for primary particle
-  int _nPrimaries;
-  std::vector<std::string > _primaryType;
-  std::vector<int> _primaryId;
-  std::vector<double> _primaryEnergy;
-  std::vector<double> _primaryPx;
-  std::vector<double> _primaryPy;
-  std::vector<double> _primaryPz;
-  std::vector<double> _primaryX;
-  std::vector<double> _primaryY;
-  std::vector<double> _primaryZ;
-
-  bool _recordEnergyDeposition;
-  bool _recordFlatSurfaceFlux;
-  bool _recordPrimaryParticle;
-  bool _saveNullEvent;
-  bool _partialSaved;
-
-  std::vector<TemporaryParticle> _particles;
-  std::vector<TemporaryParticle> _tparticles;
-
-  std::map<int, std::string> _trackMap;
-
-  static PandaXDataManager * _instance;
+    std::string _type;
+    int _id;
+    double _energy;
+    double _px;
+    double _py;
+    double _pz;
+    double _x;
+    double _y;
+    double _z;
 };
+
+class PandaXDataManager
+{
+
+    friend class PandaXRunAction;
+
+    friend class PandaXEventAction;
+
+public:
+    PandaXDataManager(bool enableEnergyDeposition = true, bool enableFlatSurfaceFlux = false,
+                      bool enablePrimaryParticle = false);
+
+    ~PandaXDataManager();
+
+    void book(const std::string &name = "pandaxout.root");
+
+    void save();
+
+    void saveNullEvent(bool t);
+
+    void fillEvent(const G4Event *aEvent, bool partial = false);
+
+    std::map<int, std::string> &getTrackMap();
+
+    static PandaXDataManager *Instance();
+
+    void addTemporaryParticle(const TemporaryParticle &tp);
+
+private:
+    void resetData();
+
+    //! reset the hits collection of the event
+    void resetPartialEvent(const G4Event *aEvent);
+
+    TFile *_rootFile;
+    TTree *_mcTree;
+
+    int _runId;
+    int _eventId;
+
+    // variables for the energy deposition.
+    int _nHits;
+    double _totalEnergy;
+    std::vector<int> _trackId;
+    std::vector<int> _parentId;
+    std::vector<std::string> _type;
+    std::vector<std::string> _parentType;
+    std::vector<std::string> _creatorProcess;
+    std::vector<std::string> _depositionProcess;
+    std::vector<std::string> _volume;
+    std::vector<double> _xd;
+    std::vector<double> _yd;
+    std::vector<double> _zd;
+    std::vector<double> _td;
+    std::vector<double> _hpx;
+    std::vector<double> _hpy;
+    std::vector<double> _hpz;
+    std::vector<bool> _boundry;
+    std::vector<double> _energy;
+
+    // variables for flux counts
+    int _nTracks;
+    std::vector<double> _trackEnergy;
+    std::vector<std::string> _trackName;
+    std::vector<std::string> _trackParent;
+    std::vector<double> _px;
+    std::vector<double> _py;
+    std::vector<double> _pz;
+    std::vector<int> _surface;
+
+    // variables for primary particle
+    int _nPrimaries;
+    std::vector<std::string> _primaryType;
+    std::vector<int> _primaryId;
+    std::vector<double> _primaryEnergy;
+    std::vector<double> _primaryPx;
+    std::vector<double> _primaryPy;
+    std::vector<double> _primaryPz;
+    std::vector<double> _primaryX;
+    std::vector<double> _primaryY;
+    std::vector<double> _primaryZ;
+
+    bool _recordEnergyDeposition;
+    bool _recordFlatSurfaceFlux;
+    bool _recordPrimaryParticle;
+    bool _saveNullEvent;
+    bool _partialSaved;
+
+    std::vector<TemporaryParticle> _particles;
+    std::vector<TemporaryParticle> _tparticles;
+
+    std::map<int, std::string> _trackMap;
+
+    static PandaXDataManager *_instance;
+};
+
 #endif

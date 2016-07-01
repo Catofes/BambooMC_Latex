@@ -142,3 +142,4 @@ void PandaXEnergyDepositionHit::setParent(const string &parent)
 {
   _parent = parent;
 }
+
