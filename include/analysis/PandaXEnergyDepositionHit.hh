@@ -4,7 +4,7 @@
 #include <G4VHit.hh>
 #include <G4THitsCollection.hh>
 #include <G4Allocator.hh>
-
+#include <G4ThreeVector.hh>
 #include <string>
 
 using std::string;
