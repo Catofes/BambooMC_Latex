@@ -96,6 +96,7 @@ void LatexMaterial::defineMaterials()
     latex->AddElement(O, 0.249 / 3.8376);
     latex->AddElement(N, 0.074 / 3.8376);
     latex->AddElement(S, 0.0172 / 3.8376);
+    materialVec.push_back(latex);
 
     G4Material *teflon = pNistManager->FindOrBuildMaterial("G4_TEFLON");
     materialVec.push_back(teflon);

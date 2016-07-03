@@ -330,6 +330,10 @@ void PandaXDataManager::resetData()
         _yd.clear();
         _zd.clear();
         _td.clear();
+        _hpx.clear();
+        _hpy.clear();
+        _hpz.clear();
+        _boundry.clear();
         _energy.clear();
     }
     if (_recordFlatSurfaceFlux) {
