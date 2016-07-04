@@ -11,6 +11,8 @@
 #include <G4UniformMagField.hh>
 #include <G4TransportationManager.hh>
 #include <G4FieldManager.hh>
+#include <analysis/PandaXSensitiveDetector.hh>
+#include <G4SDManager.hh>
 
 namespace
 {
@@ -45,18 +47,23 @@ LatexWorld::LatexWorld(const G4String &name)
 
 G4bool LatexWorld::construct()
 {
-    G4Material *air = G4Material::GetMaterial("G4_AIR");
+    G4Material *air = G4Material::GetMaterial("VACCUM");
     G4Box *worldBox = new G4Box("WorldBox", _halfX, _halfY, _halfZ);
     _partLogicalVolume = new G4LogicalVolume(worldBox, air, "WorldLog", 0, 0, 0);
     _partPhysicalVolume = new G4PVPlacement(0, G4ThreeVector(), _partLogicalVolume, "World", 0, false, 0);
     _partContainerLogicalVolume = _partLogicalVolume;
 
     if (_magnetic_field) {
-        G4UniformMagField *magField = new G4UniformMagField(G4ThreeVector(0, 0, _magnetic_field_B));
+        G4UniformMagField *magField = new G4UniformMagField(G4ThreeVector(0, 0, _magnetic_field_B * tesla));
         G4FieldManager *fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
         fieldMgr->SetDetectorField(magField);
         fieldMgr->CreateChordFinder(magField);
     }
-
+    G4String SDName = _partName;
+    SDName.append(G4String("SDName"));
+    PandaXSensitiveDetector *worldSD = new PandaXSensitiveDetector(SDName);
+    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
+    sdManager->AddNewDetector(worldSD);
+    _partLogicalVolume->SetSensitiveDetector(worldSD);
     return true;
 }

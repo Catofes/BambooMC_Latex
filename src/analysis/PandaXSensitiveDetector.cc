@@ -39,8 +39,8 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     bool isSuccess = false;
     if (_recordEnergyDeposition) {
         G4double edep = aStep->GetTotalEnergyDeposit();
-        if (edep == 0.)
-            goto END_ENERYG_DEPOSITION;
+//        if (edep == 0.)
+//            goto END_ENERYG_DEPOSITION;
         PandaXEnergyDepositionHit *hit = new PandaXEnergyDepositionHit();
         int hitId = aStep->GetTrack()->GetTrackID();
         hit->setTrackId(hitId);
@@ -65,7 +65,7 @@ G4bool PandaXSensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *)
         _eDHitsCollection->insert(hit);
         isSuccess = true;
     }
-    END_ENERYG_DEPOSITION:
+//    END_ENERYG_DEPOSITION:
 
     if (_recordFlatSurfaceFlux) {
         G4StepPoint *preStep = aStep->GetPreStepPoint();

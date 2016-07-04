@@ -4,8 +4,8 @@
     <geometry>
         <material name="LatexMaterial"/>
         <detector type="LatexWorld" name="World">
-            <parameter name="B" value="0.5"/>
-            <parameter name="magnet" value="0"/>
+            <parameter name="B" value="0.05"/>
+            <parameter name="magnet" value="1"/>
         </detector>
         <detector type="LatexLayer" name="Layer3" parent="World">
             <parameter name="shift_z" value="0*mm"/>
@@ -65,7 +65,7 @@
         <parameter name="EnableEnergyDeposition" value="1"/>
         <parameter name="EnableFlatSurfaceFlux" value="0"/>
         <parameter name="enable_primary_particle" value="1"/>
-        <parameter name="save_null_event" value="0"/>
-        <parameter name="enable_decay_chain_splitting" value="1"/>
+        <parameter name="save_null_event" value="1"/>
+        <parameter name="enable_decay_chain_splitting" value="0"/>
     </analysis>
 </BambooMC>

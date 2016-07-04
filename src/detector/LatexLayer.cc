@@ -59,7 +59,7 @@ G4bool LatexLayer::construct()
     G4Box *down_latex_box = new G4Box("DownLatexBox", _halfX, _halfY, _latexZ / 2.);
     G4LogicalVolume *down_latex_log = new G4LogicalVolume(down_latex_box, latex, "DownLatexLog", 0, 0, 0);
 
-    G4Box *petBox = new G4Box("petBox", _halfX, _halfY, _latexZ / 2.);
+    G4Box *petBox = new G4Box("petBox", _halfX, _halfY, _PETZ / 2.);
     G4LogicalVolume *petLog = new G4LogicalVolume(petBox, pet, "petLog", 0, 0, 0);
 
     _partLogicalVolume = petLog;

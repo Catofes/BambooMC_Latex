@@ -61,6 +61,8 @@ void LatexMaterial::defineMaterials()
     elementVec.push_back(S);
     G4Element *Cl = pNistManager->FindOrBuildElement(17);
     elementVec.push_back(Cl);
+    G4Element *Ar = pNistManager->FindOrBuildElement(18);
+    elementVec.push_back(Ar);
     G4Element *K = pNistManager->FindOrBuildElement(19);
     elementVec.push_back(K);
     G4Element *Ca = pNistManager->FindOrBuildElement(20);
@@ -103,6 +105,15 @@ void LatexMaterial::defineMaterials()
 
     G4Material *air = pNistManager->FindOrBuildMaterial("G4_AIR");
     materialVec.push_back(air);
+
+    //Construct vacuum
+    G4Material *vacuum = new G4Material("VACCUM", 0.00120479 * 0.001 * g / cm3, 4, kStateGas);
+    vacuum->AddElement(N, 0.755268);
+    vacuum->AddElement(O, 0.231781);
+    vacuum->AddElement(C, 0.000124);
+    vacuum->AddElement(Ar, 0.012827);
+    materialVec.push_back(vacuum);
+
 
     G4cout << "Available materials: " << G4endl;
     for (size_t i = 0; i < materialVec.size(); ++i) {
